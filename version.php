@@ -19,7 +19,7 @@
  *
  * Language strings to be used by report/rubrics
  *
- * @package    report_rubrics
+ * @package    report_advancedgrading
  * @copyright  2021 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,4 +31,4 @@ $plugin->version   = 2021081500;  // The current plugin version (Date: YYYYMMDDX
 $plugin->requires  = 2015051109;  // Moodle 2.9.9.
 $plugin->release   = '0.1';
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->component = 'report_rubrics';  // Full name of the plugin (used for diagnostics).
+$plugin->component = 'report_advancedgrading';  // Full name of the plugin (used for diagnostics).

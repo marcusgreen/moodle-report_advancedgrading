@@ -66,9 +66,10 @@ function report_componentgrades_get_students($modcontext, $cm) :array {
 function get_header($coursename, $modname, $method, $methodname) {
 
     // Course, assignment, marking guide / rubric names.
+    $sheet = [];
     $cells = [];
     $format = ['size' => 18, 'bold' => 1];
-    $cells[0] = $coursename;
+    $cells[0] = ['row' => 0, 'col' => 24, 'range' => true];
     // $sheet->set_row(0, 24, $format);
     // $format = $workbook->add_format(array('size' => 16, 'bold' => 1));
     // $sheet->write_string(1, 0, $modname, $format);
@@ -93,5 +94,17 @@ function get_header($coursename, $modname, $method, $methodname) {
     // $sheet->set_column(0, $col, 10); // Set column widths to 10.
     // /* TODO returning an arbitrary number needs fixing */
     // return $col;
+
+}
+
+class cell {
+    private $text = "";
+    public function get_text() :string {
+        return $this->text;
+    }
+    public function set_text(string $textvalue) {
+        $this->text = $textvalue;
+    }
+
 
 }

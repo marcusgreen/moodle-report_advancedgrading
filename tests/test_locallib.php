@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tests for componentgrades report events.
+ * Tests for rubrics report events.
  *
  * @package    report_rubrics
  * @copyright  2021 Marcus Green
@@ -24,7 +24,9 @@
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once($CFG->dirroot . '/report/rubrics/locallib.php');
+require_once($CFG->dirroot . '/report/advancedgrading/locallib.php');
+require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
+require_once($CFG->dirroot . '/mod/assign/externallib.php');
 
 /**
  * Class report
@@ -36,6 +38,9 @@ require_once($CFG->dirroot . '/report/rubrics/locallib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class report_rubrics_locallib_test extends advanced_testcase {
+
+     // Use the generator helper.
+     use mod_assign_test_generator;
 
     /**
      * Confirm that students are returned from get_students
@@ -69,10 +74,75 @@ class report_rubrics_locallib_test extends advanced_testcase {
         $this->assertEquals($student->lastname, "");
         $this->assertNotEquals($student->student, $student->username);
     }
+
+    public function test_get_rubric_data(){
+        global $DB;
+        $this->resetAfterTest();
+
+        // Fetch generators.
+        $generator = \testing_util::get_data_generator();
+        $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric');
+
+        // Create items required for testing.
+        $course = $generator->create_course();
+        $assign = $this->create_instance($course, [
+        'name' => 'Rubric Assign',
+        'course' => $course,
+        'assignsubmission_onlinetext_enabled' => true
+         ]);
+        $student = $generator->create_user();
+
+        $context = $assign->get_context();
+
+        // Data for testing.
+        $name = 'myfirstrubric';
+        $description = 'My first rubric';
+        $criteria = [
+            'Alphabet' => [
+                'Not known' => 0,
+                'Letters known but out of order' => 1,
+                'Letters known in order ascending' => 2,
+                'Letters known and can recite forwards and backwards' => 4,
+            ],
+            'Times tables' => [
+                'Not known' => 0,
+                '2 times table known' => 2,
+                '2 and 5 times table known' => 4,
+                '2, 5, and 10 times table known' => 8,
+            ],
+        ];
+
+         // Unit under test.
+        $this->setUser($student);
+        $controller = $rubricgenerator->create_instance($context, 'mod_assign', 'submission', $name, $description, $criteria);
+        $submission = $assign->get_user_submission($student->id, true);
+        $data = (object) [
+             'onlinetext_editor' => [
+                 'itemid' => file_get_unused_draft_itemid(),
+                 'text' => 'Submission text',
+                 'format' => FORMAT_PLAIN,
+             ],
+         ];
+
+         $plugin = $assign->get_submission_plugin_by_type('onlinetext');
+         $plugin->save($submission, $data);
+         $submission->status = ASSIGN_SUBMISSION_STATUS_SUBMITTED;
+         $assign->testable_update_submission($submission, $student->id, true, false);
+         $filling = (object) [
+            'instanceid' => $submission->id,
+            'criterionid' => 1,
+            'levelid' => 2,
+            'remark' => "Well done",
+            'remarkformat' => 0
+         ];
+         $DB->insert_record('gradingform_rubric_fillings', $filling);
+
+    }
     public function test_get_headers() {
         $this->resetAfterTest();
         $generator = \testing_util::get_data_generator();
 
+        $header = get_header('coursename', 'modname', 'method', 'methodname');
         $user = $generator->create_user();
         $coursename = 'course01';
         $assignmentname = 'RubricTestAssignment';
