@@ -25,8 +25,13 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 require_once($CFG->dirroot . '/report/advancedgrading/locallib.php');
+require_once($CFG->dirroot . '/report/advancedgrading/rubric.php');
+
 require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
 require_once($CFG->dirroot . '/mod/assign/externallib.php');
+
+require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
+require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 
 /**
  * Class report
@@ -39,14 +44,55 @@ require_once($CFG->dirroot . '/mod/assign/externallib.php');
  */
 class report_rubrics_locallib_test extends advanced_testcase {
 
+    public $courseid;
+    public $assign;
+
+    public function setUp() : void {
+       // $this->preventResetByRollback();
+        global $USER, $CFG, $DB;
+        $this->setAdminUser();
+
+        $DB->update_record('user', (object) ['id' => $USER->id, 'username' => 'admin_xyz']);
+        $foldername = 'backup-advgrade';
+        $fp = get_file_packer('application/vnd.moodle.backup');
+        $tempdir = make_backup_temp_directory($foldername);
+        $fp->extract_to_pathname($CFG->dirroot . '/report/advancedgrading/tests/fixtures/backup-advgrade.mbz', $tempdir);
+
+        $this->courseid = restore_dbops::create_new_course(
+            'Test fullname', 'Test shortname', 1);
+        $controller = new restore_controller(
+            'backup-advgrade',
+            $this->courseid,
+            backup::INTERACTIVE_NO,
+            backup::MODE_GENERAL,
+            $USER->id,
+            backup::TARGET_NEW_COURSE
+        );
+        $controller->execute_precheck();
+        $controller->execute_plan();
+        $this->assignid = $DB->get_field('assign', 'id', ['name' => 'Rubric Assignment']);
+    }
+
      // Use the generator helper.
      use mod_assign_test_generator;
 
+
+    public function test_get_data() {
+        global $DB;
+
+        $course = $DB->get_record('course', ['id' => $this->courseid]);
+        $cm = get_coursemodule_from_instance('assign', $this->assignid, $this->courseid);
+        $gdef = get_grading_definition($cm->instance);
+        $header = report_advancedgrading_get_header($course->fullname, $cm->name, $gdef->activemethod, $gdef->definition);
+
+        $assign = context_module::instance($cm->id);
+        $students = report_componentgrades_get_students($assign, $cm);
+
+    }
     /**
      * Confirm that students are returned from get_students
      * method and that blind marking is respected
      */
-
     public function test_get_students() {
         $this->resetAfterTest();
         $generator = \testing_util::get_data_generator();
@@ -126,6 +172,7 @@ class report_rubrics_locallib_test extends advanced_testcase {
 
          $plugin = $assign->get_submission_plugin_by_type('onlinetext');
          $plugin->save($submission, $data);
+
          $submission->status = ASSIGN_SUBMISSION_STATUS_SUBMITTED;
          $assign->testable_update_submission($submission, $student->id, true, false);
          $filling = (object) [

@@ -58,32 +58,51 @@ function report_componentgrades_get_students($modcontext, $cm) :array {
     }
     return $users;
 }
-
+function get_grading_definition(int $assignid) {
+    global $DB;
+    $sql = "SELECT ga.activemethod, gdef.name as definition from {assign} assign
+            JOIN {course_modules} cm ON cm.instance = assign.id
+            JOIN {context} ctx ON ctx.instanceid = cm.id
+            JOIN {grading_areas} ga ON ctx.id=ga.contextid
+            JOIN {grading_definitions} gdef ON ga.id = gdef.areaid
+            WHERE assign.id = :assignid";
+    $definition = $DB->get_record_sql($sql, ['assignid' => $assignid]);
+    return $definition;
+}
 /**
  * Add header text to report, name of course etc
 
  */
-function get_header($coursename, $modname, $method, $methodname) {
+function report_advancedgrading_get_header($coursename, $assignmentname, $method, $definition) {
 
-    // Course, assignment, marking guide / rubric names.
-    $sheet = [];
-    $cells = [];
-    $format = ['size' => 18, 'bold' => 1];
-    $cells[0] = ['row' => 0, 'col' => 24, 'range' => true];
-    // $sheet->set_row(0, 24, $format);
-    // $format = $workbook->add_format(array('size' => 16, 'bold' => 1));
+    $cells[]  = [
+        'row' => 0,
+        'col' => 0,
+        'value' => $coursename
+    ];
+    $cells[]  = [
+        'row' => 1,
+        'col' => 0,
+        'value' => $assignmentname
+    ];
+    $cells[]  = [
+        'row' => 2,
+        'col' => 0,
+        'value' => get_string($method, 'report_advancedgrading').":"
+    ];
+    $cells[]  = [
+        'row' => 2,
+        'col' => 1,
+        'value' => $definition
+    ];
+    return $cells;
+
     // $sheet->write_string(1, 0, $modname, $format);
-    // $sheet->set_row(1, 21, $format);
     // $methodname = ($method == 'rubric' ? 'Rubric: ' : 'Marking guide: ') . $methodname;
     // $sheet->write_string(2, 0, $methodname, $format);
-    // $sheet->set_row(2, 21, $format);
 
-    // // Column headers - two rows for grouping.
-    // $format = $workbook->add_format(array('size' => 12, 'bold' => 1));
-    // $format2 = $workbook->add_format(array('bold' => 1));
     // $sheet->write_string(HEADINGSROW, 0, get_string('student', 'report_componentgrades'), $format);
     // $sheet->merge_cells(HEADINGSROW, 0, HEADINGSROW, 2, $format);
-    // $col = 0;
     // $sheet->write_string(5, $col++, get_string('firstname', 'report_componentgrades'), $format2);
     // $sheet->write_string(5, $col++, get_string('lastname', 'report_componentgrades'), $format2);
     // $sheet->write_string(5, $col++, get_string('username', 'report_componentgrades'), $format2);
@@ -91,8 +110,6 @@ function get_header($coursename, $modname, $method, $methodname) {
     //     $sheet->write_string(5, $col, get_string('studentid', 'report_componentgrades'), $format2);
     //     $col++;
     // }
-    // $sheet->set_column(0, $col, 10); // Set column widths to 10.
-    // /* TODO returning an arbitrary number needs fixing */
     // return $col;
 
 }
