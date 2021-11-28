@@ -24,16 +24,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once($CFG->dirroot.'/mod/assign/locallib.php');
+
 
 defined('MOODLE_INTERNAL') || die;
-
 /**
  * Get all students given the course/module details
  * @param \context_module $modcontext
  * @param \stdClass $cm
  * @return array
  */
-function report_componentgrades_get_students($modcontext, $cm) :array {
+function report_componentgrades_get_students(\context_module $modcontext, \stdClass $cm) :array {
     global $DB;
     $assign = new assign($modcontext, $cm, $cm->course);
     $params = ['courseid' => $cm->course];
@@ -68,6 +69,33 @@ function get_grading_definition(int $assignid) {
             WHERE assign.id = :assignid";
     $definition = $DB->get_record_sql($sql, ['assignid' => $assignid]);
     return $definition;
+}
+
+
+function rubric_get_data(int $assignid) {
+    global $DB;
+    $data = $DB->get_records_sql("SELECT  grf.id AS grfid, crs.shortname AS course, asg.name AS assignment,
+                                          grc.description, grl.definition, grl.score, grf.remark, grf.criterionid,
+                                          rubm.username AS grader, stu.id AS userid, stu.idnumber AS idnumber, stu.firstname,
+                                          stu.lastname, stu.username AS student, gin.timemodified AS modified
+                                    FROM {course} crs
+                                    JOIN {course_modules} cm ON crs.id = cm.course
+                                    JOIN {assign} asg ON asg.id = cm.instance
+                                    JOIN {context} c ON cm.id = c.instanceid
+                                    JOIN {grading_areas}  ga ON c.id=ga.contextid
+                                    JOIN {grading_definitions} gd ON ga.id = gd.areaid
+                                    JOIN {gradingform_rubric_criteria} grc ON (grc.definitionid = gd.id)
+                                    JOIN {gradingform_rubric_levels} grl ON (grl.criterionid = grc.id)
+                                    JOIN {grading_instances} gin ON gin.definitionid = gd.id
+                                    JOIN {assign_grades} ag ON ag.id = gin.itemid
+                                    JOIN {user} stu ON stu.id = ag.userid
+                                    JOIN {user} rubm ON rubm.id = gin.raterid
+                                    JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
+                                    AND (grf.criterionid = grc.id) AND (grf.levelid = grl.id)
+                                    WHERE cm.id = :assignid AND gin.status = 1
+                                    ORDER BY lastname ASC, firstname ASC, userid ASC, grc.sortorder ASC,
+                                    grc.description ASC", ['assignid' => $assignid]);
+                                    return $data;
 }
 /**
  * Add header text to report, name of course etc

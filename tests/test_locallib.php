@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 require_once($CFG->dirroot . '/report/advancedgrading/locallib.php');
-require_once($CFG->dirroot . '/report/advancedgrading/rubric.php');
+//require_once($CFG->dirroot . '/report/advancedgrading/rubric.php');
 
 require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
 require_once($CFG->dirroot . '/mod/assign/externallib.php');
@@ -79,6 +79,7 @@ class report_rubrics_locallib_test extends advanced_testcase {
 
     public function test_get_data() {
         global $DB;
+        $this->resetAfterTest();
 
         $course = $DB->get_record('course', ['id' => $this->courseid]);
         $cm = get_coursemodule_from_instance('assign', $this->assignid, $this->courseid);
@@ -87,6 +88,7 @@ class report_rubrics_locallib_test extends advanced_testcase {
 
         $assign = context_module::instance($cm->id);
         $students = report_componentgrades_get_students($assign, $cm);
+        $data = rubric_get_data($cm->id);
 
     }
     /**
