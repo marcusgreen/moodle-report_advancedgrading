@@ -61,7 +61,7 @@ function report_componentgrades_get_students(\context_module $modcontext, \stdCl
 }
 function get_grading_definition(int $assignid) {
     global $DB;
-    $sql = "SELECT ga.activemethod, gdef.name as definition from {assign} assign
+    $sql = "SELECT gdef.id as definitionid, ga.activemethod, gdef.name as definition from {assign} assign
             JOIN {course_modules} cm ON cm.instance = assign.id
             JOIN {context} ctx ON ctx.instanceid = cm.id
             JOIN {grading_areas} ga ON ctx.id=ga.contextid
@@ -70,9 +70,14 @@ function get_grading_definition(int $assignid) {
     $definition = $DB->get_record_sql($sql, ['assignid' => $assignid]);
     return $definition;
 }
+function rubric_get_criteria(int $definitionid) {
+    global $DB;
 
+    $criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => $definitionid], null, 'id, description');
+    return $criteria;
+}
 
-function rubric_get_data(int $assignid) {
+function x_rubric_get_data(int $assignid) {
     global $DB;
     $data = $DB->get_records_sql("SELECT  grf.id AS grfid, crs.shortname AS course, asg.name AS assignment,
                                           grc.description, grl.definition, grl.score, grf.remark, grf.criterionid,
@@ -96,6 +101,63 @@ function rubric_get_data(int $assignid) {
                                     ORDER BY lastname ASC, firstname ASC, userid ASC, grc.sortorder ASC,
                                     grc.description ASC", ['assignid' => $assignid]);
                                     return $data;
+}
+
+function rubric_get_data(int $assignid) {
+         global $DB;
+         $sql = "SELECT grf.id as grfid,
+                        cm.course,
+                        asg.name as assignment,
+                        grc.description,  grl.score,  grf.remark, grf.criterionid,
+                        stu.id AS userid,
+                        stu.idnumber AS idnumber,
+                        stu.firstname, stu.lastname,
+                        stu.username AS student,
+                        gin.timemodified AS modified
+                        FROM {assign} asg
+                        JOIN {course_modules} cm ON cm.instance = asg.id
+                        JOIN {context} ctx ON ctx.instanceid = cm.id
+                        JOIN {grading_areas}  ga ON ctx.id=ga.contextid
+                        JOIN {grading_definitions} gd ON ga.id = gd.areaid
+                        JOIN {gradingform_rubric_criteria} grc ON (grc.definitionid = gd.id)
+                        JOIN {gradingform_rubric_levels} grl ON (grl.criterionid = grc.id)
+                        JOIN {grading_instances} gin ON gin.definitionid = gd.id
+                        JOIN {assign_grades} ag ON ag.id = gin.itemid
+                        JOIN {user} stu ON stu.id = ag.userid
+                        JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
+                         AND (grf.criterionid = grc.id) AND (grf.levelid = grl.id)
+                       WHERE cm.id = :assignid AND gin.status = 1";
+                        $data = $DB->get_records_sql($sql, ['assignid' => $assignid] );
+
+                        return $data;
+}
+
+function get_grades(int $assignid) {
+        //     $sql = "SELECT
+        //     mc.instanceid,
+        //     mga.areaname,
+        //     mga.activemethod,
+        //     mgd.name,
+        //     mgi.rawgrade,
+        //     mgi.raterid,
+        //     mgi.itemid,
+        //     mgi.status,
+        //     mgi.feedback,
+        //     mgrf.remark
+        // FROM
+        //     mdl311.mdl_grading_areas mga
+        // INNER JOIN mdl311.mdl_context mc ON
+        //     mga.contextid = mc.id
+        // INNER JOIN mdl311.mdl_grading_definitions mgd ON
+        //     mga.id = mgd.areaid
+        // INNER JOIN mdl311.mdl_grading_instances mgi ON
+        //     mgd.id = mgi.definitionid
+        // INNER JOIN mdl311.mdl_gradingform_rubric_fillings mgrf ON
+        //     mgrf.instanceid = mgi.id
+        // INNER JOIN mdl311.mdl_assign_grades mag ON
+        //     mag.id = mgi.itemid
+        // WHERE
+        //     mc.instanceid = 117;"
 }
 /**
  * Add header text to report, name of course etc

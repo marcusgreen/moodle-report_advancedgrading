@@ -34,6 +34,12 @@ $assignid  = required_param('modid', PARAM_INT);// CM ID.
 $params['id'] = $courseid;
 $params['modid'] = $assignid;
 
+
+
+global $PAGE;
+$PAGE->requires->js_call_amd('report_advancedgrading/rubric_header', 'init');
+// echo '<script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>';
+
 $PAGE->set_url('/report/advancedgrading/index.php', $params);
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -52,17 +58,136 @@ $PAGE->set_pagelayout('incourse');
 
 $PAGE->set_title('Rubric Report');
 $PAGE->set_heading( 'Report Name');
-// echo $OUTPUT->header();
-// echo $OUTPUT->footer();
 
-
-// $filename = $course->shortname . ' - ' . $assign->name . '.xls';
 
 $gdef = get_grading_definition($assign->instance);
-$headers = report_advancedgrading_get_header($course->fullname, $assign->name, $gdef->activemethod, $gdef->definition);
+$data = [];
+$criteria = rubric_get_criteria((int) $gdef->definitionid);
+$data['studentcolspan'] = 2; //Firstname and Lasname
+$data['showidnumber'] = true;
+if ($data['showidnumber']) {
+    $data['studentcolspan']++;
+}
+foreach ($criteria as $key => $criterion) {
+    $data['criteria'][] = [
+        'description' => $criterion
+    ];
+}
+
+$data['header'] = [
+    'coursename' => $course->fullname,
+    'assignment' => $assign->name,
+    'gradingmethod' => $gdef->activemethod,
+    'definition' => $gdef->definition
+];
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
 $students = report_componentgrades_get_students($modcontext, $cm);
-$data = rubric_get_data($cm->id);
+foreach ($students as $student) {
+    $data['students'][] = [
+        'firstname' => $student->firstname,
+        'lastname' => $student->lastname,
+        'idnumber' => $student->idnumber
+    ];
+}
+$olddata = rubric_get_data($assign->id);
+// $data['definition'] = get_grading_definition($cm->instance);
+// $data['scoring'] = rubric_get_data($cm->id);
+
+echo $OUTPUT->header();
+
+echo $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
+
+echo $OUTPUT->footer();
+
+//hout('mavg77');
+//$writer->save('/Users/marcusgreen/Downloads/mavg.xlsx');
+// $writer->save('php://output');
+//exit();
+//echo $OUTPUT->header();
+
+
+// $retval = $writer->save('/Users/marcusgreen/Downloads/mavg.xls');
+
+function download($spreadsheet) {
+    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
+    $spreadsheet = $reader->loadFromString($header);
+
+    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+    hout('rubric');
+    $writer->save('php://output');
+
+}
+function hout($filename) {
+
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+    return true;
+    $filename = preg_replace('/\.xlsx?$/i', '', $filename);
+
+    $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    $filename = $filename.'.xlsx';
+
+    if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
+        header('Cache-Control: max-age=10');
+        header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
+        header('Pragma: ');
+    } else { // normal http - prevent caching at all cost
+        header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
+        header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
+        header('Pragma: no-cache');
+    }
+
+    if (core_useragent::is_ie() || core_useragent::is_edge()) {
+        $filename = rawurlencode($filename);
+    } else {
+        $filename = s($filename);
+    }
+
+    header('Content-Type: '.$mimetype);
+    header('Content-Disposition: attachment;filename="'.$filename.'"');
+
+}
+
+/**
+ * Close the Moodle Workbook
+ */
+// public function close() {
+// global $CFG;
+
+// foreach ($this->objspreadsheet->getAllSheets() as $sheet) {
+// $sheet->setSelectedCells('A1');
+// }
+// $this->objspreadsheet->setActiveSheetIndex(0);
+
+// $filename = preg_replace('/\.xlsx?$/i', '', $this->filename);
+
+// $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+// $filename = $filename.'.xlsx';
+
+// if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
+// header('Cache-Control: max-age=10');
+// header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
+// header('Pragma: ');
+// } else { // normal http - prevent caching at all cost
+// header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
+// header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
+// header('Pragma: no-cache');
+// }
+
+// if (core_useragent::is_ie() || core_useragent::is_edge()) {
+// $filename = rawurlencode($filename);
+// } else {
+// $filename = s($filename);
+// }
+
+// header('Content-Type: '.$mimetype);
+// header('Content-Disposition: attachment;filename="'.$filename.'"');
+
+// $objwriter = IOFactory::createWriter($this->objspreadsheet, $this->type);
+// $objwriter->save('php://output');
+// }
+
+
 
 // $workbook = new MoodleExcelWorkbook("-");
 // $workbook->send($filename);
@@ -78,7 +203,7 @@ $data = rubric_get_data($cm->id);
 // $sheet->merge_cells($firstrow, $firstcol, $lastrow, $lastcol);
 
 // foreach ($headers as $cell) {
-//     $sheet->write_string($cell['row'], $cell['col'], $cell['value'], $header1);
+// $sheet->write_string($cell['row'], $cell['col'], $cell['value'], $header1);
 // }
 // $row = 5;
 // $col = 0;

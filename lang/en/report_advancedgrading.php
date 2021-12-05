@@ -27,3 +27,5 @@
 $string['pluginname'] = 'Advanced Grading report';
 $string['rubricgrades'] = 'Export rubric grades';
 $string['rubric'] = 'Rubric';
+$string['assignment'] = 'Assignment';
+$string['grademethod'] = 'Grade method';
