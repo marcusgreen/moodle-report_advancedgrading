@@ -98,6 +98,7 @@ function x_rubric_get_data(int $assignid) {
                                     JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
                                     AND (grf.criterionid = grc.id) AND (grf.levelid = grl.id)
                                     WHERE cm.id = :assignid AND gin.status = 1
+                                    AND  stu.deleted = 0
                                     ORDER BY lastname ASC, firstname ASC, userid ASC, grc.sortorder ASC,
                                     grc.description ASC", ['assignid' => $assignid]);
                                     return $data;
@@ -113,6 +114,7 @@ function rubric_get_data(int $assignid) {
                         stu.idnumber AS idnumber,
                         stu.firstname, stu.lastname,
                         stu.username AS student,
+                        rubm.username AS grader,
                         gin.timemodified AS modified
                         FROM {assign} asg
                         JOIN {course_modules} cm ON cm.instance = asg.id
@@ -124,9 +126,12 @@ function rubric_get_data(int $assignid) {
                         JOIN {grading_instances} gin ON gin.definitionid = gd.id
                         JOIN {assign_grades} ag ON ag.id = gin.itemid
                         JOIN {user} stu ON stu.id = ag.userid
+                        JOIN {user} rubm ON rubm.id = gin.raterid
                         JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
                          AND (grf.criterionid = grc.id) AND (grf.levelid = grl.id)
-                       WHERE cm.id = :assignid AND gin.status = 1";
+                       WHERE cm.id = :assignid AND gin.status = 1
+                        AND  stu.deleted = 0";
+
                         $data = $DB->get_records_sql($sql, ['assignid' => $assignid] );
 
                         return $data;
