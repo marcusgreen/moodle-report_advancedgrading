@@ -81,41 +81,66 @@ $data['header'] = [
     'definition' => $gdef->definition
 ];
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
-$students = report_componentgrades_get_students($modcontext, $cm);
+//$students = report_componentgrades_get_students($modcontext, $cm);
 $grading = rubric_get_data($assign->id);
 
 $ids = [];
+$criterion = [];
+$lookup = [];
 foreach ($grading as $grade) {
-    $data['grades'][] = [
-        'userid' => $grade->userid,
-        'score' => $grade->score,
-        'feedback' => $grade->remark
-     ];
-
-    if (in_array($grade->userid, $ids)) {
-        continue;
-    }
-     $data['gradeinfo'][] = [
-        'grader' => $grade->grader,
-        'timegraded' => $grade->modified
-     ];
-     $ids[] = $grade->userid;
-     $data['students'][] = [
+     $data['students'][$grade->userid] = [
         'userid'    => $grade->userid,
         'firstname' => $grade->firstname,
         'lastname' => $grade->lastname,
         'idnumber' => $grade->idnumber
      ];
+     $criterion[$grade->criterionid] = $grade->description;
 
 }
-    $data['definition'] = get_grading_definition($cm->instance);
-    $data['scoring'] = rubric_get_data($cm->id);
+//$criterion = array_unique($criterion);
+foreach ($grading as $grade) {
+    $g[$grade->userid][$grade->criterionid] = [
+        'userid' => $grade->userid,
+        'score' => $grade->score,
+        'feedback' => $grade->remark
+    ];
+    $gi = [
+        'grader' => $grade->grader,
+        'timegraded' => $grade->modified
+    ];
 
-    echo $OUTPUT->header();
+    foreach ($data['students'] as $student) {
+        if ($student['userid'] == $grade->userid) {
+            $data['students'][$grade->userid]['grades'] = $g[$grade->userid];
+            $data['students'][$grade->userid]['gradeinfo'] = $gi;
+        }
+    }
+}
+$data['definition'] = get_grading_definition($cm->instance);
+$data['scoring'] = rubric_get_data($cm->id);
 
-    echo $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
+$table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
 
-    echo $OUTPUT->footer();
+foreach ($data['students'] as $key => $student) {
+    $row .= '<tr>';
+    $row .= '<td>'.$student['firstname'].'</td>';
+    $row .= '<td>'.$student['lastname'].'</td>';
+    $row .= '<td></td>';
+    foreach($criterion as $crikey => $criteria) {
+        $row .= '<td>'.$student['grades'][$crikey]['score'] .'</td>';
+        $row .= '<td>'.$student['grades'][$crikey]['feedback'] .'</td>';
+    }
+    $row .= '<td>'.$student['gradeinfo']['grader'] .'</td>';
+    $row .= '<td>'.$student['gradeinfo']['timegraded'] .'</td>';
+    $row .= '</tr>';
+}
+
+$table .= $row;
+$table .= '    <tbody> </table>';
+echo $OUTPUT->header();
+echo $table;
+
+echo $OUTPUT->footer();
 
     // hout('mavg77');
     // $writer->save('/Users/marcusgreen/Downloads/mavg.xlsx');
