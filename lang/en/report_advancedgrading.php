@@ -29,3 +29,7 @@ $string['rubricgrades'] = 'Export rubric grades';
 $string['rubric'] = 'Rubric';
 $string['assignment'] = 'Assignment';
 $string['grademethod'] = 'Grade method';
+$string['showstudentid'] = 'Show student id';
+$string['showstudentid_text'] = 'Show student id in the report';
+$string['showgroups'] = 'Show groups';
+$string['showgroups_desc'] = 'Show groups in the report';
