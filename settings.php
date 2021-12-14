@@ -30,9 +30,9 @@ if ($ADMIN->fulltree) {
         0
     ));
     $settings->add(new admin_setting_configcheckbox(
-        'report_advanceedgrading/showgroups',
-        get_string('showgroups', 'report_advanceedgrading'),
-        get_string('showgroups_desc', 'report_advanceedgrading'),
-        1
+        'report_advancedgrading/showgroups',
+        get_string('showgroups', 'report_advancedgrading'),
+        get_string('showgroups_desc', 'report_advancedgrading'),
+        0
     ));
 }

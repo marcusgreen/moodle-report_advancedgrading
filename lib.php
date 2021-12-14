@@ -26,15 +26,19 @@
 
 
 defined('MOODLE_INTERNAL') || die;
+
+require_once($CFG->dirroot.'/grade/grading/lib.php');
+
 function report_advancedgrading_extend_navigation_module(navigation_node $navigation, cm_info $cm) {
     $context = context_module::instance($cm->id);
     $gradingmanager = get_grading_manager($context, 'mod_assign', 'submissions');
     $gradinginstance = null;
-    switch ($gradingmanager->get_active_method()) {            case 'rubric':
-                $url = new moodle_url('/report/advancedgrading/rubric.php', array('id' => $cm->course, 'modid' => $cm->id));
-                $navigation->add(get_string('rubricgrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
-                        'rubricgrades');
-                break;
+    switch ($gradingmanager->get_active_method()) {
+        case 'rubric':
+            $url = new moodle_url('/report/advancedgrading/rubric.php', array('id' => $cm->course, 'modid' => $cm->id));
+            $navigation->add(get_string('rubricgrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
+                    'rubricgrades');
+        break;
 
     }
 }
