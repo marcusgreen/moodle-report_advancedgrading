@@ -26,6 +26,7 @@ require(__DIR__ .'../../../config.php');
 global $CFG;
 require_once(__DIR__ .'/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ .'/../../lib/excellib.class.php');
+$dload = optional_param("dload", '', PARAM_BOOL);
 
 
 $courseid  = required_param('id', PARAM_INT);// Course ID.
@@ -34,11 +35,8 @@ $assignid  = required_param('modid', PARAM_INT);// CM ID.
 $params['id'] = $courseid;
 $params['modid'] = $assignid;
 
-
-
 global $PAGE;
 $PAGE->requires->js_call_amd('report_advancedgrading/rubric_header', 'init');
-// echo '<script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>';
 
 $PAGE->set_url('/report/advancedgrading/index.php', $params);
 
@@ -81,7 +79,6 @@ $data['header'] = [
     'definition' => $gdef->definition
 ];
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
-//$students = report_componentgrades_get_students($modcontext, $cm);
 $grading = rubric_get_data($assign->id);
 
 $ids = [];
@@ -97,7 +94,6 @@ foreach ($grading as $grade) {
      $criterion[$grade->criterionid] = $grade->description;
 
 }
-//$criterion = array_unique($criterion);
 foreach ($grading as $grade) {
     $g[$grade->userid][$grade->criterionid] = [
         'userid' => $grade->userid,
@@ -118,9 +114,14 @@ foreach ($grading as $grade) {
 }
 $data['definition'] = get_grading_definition($cm->instance);
 $data['scoring'] = rubric_get_data($cm->id);
+$data['id'] = 17;
+$data['modid'] = 117;
+$data['dodload'] = true;
 
+$form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
 
+$row = '';
 foreach ($data['students'] as $key => $student) {
     $row .= '<tr>';
     $row .= '<td>'.$student['firstname'].'</td>';
@@ -135,10 +136,17 @@ foreach ($data['students'] as $key => $student) {
     $row .= '</tr>';
 }
 
-$table .= $row;
-$table .= '    <tbody> </table>';
-echo $OUTPUT->header();
-echo $table;
+//$table .= $row;
+$table .= '    </tbody> </table>';
+if ($dload) {
+    download($table);
+    echo $OUTPUT->header();
+} else {
+    echo $OUTPUT->header();
+
+    echo $form;
+    echo $table;
+}
 
 echo $OUTPUT->footer();
 
@@ -153,11 +161,12 @@ echo $OUTPUT->footer();
 
 function download($spreadsheet) {
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
-    $spreadsheet = $reader->loadFromString($header);
+    $spreadsheet = $reader->loadFromString($spreadsheet);
 
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
     hout('rubric');
     $writer->save('php://output');
+    exit();
 
 }
 function hout($filename) {
