@@ -1,87 +1,89 @@
 {{!
-    This file is part of Moodle - https://moodle.org/
+This file is part of Moodle - https://moodle.org/
 
-    Moodle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    Moodle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with Moodle. If not, see
+<http: //www.gnu.org/licenses />.
 }}
 {{!
-    @template plugintype_pluginname/template_name
+@template plugintype_pluginname/template_name
 
-    Template purpose and description.
+Template purpose and description.
 
-    Classes required for JS:
-    * none
+Classes required for JS:
+* none
 
-    Data attributes required for JS:
-    * none
+Data attributes required for JS:
+* none
 
-    Context variables required for this template:
-    * none
+Context variables required for this template:
+* none
 
-    Example context (json):
-    {
-    }
+Example context (json):
+{
+}
 }}
 
 
-<table id="rubric-header"  class="table table-bordered">
-<tbody>
-    <tr>
-        {{#header}}
-        <td colspan = {{studentcolspan}}>
-            {{#str}}course{{/str}}:{{coursename}}
-        </td>
-    </tr>
-    <tr>
-        <td colspan = {{studentcolspan}} >
-            {{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}
-        </td>
-    </tr>
-
-    <tr>
-        <td colspan = {{studentcolspan}} >
-            {{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}
-            </td>
+<table id="rubric-header" class="table table-bordered">
+    <tbody>
         <tr>
-            <td colspan = {{studentcolspan}} >
-                {{definition}}
+            {{#header}}
+            <td colspan={{studentcolspan}}>
+                {{#str}}course{{/str}}:{{coursename}}
             </td>
         </tr>
+        <tr>
+            <td colspan={{studentcolspan}}>
+                {{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan={{studentcolspan}}>
+                {{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}
+            </td>
+        </tr>
+        <tr>
+        <td colspan={{studentcolspan}}>
+            {{definition}}
+        </td>
+        </tr>
         {{/header}}
-    </tr>
-    <tr>
-        <td colspan = 3>
-            <b>Student</b>
-        </td>
-        {{#criteria}}
+
+        <tr>
+            <td colspan=3>
+                <b>Student</b>
+            </td>
+            {{#criteria}}
             <td colspan=2 class="criteriaheader">{{description}}</td>
-        {{/criteria}}
-        <td colspan=2 class="infoheader">Grading Info</td>
-    </tr>
-    <tr>
-        <td>
-            <b>Firstname</b>
-        </td>
-        <td>
-            <b>Lastname</b>
-        </td>
-        {{#showidnumber}}
+            {{/criteria}}
+            <td colspan=2 class="infoheader">Grading Info</td>
+        </tr>
+        <tr>
+            <td>
+                <b>Firstname</b>
+            </td>
+            <td>
+                <b>Lastname</b>
+            </td>
+            {{#showidnumber}}
             <td><b>Id Number</b></td>
-        {{/showidnumber}}
-        {{#criteria}}
+            {{/showidnumber}}
+            {{#criteria}}
             <td class="criteriaheader">Score</td>
             <td class="criteriaheader">Feedback</td>
-        {{/criteria}}
-        <td class="infoheader"> Graded by </td>
-        <td class="infoheader"> Time Graded </td>
-    </tr>
+            {{/criteria}}
+            <td class="infoheader"> Graded by </td>
+            <td class="infoheader"> Time Graded </td>
+        </tr>
