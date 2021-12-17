@@ -61,7 +61,7 @@ $PAGE->set_heading( 'Report Name');
 $gdef = get_grading_definition($assign->instance);
 $data = [];
 $criteria = rubric_get_criteria((int) $gdef->definitionid);
-$data['studentcolspan'] = 2; // Firstname and Lasname
+$data['studentcolspan'] = 2; // Firstname,Lasname
 $data['showidnumber'] = true;
 if ($data['showidnumber']) {
     $data['studentcolspan']++;
@@ -70,6 +70,7 @@ foreach ($criteria as $key => $criterion) {
     $data['criteria'][] = [
         'description' => $criterion
     ];
+
 }
 
 $data['header'] = [
@@ -94,6 +95,8 @@ foreach ($grading as $grade) {
      $criterion[$grade->criterionid] = $grade->description;
 
 }
+$data['studentcolspan'] += (count($criterion) * 2); // Each crtieria has score and feedback
+$data['studentcolspan'] += 2; // For timegraded and gradedby.
 foreach ($grading as $grade) {
     $g[$grade->userid][$grade->criterionid] = [
         'userid' => $grade->userid,
@@ -126,8 +129,8 @@ foreach ($data['students'] as $key => $student) {
     $row .= '<tr>';
     $row .= '<td>'.$student['firstname'].'</td>';
     $row .= '<td>'.$student['lastname'].'</td>';
-    $row .= '<td></td>';
-    foreach($criterion as $crikey => $criteria) {
+    $row .= '<td>ID number </td>';
+    foreach ($criterion as $crikey => $criteria) {
         $row .= '<td>'.$student['grades'][$crikey]['score'] .'</td>';
         $row .= '<td>'.$student['grades'][$crikey]['feedback'] .'</td>';
     }
@@ -136,7 +139,7 @@ foreach ($data['students'] as $key => $student) {
     $row .= '</tr>';
 }
 
-//$table .= $row;
+$table .= $row;
 $table .= '    </tbody> </table>';
 if ($dload) {
     download($table);
