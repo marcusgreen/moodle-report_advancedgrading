@@ -36,7 +36,10 @@ $params['id'] = $courseid;
 $params['modid'] = $assignid;
 
 global $PAGE;
-$PAGE->requires->js_call_amd('report_advancedgrading/rubric_header', 'init');
+// $PAGE->requires->js_call_amd('report_advancedgrading/rubric_header', 'init');
+
+$PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
+
 
 $PAGE->set_url('/report/advancedgrading/index.php', $params);
 
@@ -135,7 +138,7 @@ foreach ($data['students'] as $key => $student) {
         $row .= '<td>'.$student['grades'][$crikey]['feedback'] .'</td>';
     }
     $row .= '<td>'.$student['gradeinfo']['grader'] .'</td>';
-    $row .= '<td>'.$student['gradeinfo']['timegraded'] .'</td>';
+    $row .= '<td>'.\userdate($student['gradeinfo']['timegraded'],"% %d %b %Y %I:%M %p") .'</td>';
     $row .= '</tr>';
 }
 

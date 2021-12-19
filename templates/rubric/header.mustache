@@ -53,17 +53,15 @@ Example context (json):
             <td colspan={{studentcolspan}}>
                 {{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}
             </td>
-        </tr>
         <tr>
-        <td colspan={{studentcolspan}}>
-            {{definition}}
-        </td>
+            <td colspan={{studentcolspan}}>
+                {{definition}}
+            </td>
         </tr>
         {{/header}}
-
         <tr>
             <td colspan=3>
-                <b>Student</b>
+                Student
             </td>
             {{#criteria}}
             <td colspan=2 class="criteriaheader">{{description}}</td>
@@ -71,19 +69,22 @@ Example context (json):
             <td colspan=2 class="infoheader">Grading Info</td>
         </tr>
         <tr>
-            <td>
-                <b>Firstname</b>
-            </td>
-            <td>
-                <b>Lastname</b>
-            </td>
+            <th title='firstname'>
+                Firstname
+           </th>
+            <th>
+                Lastname
+            </th>
             {{#showidnumber}}
-            <td><b>Id Number</b></td>
+            <th>
+                Id Number
+            </th>
             {{/showidnumber}}
             {{#criteria}}
-            <td class="criteriaheader">Score</td>
-            <td class="criteriaheader">Feedback</td>
+            <th>Score</th>
+            <th>Feedback</th>
             {{/criteria}}
-            <td class="infoheader"> Graded by </td>
-            <td class="infoheader"> Time Graded </td>
+            <th class="infoheader"> Graded by </th>
+            <th class="infoheader"> Time Graded</th>
         </tr>
+    </thead>
