@@ -115,7 +115,8 @@ function rubric_get_data(int $assignid) {
                         stu.firstname, stu.lastname,
                         stu.username AS student,
                         rubm.username AS grader,
-                        gin.timemodified AS modified
+                        gin.timemodified AS modified,
+                        ag.grade
                         FROM {assign} asg
                         JOIN {course_modules} cm ON cm.instance = asg.id
                         JOIN {context} ctx ON ctx.instanceid = cm.id

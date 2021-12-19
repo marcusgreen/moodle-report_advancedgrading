@@ -99,7 +99,7 @@ foreach ($grading as $grade) {
 
 }
 $data['studentcolspan'] += (count($criterion) * 2); // Each crtieria has score and feedback
-$data['studentcolspan'] += 2; // For timegraded and gradedby.
+$data['studentcolspan'] += 34; // For grade, timegraded and gradedby.
 foreach ($grading as $grade) {
     $g[$grade->userid][$grade->criterionid] = [
         'userid' => $grade->userid,
@@ -108,7 +108,8 @@ foreach ($grading as $grade) {
     ];
     $gi = [
         'grader' => $grade->grader,
-        'timegraded' => $grade->modified
+        'timegraded' => $grade->modified,
+        'grade' => $grade->grade
     ];
 
     foreach ($data['students'] as $student) {
@@ -137,6 +138,7 @@ foreach ($data['students'] as $key => $student) {
         $row .= '<td>'.$student['grades'][$crikey]['score'] .'</td>';
         $row .= '<td>'.$student['grades'][$crikey]['feedback'] .'</td>';
     }
+    $row .= '<td>'.$student['gradeinfo']['grade'] .'</td>';
     $row .= '<td>'.$student['gradeinfo']['grader'] .'</td>';
     $row .= '<td>'.\userdate($student['gradeinfo']['timegraded'],"% %d %b %Y %I:%M %p") .'</td>';
     $row .= '</tr>';
@@ -148,12 +150,12 @@ if ($dload) {
     download($table);
     echo $OUTPUT->header();
 } else {
+
     echo $OUTPUT->header();
 
     echo $form;
     echo $table;
 }
-
 echo $OUTPUT->footer();
 
     // hout('mavg77');
