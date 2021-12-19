@@ -36,12 +36,12 @@ Example context (json):
 
 
 <table id="rubric-header" class="table table-bordered">
-    <tbody>
+    <thead>
         <tr>
             {{#header}}
-            <td colspan={{studentcolspan}}>
+            <th colspan={{studentcolspan}}>
                 {{#str}}course{{/str}}:{{coursename}}
-            </td>
+            </th>
         </tr>
         <tr>
             <td colspan={{studentcolspan}}>
@@ -84,7 +84,8 @@ Example context (json):
             <th>Score</th>
             <th>Feedback</th>
             {{/criteria}}
-            <th class="infoheader"> Graded by </th>
-            <th class="infoheader"> Time Graded</th>
+            <th> Graded by </th>
+            <th> Time Graded</th>
         </tr>
     </thead>
+    <tbody>
