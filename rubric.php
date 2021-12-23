@@ -26,6 +26,10 @@ require(__DIR__ .'../../../config.php');
 global $CFG;
 require_once(__DIR__ .'/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ .'/../../lib/excellib.class.php');
+
+require_once $CFG->dirroot.'/grade/lib.php';
+//require_once $CFG->libdir.'/gradelib.php';
+
 $dload = optional_param("dload", '', PARAM_BOOL);
 
 
@@ -151,21 +155,15 @@ if ($dload) {
     echo $OUTPUT->header();
 } else {
 
-    echo $OUTPUT->header();
+ //echo $OUTPUT->header();
+
+ print_grade_page_head($courseid, 'report', 'overview', get_string('pluginname', 'gradereport_overview'));
 
     echo $form;
     echo $table;
 }
+echo "</div>";
 echo $OUTPUT->footer();
-
-    // hout('mavg77');
-    // $writer->save('/Users/marcusgreen/Downloads/mavg.xlsx');
-    // $writer->save('php://output');
-    // exit();
-    // echo $OUTPUT->header();
-
-
-    // $retval = $writer->save('/Users/marcusgreen/Downloads/mavg.xls');
 
 function download($spreadsheet) {
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
