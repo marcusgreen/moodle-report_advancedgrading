@@ -34,38 +34,42 @@ Example context (json):
 }
 }}
 <div class="gradeparent">
-<table id="rubric-header" class="table table-bordered table-responsive table-striped ">
+<table id="" class="table table-bordered  table-striped ">
     <thead>
         {{#header}}
         <tr>
-            <td colspan={{studentcolspan}}>
+            <th>
                 {{#str}}course{{/str}}:{{coursename}}
-            </td>
+            </th>
         </tr>
         <tr>
-            <td colspan={{studentcolspan}}>
+            <th>
                 {{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}
-            </td>
+            </th>
         </tr>
 
         <tr>
-            <td colspan={{studentcolspan}}>
+            <th>
                 {{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}
-            </td>
+            </th>
         <tr>
-            <td colspan={{studentcolspan}}>
+            <th>
                 {{definition}}
-            </td>
+            </th>
         </tr>
         {{/header}}
+    </thead>
+    </table>
+    <table id="rubric-header" class="table table-bordered table-responsive table-striped ">
+        <thead>
         <tr>
-            <td colspan=3>
+            <th colspan=3>
                 Student
-            </td>
+            </th>
             {{#criteria}}
-            <td colspan=2 class="criteriaheader">{{description}}</td>
+            <th class="align-top" colspan=2 class="criteriaheader">{{description}}</th>
             {{/criteria}}
-            <td colspan=3 class="infoheader">Grading Info</td>
+            <th colspan=3 class="infoheader">Grading Info</th>
         </tr>
         <tr>
             <th title='firstname'>
