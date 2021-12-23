@@ -149,15 +149,16 @@ foreach ($data['students'] as $key => $student) {
 }
 
 $table .= $row;
-$table .= '    </tbody> </table>';
+$table .= '    </tbody> </table></div>';
 if ($dload) {
     download($table);
     echo $OUTPUT->header();
 } else {
 
- //echo $OUTPUT->header();
+echo $OUTPUT->header();
 
- print_grade_page_head($courseid, 'report', 'overview', get_string('pluginname', 'gradereport_overview'));
+//print_grade_page_head($courseid, 'report', 'overview', get_string('pluginname', 'gradereport_overview'));
+// print_grade_page_head($courseid, 'report', 'grader', $reportname, false, $buttons);
 
     echo $form;
     echo $table;

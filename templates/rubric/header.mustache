@@ -33,39 +33,43 @@ Example context (json):
 {
 }
 }}
-<div class="gradeparent">
-<table id="rubric-header" class="table table-bordered table-responsive table-striped ">
+<table id="xx" class="table table-bordered table-striped ">
     <thead>
         {{#header}}
         <tr>
-            <td colspan={{studentcolspan}}>
+            <th colspan={{studentcolspan}}>
                 {{#str}}course{{/str}}:{{coursename}}
-            </td>
+            </th>
         </tr>
         <tr>
-            <td colspan={{studentcolspan}}>
+            <th colspan={{studentcolspan}}>
                 {{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}
-            </td>
+            </h>
         </tr>
 
         <tr>
-            <td colspan={{studentcolspan}}>
+            <th colspan={{studentcolspan}}>
                 {{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}
-            </td>
-        <tr>
-            <td colspan={{studentcolspan}}>
+            </tr>
+            <tr>
+            <th colspan={{studentcolspan}}>
                 {{definition}}
-            </td>
+            </th>
         </tr>
         {{/header}}
-        <tr>
-            <td colspan=3>
+    </thead>
+</table>
+    <table id="rubric-header" class="table table-bordered  table-striped ">
+    <thead>
+
+     <tr>
+            <th colspan=3>
                 Student
-            </td>
+            </th>
             {{#criteria}}
-            <td colspan=2 class="criteriaheader">{{description}}</td>
+            <th class="align-top" colspan=2 class="criteriaheader">{{description}}</tdh>
             {{/criteria}}
-            <td colspan=3 class="infoheader">Grading Info</td>
+            <th colspan=3 class="infoheader">Grading Info</th>
         </tr>
         <tr>
             <th title='firstname'>
