@@ -144,7 +144,7 @@ foreach ($data['students'] as $key => $student) {
 }
 
 $table .= $row;
-$table .= '   </tbody> </table></tbody> </table>';
+$table .= '   </tbody> </table>';
 if ($dload) {
     download($table);
     echo $OUTPUT->header();
