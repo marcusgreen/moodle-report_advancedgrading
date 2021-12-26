@@ -44,7 +44,7 @@ Example context (json):
         <tr>
             <th colspan={{studentcolspan}}>
                 {{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}
-            </h>
+            </th>
         </tr>
 
         <tr>
@@ -59,7 +59,7 @@ Example context (json):
         {{/header}}
     </thead>
 </table>
-    <table id="rubric-header" class="table table-bordered  table-striped ">
+    <table   id="rubric-header" class="table table-bordered table-striped">
     <thead>
 
      <tr>
@@ -67,19 +67,19 @@ Example context (json):
                 Student
             </th>
             {{#criteria}}
-            <th class="align-top" colspan=2 class="criteriaheader">{{description}}</tdh>
+            <th colspan=2 class="criteriaheader">{{description}}</th>
             {{/criteria}}
             <th colspan=3 class="infoheader">Grading Info</th>
         </tr>
         <tr>
-            <th title='firstname'>
+            <th class="advancedgrading-main" title='firstname'>
                 Firstname
            </th>
             <th>
                 Lastname
             </th>
             {{#showidnumber}}
-            <th>
+            <th class="advancedgrading-main">
                 Id Number
             </th>
             {{/showidnumber}}
@@ -89,7 +89,7 @@ Example context (json):
             {{/criteria}}
             <th> Grade </th>
             <th> Graded by </th>
-            <th> Time Graded</th>
+            <th class="advancedgrading-main"> Time Graded</th>
         </tr>
     </thead>
     <tbody>

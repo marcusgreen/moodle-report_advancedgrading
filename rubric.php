@@ -28,7 +28,6 @@ require_once(__DIR__ .'/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ .'/../../lib/excellib.class.php');
 
 require_once $CFG->dirroot.'/grade/lib.php';
-//require_once $CFG->libdir.'/gradelib.php';
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 
@@ -36,16 +35,13 @@ $dload = optional_param("dload", '', PARAM_BOOL);
 $courseid  = required_param('id', PARAM_INT);// Course ID.
 $assignid  = required_param('modid', PARAM_INT);// CM ID.
 
-$params['id'] = $courseid;
 $params['modid'] = $assignid;
 
 global $PAGE;
-// $PAGE->requires->js_call_amd('report_advancedgrading/rubric_header', 'init');
 
 $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
 
-
-$PAGE->set_url('/report/advancedgrading/index.php', $params);
+$PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $params));
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 require_login($course);
@@ -59,11 +55,10 @@ require_capability('mod/assign:grade', $modcontext);
 $context = context_course::instance($course->id);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
-
+$renderer = $PAGE->get_renderer('core_user');
 
 $PAGE->set_title('Rubric Report');
 $PAGE->set_heading( 'Report Name');
-
 
 $gdef = get_grading_definition($assign->instance);
 $data = [];
@@ -125,8 +120,8 @@ foreach ($grading as $grade) {
 }
 $data['definition'] = get_grading_definition($cm->instance);
 $data['scoring'] = rubric_get_data($cm->id);
-$data['id'] = 17;
-$data['modid'] = 117;
+$data['id'] = $courseid;
+$data['modid'] = $assignid;
 $data['dodload'] = true;
 
 $form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
@@ -149,21 +144,19 @@ foreach ($data['students'] as $key => $student) {
 }
 
 $table .= $row;
-$table .= '    </tbody> </table></div>';
+$table .= '    </tbody> </table>';
 if ($dload) {
     download($table);
     echo $OUTPUT->header();
 } else {
 
+
+$PAGE->set_pagelayout('standard');
+
 echo $OUTPUT->header();
-
-//print_grade_page_head($courseid, 'report', 'overview', get_string('pluginname', 'gradereport_overview'));
-// print_grade_page_head($courseid, 'report', 'grader', $reportname, false, $buttons);
-
     echo $form;
     echo $table;
 }
-echo "</div>";
 echo $OUTPUT->footer();
 
 function download($spreadsheet) {
@@ -206,70 +199,3 @@ function hout($filename) {
     header('Content-Disposition: attachment;filename="'.$filename.'"');
 
 }
-
-    /**
-     * Close the Moodle Workbook
-     */
-    // public function close() {
-    // global $CFG;
-
-    // foreach ($this->objspreadsheet->getAllSheets() as $sheet) {
-    // $sheet->setSelectedCells('A1');
-    // }
-    // $this->objspreadsheet->setActiveSheetIndex(0);
-
-    // $filename = preg_replace('/\.xlsx?$/i', '', $this->filename);
-
-    // $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    // $filename = $filename.'.xlsx';
-
-    // if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
-    // header('Cache-Control: max-age=10');
-    // header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
-    // header('Pragma: ');
-    // } else { // normal http - prevent caching at all cost
-    // header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
-    // header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
-    // header('Pragma: no-cache');
-    // }
-
-    // if (core_useragent::is_ie() || core_useragent::is_edge()) {
-    // $filename = rawurlencode($filename);
-    // } else {
-    // $filename = s($filename);
-    // }
-
-    // header('Content-Type: '.$mimetype);
-    // header('Content-Disposition: attachment;filename="'.$filename.'"');
-
-    // $objwriter = IOFactory::createWriter($this->objspreadsheet, $this->type);
-    // $objwriter->save('php://output');
-    // }
-
-
-
-    // $workbook = new MoodleExcelWorkbook("-");
-    // $workbook->send($filename);
-    // $sheet = $workbook->add_worksheet($assign->name);
-
-    // $header1 = $workbook->add_format(['size' => 12, 'bold' => 1]);
-    // $header2 = $workbook->add_format(['bold' => 1]);
-
-    // $firstrow = $firstcol = $lastrow = 0;
-    // $lastcol = 3;
-    // $sheet->merge_cells($firstrow, $firstcol, $lastrow, $lastcol);
-    // $firstrow = $lastrow = 1;
-    // $sheet->merge_cells($firstrow, $firstcol, $lastrow, $lastcol);
-
-    // foreach ($headers as $cell) {
-    // $sheet->write_string($cell['row'], $cell['col'], $cell['value'], $header1);
-    // }
-    // $row = 5;
-    // $col = 0;
-    // $sheet->write_string($row, $col, 'Student', $header2);
-
-    // $workbook->close();
-
-    // exit;
-
-
