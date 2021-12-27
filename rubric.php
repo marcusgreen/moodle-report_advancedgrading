@@ -134,28 +134,33 @@ foreach ($data['students'] as $key => $student) {
     $row .= '<td>'.$student['lastname'].'</td>';
     $row .= '<td>ID number </td>';
     foreach ($criterion as $crikey => $criteria) {
-        $row .= '<td>'.$student['grades'][$crikey]['score'] .'</td>';
+        $row .= '<td>'.number_format($student['grades'][$crikey]['score'],2) .'</td>';
         $row .= '<td>'.$student['grades'][$crikey]['feedback'] .'</td>';
     }
-    $row .= '<td>'.$student['gradeinfo']['grade'] .'</td>';
+    $row .= '<td>'.number_format($student['gradeinfo']['grade'],2) .'</td>';
     $row .= '<td>'.$student['gradeinfo']['grader'] .'</td>';
     $row .= '<td>'.\userdate($student['gradeinfo']['timegraded'],"% %d %b %Y %I:%M %p") .'</td>';
     $row .= '</tr>';
 }
 
 $table .= $row;
-$table .= '   </tbody> </table>';
+$table .= '   </tbody> </table> </div>';
 if ($dload) {
     download($table);
     echo $OUTPUT->header();
 } else {
 
+$html = $form. $table;
 
 $PAGE->set_pagelayout('standard');
 
+
 echo $OUTPUT->header();
-    echo $form;
-    echo $table;
+echo $OUTPUT->container($html, 'advancedgrading-main');
+
+
+    // echo $form;
+    // echo $table;
 }
 echo $OUTPUT->footer();
 

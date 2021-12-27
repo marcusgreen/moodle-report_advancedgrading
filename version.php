@@ -31,4 +31,4 @@ $plugin->version   = 2021081502;  // The current plugin version (Date: YYYYMMDDX
 $plugin->requires  = 2015051109;  // Moodle 2.9.9.
 $plugin->release   = '0.1';
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->component = 'gradereport_advancedgrading';  // Full name of the plugin (used for diagnostics).
+$plugin->component = 'report_advancedgrading';  // Full name of the plugin (used for diagnostics).
