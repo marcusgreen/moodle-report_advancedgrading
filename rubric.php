@@ -127,21 +127,7 @@ $data['dodload'] = true;
 $form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
 
-$row = '';
-foreach ($data['students'] as $key => $student) {
-    $row .= '<tr>';
-    $row .= '<td>'.$student['firstname'].'</td>';
-    $row .= '<td>'.$student['lastname'].'</td>';
-    $row .= '<td>ID number </td>';
-    foreach ($criterion as $crikey => $criteria) {
-        $row .= '<td>'.number_format($student['grades'][$crikey]['score'],2) .'</td>';
-        $row .= '<td>'.$student['grades'][$crikey]['feedback'] .'</td>';
-    }
-    $row .= '<td>'.number_format($student['gradeinfo']['grade'],2) .'</td>';
-    $row .= '<td>'.$student['gradeinfo']['grader'] .'</td>';
-    $row .= '<td>'.\userdate($student['gradeinfo']['timegraded'],"% %d %b %Y %I:%M %p") .'</td>';
-    $row .= '</tr>';
-}
+$row = get_row($data, $criterion);
 
 $table .= $row;
 $table .= '   </tbody> </table> </div>';
@@ -149,18 +135,10 @@ if ($dload) {
     download($table);
     echo $OUTPUT->header();
 } else {
-
-$html = $form. $table;
-
-$PAGE->set_pagelayout('standard');
-
-
-echo $OUTPUT->header();
-echo $OUTPUT->container($html, 'advancedgrading-main');
-
-
-    // echo $form;
-    // echo $table;
+    $html = $form. $table;
+    $PAGE->set_pagelayout('standard');
+    echo $OUTPUT->header();
+    echo $OUTPUT->container($html, 'advancedgrading-main');
 }
 echo $OUTPUT->footer();
 
@@ -173,6 +151,29 @@ function download($spreadsheet) {
     $writer->save('php://output');
     exit();
 
+}
+
+function get_row(array $data, array $criterion) :string {
+    $row = '';
+
+    if($data['students']) {
+
+    foreach ($data['students'] as $key => $student) {
+        $row .= '<tr>';
+        $row .= '<td>'.$student['firstname'].'</td>';
+        $row .= '<td>'.$student['lastname'].'</td>';
+        $row .= '<td>ID number </td>';
+        foreach ($criterion as $crikey => $criteria) {
+            $row .= '<td>'.number_format($student['grades'][$crikey]['score'],2) .'</td>';
+            $row .= '<td>'.$student['grades'][$crikey]['feedback'] .'</td>';
+        }
+        $row .= '<td>'.number_format($student['gradeinfo']['grade'],2) .'</td>';
+        $row .= '<td>'.$student['gradeinfo']['grader'] .'</td>';
+        $row .= '<td>'.\userdate($student['gradeinfo']['timegraded'],"% %d %b %Y %I:%M %p") .'</td>';
+        $row .= '</tr>';
+    }
+    }
+    return $row;
 }
 function hout($filename) {
 
