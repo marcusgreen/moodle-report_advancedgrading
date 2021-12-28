@@ -31,7 +31,6 @@ require_once $CFG->dirroot.'/grade/lib.php';
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 
-
 $courseid  = required_param('id', PARAM_INT);// Course ID.
 $assignid  = required_param('modid', PARAM_INT);// CM ID.
 
@@ -40,7 +39,6 @@ $params['modid'] = $assignid;
 global $PAGE;
 
 $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
-
 $PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $params));
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -53,6 +51,7 @@ $modcontext = context_module::instance($assign->id);
 require_capability('mod/assign:grade', $modcontext);
 
 $context = context_course::instance($course->id);
+
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 $renderer = $PAGE->get_renderer('core_user');
@@ -86,7 +85,6 @@ $grading = rubric_get_data($assign->id);
 
 $ids = [];
 $criterion = [];
-$lookup = [];
 foreach ($grading as $grade) {
      $data['students'][$grade->userid] = [
         'userid'    => $grade->userid,
@@ -127,9 +125,9 @@ $data['dodload'] = true;
 $form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
 
-$row = get_row($data, $criterion);
+$rows = get_rows($data, $criterion);
 
-$table .= $row;
+$table .= $rows;
 $table .= '   </tbody> </table> </div>';
 if ($dload) {
     download($table);
@@ -153,25 +151,23 @@ function download($spreadsheet) {
 
 }
 
-function get_row(array $data, array $criterion) :string {
+function get_rows(array $data, array $criterion): string {
     $row = '';
-
-    if($data['students']) {
-
-    foreach ($data['students'] as $key => $student) {
-        $row .= '<tr>';
-        $row .= '<td>'.$student['firstname'].'</td>';
-        $row .= '<td>'.$student['lastname'].'</td>';
-        $row .= '<td>ID number </td>';
-        foreach ($criterion as $crikey => $criteria) {
-            $row .= '<td>'.number_format($student['grades'][$crikey]['score'],2) .'</td>';
-            $row .= '<td>'.$student['grades'][$crikey]['feedback'] .'</td>';
+    if ($data['students']) {
+        foreach ($data['students'] as $key => $student) {
+            $row .= '<tr>';
+            $row .= '<td>' . $student['firstname'] . '</td>';
+            $row .= '<td>' . $student['lastname'] . '</td>';
+            $row .= '<td>ID number </td>';
+            foreach ($criterion as $crikey => $criteria) {
+                $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
+                $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+            }
+            $row .= '<td>' . number_format($student['gradeinfo']['grade'], 2) . '</td>';
+            $row .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
+            $row .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "% %d %b %Y %I:%M %p") . '</td>';
+            $row .= '</tr>';
         }
-        $row .= '<td>'.number_format($student['gradeinfo']['grade'],2) .'</td>';
-        $row .= '<td>'.$student['gradeinfo']['grader'] .'</td>';
-        $row .= '<td>'.\userdate($student['gradeinfo']['timegraded'],"% %d %b %Y %I:%M %p") .'</td>';
-        $row .= '</tr>';
-    }
     }
     return $row;
 }
