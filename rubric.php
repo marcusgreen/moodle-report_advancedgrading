@@ -90,6 +90,7 @@ foreach ($grading as $grade) {
         'userid'    => $grade->userid,
         'firstname' => $grade->firstname,
         'lastname' => $grade->lastname,
+        'username' => $grade->username,
         'idnumber' => $grade->idnumber
      ];
      $criterion[$grade->criterionid] = $grade->description;
@@ -158,6 +159,7 @@ function get_rows(array $data, array $criterion): string {
             $row .= '<tr>';
             $row .= '<td>' . $student['firstname'] . '</td>';
             $row .= '<td>' . $student['lastname'] . '</td>';
+            $row .= '<td>' . $student['username'] . '</td>';
             $row .= '<td>ID number </td>';
             foreach ($criterion as $crikey => $criteria) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';

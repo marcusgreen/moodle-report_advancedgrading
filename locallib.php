@@ -55,7 +55,7 @@ function rubric_get_data(int $assignid) {
                         grc.description,  grl.score,  grf.remark, grf.criterionid,
                         stu.id AS userid,
                         stu.idnumber AS idnumber,
-                        stu.firstname, stu.lastname,
+                        stu.firstname, stu.lastname, stu.username,
                         stu.username AS student,
                         rubm.username AS grader,
                         gin.timemodified AS modified,
