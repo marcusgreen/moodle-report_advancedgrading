@@ -83,7 +83,6 @@ $data['header'] = [
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
 $grading = rubric_get_data($assign->id);
 
-$ids = [];
 $criterion = [];
 foreach ($grading as $grade) {
      $data['students'][$grade->userid] = [
@@ -155,13 +154,13 @@ function download($spreadsheet) {
 function get_rows(array $data, array $criterion): string {
     $row = '';
     if ($data['students']) {
-        foreach ($data['students'] as $key => $student) {
+        foreach ($data['students'] as $student) {
             $row .= '<tr>';
             $row .= '<td>' . $student['firstname'] . '</td>';
             $row .= '<td>' . $student['lastname'] . '</td>';
             $row .= '<td>' . $student['username'] . '</td>';
             $row .= '<td>ID number </td>';
-            foreach ($criterion as $crikey => $criteria) {
+            foreach (array_keys($criterion) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
