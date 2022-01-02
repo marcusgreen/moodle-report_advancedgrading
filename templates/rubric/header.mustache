@@ -21,22 +21,22 @@ along with Moodle. If not, see
     <thead>
         {{#header}}
         <tr>
-            <th colspan={{studentcolspan}}>
+            <th>
                 <b>{{#str}}course{{/str}}:{{coursename}}</b>
             </th>
         </tr>
         <tr>
-            <th colspan={{studentcolspan}}>
+            <th>
               <b>  {{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}</b>
             </th>
         </tr>
 
         <tr>
-            <th colspan={{studentcolspan}}>
+            <th>
                <b> {{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}</b>
             </tr>
             <tr>
-            <th colspan={{studentcolspan}}>
+            <th>
               <b>  {{definition}}</b>
             </th>
         </tr>
@@ -45,9 +45,9 @@ along with Moodle. If not, see
 </table>
 
 <table   id="rubric-header" class="table table-bordered table-striped" style="width:140%;" >
-    <thead
+    <thead>
      <tr>
-            <th colspan=4>
+            <th colspan={{studentspan}}>
                 Student
             </th>
             {{#criteria}}
@@ -65,11 +65,11 @@ along with Moodle. If not, see
             <th>
                 Username
             </th>
-            {{#showidnumber}}
+            {{#showstudentid}}
             <th>
                 Id Number
             </th>
-            {{/showidnumber}}
+            {{/showstudentid}}
             {{#criteria}}
             <th>Score</th>
             <th>Feedback</th>

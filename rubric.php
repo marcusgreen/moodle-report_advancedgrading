@@ -62,11 +62,7 @@ $PAGE->set_heading( 'Report Name');
 $gdef = get_grading_definition($assign->instance);
 $data = [];
 $criteria = rubric_get_criteria((int) $gdef->definitionid);
-$data['studentcolspan'] = 2; // Firstname,Lasname
 $data['showidnumber'] = true;
-if ($data['showidnumber']) {
-    $data['studentcolspan']++;
-}
 foreach ($criteria as $key => $criterion) {
     $data['criteria'][] = [
         'description' => $criterion
@@ -90,13 +86,11 @@ foreach ($grading as $grade) {
         'firstname' => $grade->firstname,
         'lastname' => $grade->lastname,
         'username' => $grade->username,
-        'idnumber' => $grade->idnumber
+        'idnumber' => $grade->useridnumber
      ];
      $criterion[$grade->criterionid] = $grade->description;
 
 }
-$data['studentcolspan'] += (count($criterion) * 2); // Each crtieria has score and feedback
-$data['studentcolspan'] += 34; // For grade, timegraded and gradedby.
 foreach ($grading as $grade) {
     $g[$grade->userid][$grade->criterionid] = [
         'userid' => $grade->userid,
@@ -121,7 +115,11 @@ $data['scoring'] = rubric_get_data($cm->id);
 $data['id'] = $courseid;
 $data['modid'] = $assignid;
 $data['dodload'] = true;
-
+$data['studentspan'] =3;
+$data['showstudentid'] = (bool) get_config('report_advancedgrading', 'showstudentid');
+if($data['showstudentid']) {
+    $data['studentspan'] = 4;
+}
 $form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
 
@@ -159,7 +157,9 @@ function get_rows(array $data, array $criterion): string {
             $row .= '<td>' . $student['firstname'] . '</td>';
             $row .= '<td>' . $student['lastname'] . '</td>';
             $row .= '<td>' . $student['username'] . '</td>';
-            $row .= '<td>ID number </td>';
+            if($data['showstudentid']) {
+                    $row .= '<td>'.$student['useridnumber'].'</td>';
+            }
             foreach (array_keys($criterion) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';

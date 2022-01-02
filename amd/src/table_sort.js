@@ -18,14 +18,25 @@
  *
  * @copyright  2021 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-import {DataTable} from 'report_advancedgrading/sdt/datatable';
+//  */
+// import {DataTable} from 'report_advancedgrading/sdt/datatable';
+
+// export const init = () => {
+//     const dataTable = new DataTable("#rubric-header", {
+//         sortable: true,
+//         paging: true,
+//         // searchable: true
+//     } );
+// };
+
+import 'report_advancedgrading/datatables';
+// import 'report_advancedgrading/dataTables.fixedColumns';
 
 export const init = () => {
-    const dataTable = new DataTable("#rubric-header", {
-        sortable: true,
-        paging: true,
-        fixedColumns:true
-        // searchable: true
-    } );
+        var table =  $("#rubric-header").DataTable({
+            paging: true,
+            fixedColumns:   {
+                left: 2
+            }
+        });
 };
