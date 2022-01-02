@@ -23,6 +23,27 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
+    $rawchoices = [
+        'firstname',
+        'lastname',
+        'username',
+        'idnumber',
+        'email'
+    ];
+    $choices = [];
+    foreach ($rawchoices as $choice) {
+        $choices[$choice] = new lang_string($choice);
+    }
+
+    $settings->add(new admin_setting_configmulticheckbox(
+        'report_advancedgrading/profilefields',
+        new lang_string('profilefields', 'report_advancedgrading'),
+        new lang_string('profilefields_desc', 'report_advancedgrading'),
+        ['email', 'idnumber'],
+        $choices
+    ));
+
+
     $settings->add(new admin_setting_configcheckbox(
         'report_advancedgrading/showstudentid',
         get_string('showstudentid', 'report_advancedgrading'),

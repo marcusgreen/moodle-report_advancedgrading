@@ -47,7 +47,7 @@ along with Moodle. If not, see
 <table   id="rubric-header" class="table table-bordered table-striped" style="width:140%;" >
     <thead>
      <tr>
-            <th colspan={{studentspan}}>
+            <th style="background-color:#D3D3D3;" colspan={{studentspan}}>
                 Student
             </th>
             {{#criteria}}
@@ -56,27 +56,14 @@ along with Moodle. If not, see
             <th colspan=4 >Grading Info</th>
         </tr>
         <tr>
-            <th title='firstname'>
-                Firstname
-           </th>
-            <th>
-                Lastname
-            </th>
-            <th>
-                Username
-            </th>
-            {{#showstudentid}}
-            <th>
-                Id Number
-            </th>
-            {{/showstudentid}}
+            {{{studentheaders}}}
             {{#criteria}}
-            <th>Score</th>
-            <th>Feedback</th>
+            <th><b>Score</b></th>
+            <th><b>Feedback</b></th>
             {{/criteria}}
-            <th> Grade </th>
-            <th> Graded by </th>
-            <th> Time Graded</th>
+            <th><b>Grade </b></th>
+            <th><b> Graded by</b></th>
+            <th><b>Time Graded</b></th>
         </tr>
     </thead>
     <tbody>

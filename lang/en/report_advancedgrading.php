@@ -34,3 +34,5 @@ $string['showstudentid_text'] = 'Show student id in the report';
 $string['showgroups'] = 'Show groups';
 $string['showgroups_desc'] = 'Show groups in the report';
 $string['exceldownload'] = 'Excel download';
+$string['profilefields'] = 'Profile fields';
+$string['profilefields_desc'] = 'Additional user fields shown in report';

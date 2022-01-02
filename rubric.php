@@ -59,9 +59,13 @@ $renderer = $PAGE->get_renderer('core_user');
 $PAGE->set_title('Rubric Report');
 $PAGE->set_heading( 'Report Name');
 
+// Profile fields.
+$profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
+$data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
+
 $gdef = get_grading_definition($assign->instance);
-$data = [];
 $criteria = rubric_get_criteria((int) $gdef->definitionid);
+
 $data['showidnumber'] = true;
 foreach ($criteria as $key => $criterion) {
     $data['criteria'][] = [
@@ -80,14 +84,17 @@ $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
 $grading = rubric_get_data($assign->id);
 
 $criterion = [];
+$data['studentheaders'] = "";
+foreach($data['profilefields'] as $field) {
+    $data['studentheaders'] .= "<th><b>".ucfirst($field)."</b></th>";
+}
+
 foreach ($grading as $grade) {
-     $data['students'][$grade->userid] = [
-        'userid'    => $grade->userid,
-        'firstname' => $grade->firstname,
-        'lastname' => $grade->lastname,
-        'username' => $grade->username,
-        'idnumber' => $grade->useridnumber
-     ];
+     $student['userid'] = $grade->userid;
+     foreach($data['profilefields'] as $key => $field) {
+        $student[ $field ] = $grade->$field;
+     }
+     $data['students'][$grade->userid] = $student;
      $criterion[$grade->criterionid] = $grade->description;
 
 }
@@ -115,11 +122,8 @@ $data['scoring'] = rubric_get_data($cm->id);
 $data['id'] = $courseid;
 $data['modid'] = $assignid;
 $data['dodload'] = true;
-$data['studentspan'] =3;
-$data['showstudentid'] = (bool) get_config('report_advancedgrading', 'showstudentid');
-if($data['showstudentid']) {
-    $data['studentspan'] = 4;
-}
+$data['studentspan'] = count($data['profilefields']);
+
 $form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
 
@@ -154,11 +158,8 @@ function get_rows(array $data, array $criterion): string {
     if ($data['students']) {
         foreach ($data['students'] as $student) {
             $row .= '<tr>';
-            $row .= '<td>' . $student['firstname'] . '</td>';
-            $row .= '<td>' . $student['lastname'] . '</td>';
-            $row .= '<td>' . $student['username'] . '</td>';
-            if($data['showstudentid']) {
-                    $row .= '<td>'.$student['useridnumber'].'</td>';
+            foreach($data['profilefields'] as $field) {
+                $row.= '<td>' . $student[$field] . '</td>';
             }
             foreach (array_keys($criterion) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
