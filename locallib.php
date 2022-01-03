@@ -92,3 +92,27 @@ function rubric_get_data(int $assignid) {
     }
     return $data;
 }
+/**
+ * Get object with list of groups each user is in.
+ * Credit to Dan Marsden for this idea/function
+ * @param int $courseid
+ */
+function report_advancedgrading_get_user_groups($courseid) {
+    global $DB;
+
+    $sql = "SELECT g.id, g.name, gm.userid
+              FROM {groups} g
+              JOIN {groups_members} gm ON gm.groupid = g.id
+             WHERE g.courseid = ?
+          ORDER BY gm.userid";
+
+    $rs = $DB->get_recordset_sql($sql, [$courseid]);
+    foreach ($rs as $row) {
+        if (!isset($groupsbyuser[$row->userid])) {
+            $groupsbyuser[$row->userid] = [];
+        }
+        $groupsbyuser[$row->userid][] = $row->name;
+    }
+    $rs->close();
+    return $groupsbyuser;
+}

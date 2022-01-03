@@ -22,30 +22,28 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__ .'../../../config.php');
-global $CFG;
-require_once(__DIR__ .'/../../report/advancedgrading/locallib.php');
-require_once(__DIR__ .'/../../lib/excellib.class.php');
+require(__DIR__ . '../../../config.php');
+require_once(__DIR__ . '/../../report/advancedgrading/locallib.php');
+require_once(__DIR__ . '/../../lib/excellib.class.php');
 
-require_once $CFG->dirroot.'/grade/lib.php';
+require_once $CFG->dirroot . '/grade/lib.php';
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 
-$courseid  = required_param('id', PARAM_INT);// Course ID.
-$assignid  = required_param('modid', PARAM_INT);// CM ID.
-
-$params['modid'] = $assignid;
+$courseid  = required_param('id', PARAM_INT); // Course ID.
+$data['courseid'] = $courseid;
+$data['modid'] = required_param('modid', PARAM_INT); // CM I
 
 global $PAGE;
 
 $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
-$PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $params));
+$PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $data));
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 require_login($course);
 
 $modinfo = get_fast_modinfo($courseid);
-$assign = $modinfo->get_cm($assignid);
+$assign = $modinfo->get_cm($data['modid']);
 
 $modcontext = context_module::instance($assign->id);
 require_capability('mod/assign:grade', $modcontext);
@@ -57,77 +55,31 @@ $PAGE->set_pagelayout('incourse');
 $renderer = $PAGE->get_renderer('core_user');
 
 $PAGE->set_title('Rubric Report');
-$PAGE->set_heading( 'Report Name');
+$PAGE->set_heading('Report Name');
 
 // Profile fields.
 $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
 $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
 
 $gdef = get_grading_definition($assign->instance);
-$criteria = rubric_get_criteria((int) $gdef->definitionid);
 
-$data['showidnumber'] = true;
-foreach ($criteria as $key => $criterion) {
-    $data['criteria'][] = [
-        'description' => $criterion
-    ];
-
-}
-
-$data['header'] = [
-    'coursename' => $course->fullname,
-    'assignment' => $assign->name,
-    'gradingmethod' => $gdef->activemethod,
-    'definition' => $gdef->definition
-];
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
-$grading = rubric_get_data($assign->id);
 
-$criterion = [];
-$data['studentheaders'] = "";
-foreach($data['profilefields'] as $field) {
-    $data['studentheaders'] .= "<th><b>".ucfirst($field)."</b></th>";
-}
+$criteria = rubric_get_criteria((int) $gdef->definitionid);
+$data = header_fields($data, $criteria, $course, $assign, $gdef);
+$dbrecords = rubric_get_data($assign->id);
+$data = user_fields($data, $dbrecords);
+$data = add_groups($data, $courseid);
+$data = get_grades($data, $dbrecords);
 
-foreach ($grading as $grade) {
-     $student['userid'] = $grade->userid;
-     foreach($data['profilefields'] as $key => $field) {
-        $student[ $field ] = $grade->$field;
-     }
-     $data['students'][$grade->userid] = $student;
-     $criterion[$grade->criterionid] = $grade->description;
-
-}
-foreach ($grading as $grade) {
-    $g[$grade->userid][$grade->criterionid] = [
-        'userid' => $grade->userid,
-        'score' => $grade->score,
-        'feedback' => $grade->remark
-    ];
-    $gi = [
-        'grader' => $grade->grader,
-        'timegraded' => $grade->modified,
-        'grade' => $grade->grade
-    ];
-
-    foreach ($data['students'] as $student) {
-        if ($student['userid'] == $grade->userid) {
-            $data['students'][$grade->userid]['grades'] = $g[$grade->userid];
-            $data['students'][$grade->userid]['gradeinfo'] = $gi;
-        }
-    }
-}
 $data['definition'] = get_grading_definition($cm->instance);
-$data['scoring'] = rubric_get_data($cm->id);
-$data['id'] = $courseid;
-$data['modid'] = $assignid;
 $data['dodload'] = true;
 $data['studentspan'] = count($data['profilefields']);
 
 $form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
 
-$rows = get_rows($data, $criterion);
+$rows = get_rows($data);
 
 $table .= $rows;
 $table .= '   </tbody> </table> </div>';
@@ -135,7 +87,7 @@ if ($dload) {
     download($table);
     echo $OUTPUT->header();
 } else {
-    $html = $form. $table;
+    $html = $form . $table;
     $PAGE->set_pagelayout('standard');
     echo $OUTPUT->header();
     echo $OUTPUT->container($html, 'advancedgrading-main');
@@ -150,16 +102,16 @@ function download($spreadsheet) {
     hout('rubric');
     $writer->save('php://output');
     exit();
-
 }
 
-function get_rows(array $data, array $criterion): string {
+function get_rows(array $data): string {
     $row = '';
+    $criterion = $data['criterion'];
     if ($data['students']) {
         foreach ($data['students'] as $student) {
             $row .= '<tr>';
-            foreach($data['profilefields'] as $field) {
-                $row.= '<td>' . $student[$field] . '</td>';
+            foreach ($data['profilefields'] as $field) {
+                $row .= '<td>' . $student[$field] . '</td>';
             }
             foreach (array_keys($criterion) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
@@ -181,15 +133,15 @@ function hout($filename) {
     $filename = preg_replace('/\.xlsx?$/i', '', $filename);
 
     $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    $filename = $filename.'.xlsx';
+    $filename = $filename . '.xlsx';
 
     if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
         header('Cache-Control: max-age=10');
-        header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
+        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
         header('Pragma: ');
     } else { // normal http - prevent caching at all cost
         header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
-        header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
+        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
         header('Pragma: no-cache');
     }
 
@@ -199,7 +151,74 @@ function hout($filename) {
         $filename = s($filename);
     }
 
-    header('Content-Type: '.$mimetype);
-    header('Content-Disposition: attachment;filename="'.$filename.'"');
+    header('Content-Type: ' . $mimetype);
+    header('Content-Disposition: attachment;filename="' . $filename . '"');
+}
 
+function header_fields($data, $criteria, $course, $assign, $gdef) {
+    foreach ($criteria as $key => $criterion) {
+        $data['criteria'][] = [
+            'description' => $criterion
+        ];
+    }
+
+    $data['header'] = [
+        'coursename' => $course->fullname,
+        'assignment' => $assign->name,
+        'gradingmethod' => $gdef->activemethod,
+        'definition' => $gdef->definition
+    ];
+
+    $criterion = [];
+    $data['studentheaders'] = "";
+    foreach ($data['profilefields'] as $field) {
+        $data['studentheaders'] .= "<th><b>" . ucfirst($field) . "</b></th>";
+    }
+    return $data;
+}
+function user_fields($data, $dbrecords) {
+    foreach ($dbrecords as $grade) {
+        $student['userid'] = $grade->userid;
+        foreach ($data['profilefields'] as $key => $field) {
+            if ($field == 'groups') {
+                continue;
+            }
+            $student[$field] = $grade->$field;
+        }
+        $data['students'][$grade->userid] = $student;
+        $data['criterion'][$grade->criterionid] = $grade->description;
+    }
+    return $data;
+}
+
+function get_grades($data, $dbrecords){
+    foreach ($dbrecords as $grade) {
+        $g[$grade->userid][$grade->criterionid] = [
+            'userid' => $grade->userid,
+            'score' => $grade->score,
+            'feedback' => $grade->remark
+        ];
+        $gi = [
+            'grader' => $grade->grader,
+            'timegraded' => $grade->modified,
+            'grade' => $grade->grade
+        ];
+
+        foreach ($data['students'] as $student) {
+            if ($student['userid'] == $grade->userid) {
+                $data['students'][$grade->userid]['grades'] = $g[$grade->userid];
+                $data['students'][$grade->userid]['gradeinfo'] = $gi;
+            }
+        }
+    }
+    return $data;
+}
+
+function add_groups($data, $courseid) {
+    $groups = report_advancedgrading_get_user_groups($courseid);
+
+    foreach ($data['students'] as $userid => $student) {
+        $data['students'][$userid]['groups'] = implode(" ", $groups[$userid]);
+    }
+    return $data;
 }

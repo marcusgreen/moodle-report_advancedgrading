@@ -28,7 +28,8 @@ if ($ADMIN->fulltree) {
         'lastname',
         'username',
         'idnumber',
-        'email'
+        'email',
+        'groups',
     ];
     $choices = [];
     foreach ($rawchoices as $choice) {
@@ -43,17 +44,4 @@ if ($ADMIN->fulltree) {
         $choices
     ));
 
-
-    $settings->add(new admin_setting_configcheckbox(
-        'report_advancedgrading/showstudentid',
-        get_string('showstudentid', 'report_advancedgrading'),
-        get_string('showstudentid_text', 'report_advancedgrading'),
-        0
-    ));
-    $settings->add(new admin_setting_configcheckbox(
-        'report_advancedgrading/showgroups',
-        get_string('showgroups', 'report_advancedgrading'),
-        get_string('showgroups_desc', 'report_advancedgrading'),
-        0
-    ));
 }
