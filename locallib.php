@@ -41,12 +41,6 @@ function get_grading_definition(int $assignid) {
     return $definition;
 }
 
-function rubric_get_criteria(int $definitionid) {
-    global $DB;
-    $criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => $definitionid], null, 'id, description');
-    return $criteria;
-}
-
 function rubric_get_data(int $assignid) {
     global $DB;
     $sql = "SELECT grf.id as grfid,
@@ -115,4 +109,30 @@ function report_advancedgrading_get_user_groups($courseid) {
     }
     $rs->close();
     return $groupsbyuser;
+}
+function get_criteria(string $table, int $definitionid) {
+    global $DB;
+    $criteria = $DB->get_records_menu($table, ['definitionid' => $definitionid], null, 'id, description');
+    return $criteria;
+}
+function header_fields($data, $criteria, $course, $assign, $gdef) {
+    foreach ($criteria as $key => $criterion) {
+        $data['criteria'][] = [
+            'description' => $criterion
+        ];
+    }
+
+    $data['header'] = [
+        'coursename' => $course->fullname,
+        'assignment' => $assign->name,
+        'gradingmethod' => $gdef->activemethod,
+        'definition' => $gdef->definition
+    ];
+
+    $criterion = [];
+    $data['studentheaders'] = "";
+    foreach ($data['profilefields'] as $field) {
+        $data['studentheaders'] .= "<th><b>" . ucfirst($field) . "</b></th>";
+    }
+    return $data;
 }

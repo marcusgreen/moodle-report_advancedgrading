@@ -65,7 +65,9 @@ $gdef = get_grading_definition($assign->instance);
 
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
 
-$criteria = rubric_get_criteria((int) $gdef->definitionid);
+$criteria = get_criteria('gradingform_guide_criteria', (int) $gdef->definitionid);
+
+
 $data = header_fields($data, $criteria, $course, $assign, $gdef);
 $dbrecords = rubric_get_data($assign->id);
 $data = user_fields($data, $dbrecords);
@@ -155,27 +157,7 @@ function hout($filename) {
     header('Content-Disposition: attachment;filename="' . $filename . '"');
 }
 
-function header_fields($data, $criteria, $course, $assign, $gdef) {
-    foreach ($criteria as $key => $criterion) {
-        $data['criteria'][] = [
-            'description' => $criterion
-        ];
-    }
 
-    $data['header'] = [
-        'coursename' => $course->fullname,
-        'assignment' => $assign->name,
-        'gradingmethod' => $gdef->activemethod,
-        'definition' => $gdef->definition
-    ];
-
-    $criterion = [];
-    $data['studentheaders'] = "";
-    foreach ($data['profilefields'] as $field) {
-        $data['studentheaders'] .= "<th><b>" . ucfirst($field) . "</b></th>";
-    }
-    return $data;
-}
 function user_fields($data, $dbrecords) {
     foreach ($dbrecords as $grade) {
         $student['userid'] = $grade->userid;
