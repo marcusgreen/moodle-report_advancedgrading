@@ -41,51 +41,51 @@ function get_grading_definition(int $assignid) {
     return $definition;
 }
 
-function rubric_get_data(int $assignid) {
-    global $DB;
-    $sql = "SELECT grf.id as grfid,
-                        cm.course,
-                        asg.name as assignment,
-                        grc.description,  grl.score,  grf.remark, grf.criterionid,
-                        stu.id AS userid,
-                        stu.idnumber AS idnumber,
-                        stu.firstname, stu.lastname, stu.username,
-                        stu.username AS student,
-                        stu.email,
-                        rubm.username AS grader,
-                        gin.timemodified AS modified,
-                        ctx.instanceid, ag.grade, asg.blindmarking
-                        FROM {assign} asg
-                        JOIN {course_modules} cm ON cm.instance = asg.id
-                        JOIN {context} ctx ON ctx.instanceid = cm.id
-                        JOIN {grading_areas}  ga ON ctx.id=ga.contextid
-                        JOIN {grading_definitions} gd ON ga.id = gd.areaid
-                        JOIN {gradingform_rubric_criteria} grc ON (grc.definitionid = gd.id)
-                        JOIN {gradingform_rubric_levels} grl ON (grl.criterionid = grc.id)
-                        JOIN {grading_instances} gin ON gin.definitionid = gd.id
-                        JOIN {assign_grades} ag ON ag.id = gin.itemid
-                        JOIN {user} stu ON stu.id = ag.userid
-                        JOIN {user} rubm ON rubm.id = gin.raterid
-                        JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
-                         AND (grf.criterionid = grc.id) AND (grf.levelid = grl.id)
-                       WHERE cm.id = :assignid AND gin.status = 1
-                        AND  stu.deleted = 0";
+// function rubric_get_data(int $assignid) {
+//     global $DB;
+//     $sql = "SELECT grf.id as grfid,
+//                         cm.course,
+//                         asg.name as assignment,
+//                         grc.description,  grl.score,  grf.remark, grf.criterionid,
+//                         stu.id AS userid,
+//                         stu.idnumber AS idnumber,
+//                         stu.firstname, stu.lastname, stu.username,
+//                         stu.username AS student,
+//                         stu.email,
+//                         rubm.username AS grader,
+//                         gin.timemodified AS modified,
+//                         ctx.instanceid, ag.grade, asg.blindmarking
+//                         FROM {assign} asg
+//                         JOIN {course_modules} cm ON cm.instance = asg.id
+//                         JOIN {context} ctx ON ctx.instanceid = cm.id
+//                         JOIN {grading_areas}  ga ON ctx.id=ga.contextid
+//                         JOIN {grading_definitions} gd ON ga.id = gd.areaid
+//                         JOIN {gradingform_rubric_criteria} grc ON (grc.definitionid = gd.id)
+//                         JOIN {gradingform_rubric_levels} grl ON (grl.criterionid = grc.id)
+//                         JOIN {grading_instances} gin ON gin.definitionid = gd.id
+//                         JOIN {assign_grades} ag ON ag.id = gin.itemid
+//                         JOIN {user} stu ON stu.id = ag.userid
+//                         JOIN {user} rubm ON rubm.id = gin.raterid
+//                         JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
+//                          AND (grf.criterionid = grc.id) AND (grf.levelid = grl.id)
+//                        WHERE cm.id = :assignid AND gin.status = 1
+//                         AND  stu.deleted = 0";
 
-    $data = $DB->get_records_sql($sql, ['assignid' => $assignid]);
-    $firstrecord = reset($data);
-    if ($firstrecord && $firstrecord->blindmarking == 1) {
-        $modinfo = get_fast_modinfo($firstrecord->course);
-        $assign = $modinfo->get_cm($assignid);
-        $cm = get_coursemodule_from_instance('assign', $assign->instance, $firstrecord->course);
-        foreach ($data as &$user) {
-            $user->firstname = '';
-            $user->lastname = '';
-            $user->student = get_string('participant', 'assign') .
-                ' ' . \assign::get_uniqueid_for_user_static($cm->instance, $user->userid);
-        }
-    }
-    return $data;
-}
+//     $data = $DB->get_records_sql($sql, ['assignid' => $assignid]);
+//     $firstrecord = reset($data);
+//     if ($firstrecord && $firstrecord->blindmarking == 1) {
+//         $modinfo = get_fast_modinfo($firstrecord->course);
+//         $assign = $modinfo->get_cm($assignid);
+//         $cm = get_coursemodule_from_instance('assign', $assign->instance, $firstrecord->course);
+//         foreach ($data as &$user) {
+//             $user->firstname = '';
+//             $user->lastname = '';
+//             $user->student = get_string('participant', 'assign') .
+//                 ' ' . \assign::get_uniqueid_for_user_static($cm->instance, $user->userid);
+//         }
+//     }
+//     return $data;
+// }
 /**
  * Get object with list of groups each user is in.
  * Credit to Dan Marsden for this idea/function
@@ -133,6 +133,50 @@ function header_fields($data, $criteria, $course, $assign, $gdef) {
     $data['studentheaders'] = "";
     foreach ($data['profilefields'] as $field) {
         $data['studentheaders'] .= "<th><b>" . ucfirst($field) . "</b></th>";
+    }
+    return $data;
+}
+function user_fields($data, $dbrecords) {
+    foreach ($dbrecords as $grade) {
+        $student['userid'] = $grade->userid;
+        foreach ($data['profilefields'] as $key => $field) {
+            if ($field == 'groups') {
+                continue;
+            }
+            $student[$field] = $grade->$field;
+        }
+        $data['students'][$grade->userid] = $student;
+        $data['criterion'][$grade->criterionid] = $grade->description;
+    }
+    return $data;
+}
+function get_grades($data, $dbrecords){
+    foreach ($dbrecords as $grade) {
+        $g[$grade->userid][$grade->criterionid] = [
+            'userid' => $grade->userid,
+            'score' => $grade->score,
+            'feedback' => $grade->remark
+        ];
+        $gi = [
+            'grader' => $grade->grader,
+            'timegraded' => $grade->modified,
+            'grade' => $grade->grade
+        ];
+
+        foreach ($data['students'] as $student) {
+            if ($student['userid'] == $grade->userid) {
+                $data['students'][$grade->userid]['grades'] = $g[$grade->userid];
+                $data['students'][$grade->userid]['gradeinfo'] = $gi;
+            }
+        }
+    }
+    return $data;
+}
+function add_groups($data, $courseid) {
+    $groups = report_advancedgrading_get_user_groups($courseid);
+
+    foreach ($data['students'] as $userid => $student) {
+        $data['students'][$userid]['groups'] = implode(" ", $groups[$userid]);
     }
     return $data;
 }

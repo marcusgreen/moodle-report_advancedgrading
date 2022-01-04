@@ -42,7 +42,7 @@ require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
  * @copyright  2021 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
-class report_rubrics_locallib_test extends advanced_testcase {
+class test_locallib extends advanced_testcase {
 
     public $courseid;
     public $assign;
@@ -84,10 +84,15 @@ class report_rubrics_locallib_test extends advanced_testcase {
         $course = $DB->get_record('course', ['id' => $this->courseid]);
         $cm = get_coursemodule_from_instance('assign', $this->assignid, $this->courseid);
         $gdef = get_grading_definition($cm->instance);
-        $header = report_advancedgrading_get_header($course->fullname, $cm->name, $gdef->activemethod, $gdef->definition);
 
-        $assign = context_module::instance($cm->id);
-        $students = report_componentgrades_get_students($assign, $cm);
+        //$header = report_advancedgrading_get_header($course->fullname, $cm->name, $gdef->activemethod, $gdef->definition);
+        $dbrecords = rubric_get_data($cm->id);
+        $criteria = get_criteria('gradingform_rubric_criteria', (int) $gdef->definitionid);
+
+        //$header =  header_fields($data, $criteria, $course->fullname, $assign, $gdef) {
+
+         $assign = context_module::instance($cm->id);
+        // $students = report_componentgrades_get_students($assign, $cm);
         $data = rubric_get_data($cm->id);
 
     }
