@@ -33,10 +33,8 @@ import 'report_advancedgrading/datatables';
 // import 'report_advancedgrading/dataTables.fixedColumns';
 
 export const init = () => {
-        var table =  $("#rubric-header").DataTable({
+        debugger;
+        $("#rubric-header").DataTable({
             paging: true,
-            fixedColumns:   {
-                left: 2
-            }
         });
 };

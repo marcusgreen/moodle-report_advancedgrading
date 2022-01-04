@@ -65,7 +65,7 @@ $gdef = get_grading_definition($assign->instance);
 
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
 
-$criteria = get_criteria('gradingform_guide_criteria', (int) $gdef->definitionid);
+$criteria = get_criteria('gradingform_rubric_criteria', (int) $gdef->definitionid);
 
 
 $data = header_fields($data, $criteria, $course, $assign, $gdef);
