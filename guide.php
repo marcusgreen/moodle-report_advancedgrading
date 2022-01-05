@@ -70,12 +70,14 @@ $dbrecords = guide_get_data($assign);
 $data = user_fields($data, $dbrecords);
 $data = add_groups($data, $courseid);
 $data = get_grades($data, $dbrecords);
+
 function guide_get_data($cm) {
     global $DB;
-    $data = $DB->get_records_sql("SELECT    ggf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, gd.name AS guide,
+    $sql = "SELECT ggf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, gd.name AS guide,
+    ggc.description,
     ggc.shortname, ggf.score, ggf.remark, ggf.criterionid, rubm.username AS grader,
     stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-    stu.username AS student, gin.timemodified AS modified
+    stu.username AS student, gin.timemodified AS modified, ag.grade
     FROM {course} crs
     JOIN {course_modules} cm ON crs.id = cm.course
     JOIN {assign} asg ON asg.id = cm.instance
@@ -91,6 +93,7 @@ function guide_get_data($cm) {
     AND (ggf.criterionid = ggc.id)
     WHERE cm.id = ? AND gin.status = 1
     ORDER BY lastname ASC, firstname ASC, userid ASC, ggc.sortorder ASC,
-    ggc.shortname ASC", array($cm->id));
+    ggc.shortname ASC";
+    $data = $DB->get_records_sql($sql,[$cm->id]);
     return $data;
 }

@@ -157,34 +157,34 @@ function hout($filename) {
 }
 
 function rubric_get_data(int $assignid) {
-    global $DB;
-    $sql = "SELECT grf.id as grfid,
-                        cm.course,
-                        asg.name as assignment,
-                        grc.description,  grl.score,  grf.remark, grf.criterionid,
-                        stu.id AS userid,
-                        stu.idnumber AS idnumber,
-                        stu.firstname, stu.lastname, stu.username,
-                        stu.username AS student,
-                        stu.email,
-                        rubm.username AS grader,
-                        gin.timemodified AS modified,
-                        ctx.instanceid, ag.grade, asg.blindmarking
-                        FROM {assign} asg
-                        JOIN {course_modules} cm ON cm.instance = asg.id
-                        JOIN {context} ctx ON ctx.instanceid = cm.id
-                        JOIN {grading_areas}  ga ON ctx.id=ga.contextid
-                        JOIN {grading_definitions} gd ON ga.id = gd.areaid
-                        JOIN {gradingform_rubric_criteria} grc ON (grc.definitionid = gd.id)
-                        JOIN {gradingform_rubric_levels} grl ON (grl.criterionid = grc.id)
-                        JOIN {grading_instances} gin ON gin.definitionid = gd.id
-                        JOIN {assign_grades} ag ON ag.id = gin.itemid
-                        JOIN {user} stu ON stu.id = ag.userid
-                        JOIN {user} rubm ON rubm.id = gin.raterid
-                        JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
-                         AND (grf.criterionid = grc.id) AND (grf.levelid = grl.id)
-                       WHERE cm.id = :assignid AND gin.status = 1
-                        AND  stu.deleted = 0";
+     global $DB;
+     $sql = "SELECT grf.id as grfid,
+                     cm.course,
+                     asg.name as assignment,
+                     criteria.description,  grl.score,  grf.remark, grf.criterionid,
+                     stu.id AS userid,
+                     stu.idnumber AS idnumber,
+                     stu.firstname, stu.lastname, stu.username,
+                     stu.username AS student,
+                     stu.email,
+                     rubm.username AS grader,
+                     gin.timemodified AS modified,
+                     ctx.instanceid, ag.grade, asg.blindmarking
+                FROM {assign} asg
+                JOIN {course_modules} cm ON cm.instance = asg.id
+                JOIN {context} ctx ON ctx.instanceid = cm.id
+                JOIN {grading_areas}  ga ON ctx.id=ga.contextid
+                JOIN {grading_definitions} gd ON ga.id = gd.areaid
+                JOIN {gradingform_rubric_criteria} criteria ON (criteria.definitionid = gd.id)
+                JOIN {gradingform_rubric_levels} grl ON (grl.criterionid = criteria.id)
+                JOIN {grading_instances} gin ON gin.definitionid = gd.id
+                JOIN {assign_grades} ag ON ag.id = gin.itemid
+                JOIN {user} stu ON stu.id = ag.userid
+                JOIN {user} rubm ON rubm.id = gin.raterid
+                JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
+                 AND (grf.criterionid = criteria.id) AND (grf.levelid = grl.id)
+                WHERE cm.id = :assignid AND gin.status = 1
+                AND  stu.deleted = 0";
 
     $data = $DB->get_records_sql($sql, ['assignid' => $assignid]);
     $firstrecord = reset($data);

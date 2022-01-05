@@ -94,13 +94,12 @@ function get_grading_definition(int $assignid) {
 function report_advancedgrading_get_user_groups($courseid) {
     global $DB;
 
-    $sql = "SELECT g.id, g.name, gm.userid
+    $sql = "SELECT  gm.userid,g.id, g.name
               FROM {groups} g
               JOIN {groups_members} gm ON gm.groupid = g.id
-             WHERE g.courseid = ?
+             WHERE g.courseid = :courseid
           ORDER BY gm.userid";
-
-    $rs = $DB->get_recordset_sql($sql, [$courseid]);
+    $rs = $DB->get_recordset_sql($sql, ['courseid' => $courseid]);
     foreach ($rs as $row) {
         if (!isset($groupsbyuser[$row->userid])) {
             $groupsbyuser[$row->userid] = [];
@@ -176,7 +175,9 @@ function add_groups($data, $courseid) {
     $groups = report_advancedgrading_get_user_groups($courseid);
 
     foreach ($data['students'] as $userid => $student) {
-        $data['students'][$userid]['groups'] = implode(" ", $groups[$userid]);
+        if(isset($groups[$userid])) {
+              $data['students'][$userid]['groups'] = implode(" ", $groups[$userid]);
+        }
     }
     return $data;
 }
