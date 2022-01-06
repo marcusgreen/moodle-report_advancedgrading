@@ -108,6 +108,7 @@ function get_rows(array $data): string {
             }
             foreach (array_keys($criterion) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
+                $row .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
             $row .= '<td>' . number_format($student['gradeinfo']['grade'], 2) . '</td>';

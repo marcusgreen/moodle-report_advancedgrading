@@ -44,3 +44,4 @@ $string['gradedby'] = 'Graded by';
 $string['timegraded'] = 'Time graded';
 $string['gradinginfo'] = 'Grading Info';
 $string['student'] = 'Student';
+$string['definition'] = 'Definition';

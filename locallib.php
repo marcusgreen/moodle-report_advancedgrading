@@ -153,6 +153,7 @@ function get_grades($data, $dbrecords){
         $g[$grade->userid][$grade->criterionid] = [
             'userid' => $grade->userid,
             'score' => $grade->score,
+            'definition' => $grade->definition,
             'feedback' => $grade->remark
         ];
         $gi = [
