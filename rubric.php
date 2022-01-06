@@ -77,6 +77,7 @@ $data['definition'] = get_grading_definition($cm->instance);
 $data['dodload'] = true;
 $data['studentspan'] = count($data['profilefields']);
 
+$data['grademethod'] = 'rubric';
 $form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
 
@@ -85,7 +86,7 @@ $rows = get_rows($data);
 $table .= $rows;
 $table .= '   </tbody> </table> </div>';
 if ($dload) {
-    download($table);
+    download($table, $data['grademethod']);
     echo $OUTPUT->header();
 } else {
     $html = $form . $table;
@@ -95,15 +96,6 @@ if ($dload) {
 }
 echo $OUTPUT->footer();
 
-function download($spreadsheet) {
-    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
-    $spreadsheet = $reader->loadFromString($spreadsheet);
-
-    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
-    hout('rubric');
-    $writer->save('php://output');
-    exit();
-}
 
 function get_rows(array $data): string {
     $row = '';
@@ -126,42 +118,13 @@ function get_rows(array $data): string {
     }
     return $row;
 }
-function hout($filename) {
-
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
-    return true;
-    $filename = preg_replace('/\.xlsx?$/i', '', $filename);
-
-    $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    $filename = $filename . '.xlsx';
-
-    if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
-        header('Cache-Control: max-age=10');
-        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
-        header('Pragma: ');
-    } else { // normal http - prevent caching at all cost
-        header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
-        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
-        header('Pragma: no-cache');
-    }
-
-    if (core_useragent::is_ie() || core_useragent::is_edge()) {
-        $filename = rawurlencode($filename);
-    } else {
-        $filename = s($filename);
-    }
-
-    header('Content-Type: ' . $mimetype);
-    header('Content-Disposition: attachment;filename="' . $filename . '"');
-}
 
 function rubric_get_data(int $assignid) {
      global $DB;
      $sql = "SELECT grf.id as grfid,
                      cm.course,
                      asg.name as assignment,
-                     criteria.description,  grl.score,  grf.remark, grf.criterionid,
+                     criteria.description,  level.score, level.definition, grf.remark, grf.criterionid,
                      stu.id AS userid,
                      stu.idnumber AS idnumber,
                      stu.firstname, stu.lastname, stu.username,
@@ -176,13 +139,13 @@ function rubric_get_data(int $assignid) {
                 JOIN {grading_areas}  ga ON ctx.id=ga.contextid
                 JOIN {grading_definitions} gd ON ga.id = gd.areaid
                 JOIN {gradingform_rubric_criteria} criteria ON (criteria.definitionid = gd.id)
-                JOIN {gradingform_rubric_levels} grl ON (grl.criterionid = criteria.id)
+                JOIN {gradingform_rubric_levels} level ON (level.criterionid = criteria.id)
                 JOIN {grading_instances} gin ON gin.definitionid = gd.id
                 JOIN {assign_grades} ag ON ag.id = gin.itemid
                 JOIN {user} stu ON stu.id = ag.userid
                 JOIN {user} rubm ON rubm.id = gin.raterid
                 JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
-                 AND (grf.criterionid = criteria.id) AND (grf.levelid = grl.id)
+                 AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
                 WHERE cm.id = :assignid AND gin.status = 1
                 AND  stu.deleted = 0";
 

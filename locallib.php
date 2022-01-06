@@ -26,7 +26,6 @@
 
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
-
 defined('MOODLE_INTERNAL') || die;
 
 function get_grading_definition(int $assignid) {
@@ -177,7 +176,47 @@ function add_groups($data, $courseid) {
     foreach ($data['students'] as $userid => $student) {
         if(isset($groups[$userid])) {
               $data['students'][$userid]['groups'] = implode(" ", $groups[$userid]);
+        } else {
+            $data['students'][$userid]['groups'] ="";
         }
     }
     return $data;
+}
+function download($spreadsheet, $filename) {
+    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
+    $spreadsheet = $reader->loadFromString($spreadsheet);
+
+    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+    hout($filename);
+    $writer->save('php://output');
+    exit();
+}
+function hout($filename) {
+
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+    return true;
+    $filename = preg_replace('/\.xlsx?$/i', '', $filename);
+
+    $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    $filename = $filename . '.xlsx';
+
+    if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
+        header('Cache-Control: max-age=10');
+        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
+        header('Pragma: ');
+    } else { // normal http - prevent caching at all cost
+        header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
+        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
+        header('Pragma: no-cache');
+    }
+
+    if (core_useragent::is_ie() || core_useragent::is_edge()) {
+        $filename = rawurlencode($filename);
+    } else {
+        $filename = s($filename);
+    }
+
+    header('Content-Type: ' . $mimetype);
+    header('Content-Disposition: attachment;filename="' . $filename . '"');
 }

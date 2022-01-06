@@ -36,7 +36,7 @@ $data['modid'] = required_param('modid', PARAM_INT); // CM I
 
 global $PAGE;
 
-$PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
+// $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
 $PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $data));
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -71,6 +71,29 @@ $data = user_fields($data, $dbrecords);
 $data = add_groups($data, $courseid);
 $data = get_grades($data, $dbrecords);
 
+$data['definition'] = get_grading_definition($cm->instance);
+$data['dodload'] = true;
+$data['studentspan'] = count($data['profilefields']);
+$data['grademethod'] =  'guide';
+
+$form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
+$table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
+$rows = get_rows($data);
+
+$table .= $rows;
+$table .= '   </tbody> </table> </div>';
+if ($dload) {
+    download($table, $data['grademethod']);
+    echo $OUTPUT->header();
+} else {
+    $html = $form . $table;
+    $PAGE->set_pagelayout('standard');
+    echo $OUTPUT->header();
+    echo $OUTPUT->container($html, 'advancedgrading-main');
+}
+echo $OUTPUT->footer();
+
+
 function guide_get_data($cm) {
     global $DB;
     $sql = "SELECT ggf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, gd.name AS guide,
@@ -96,4 +119,25 @@ function guide_get_data($cm) {
     ggc.shortname ASC";
     $data = $DB->get_records_sql($sql,[$cm->id]);
     return $data;
+}
+function get_rows(array $data): string {
+    $row = '';
+    $criterion = $data['criterion'];
+    if ($data['students']) {
+        foreach ($data['students'] as $student) {
+            $row .= '<tr>';
+            foreach ($data['profilefields'] as $field) {
+                $row .= '<td>' . $student[$field] . '</td>';
+            }
+            foreach (array_keys($criterion) as $crikey) {
+                $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
+                $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+            }
+            $row .= '<td>' . number_format($student['gradeinfo']['grade'], 2) . '</td>';
+            $row .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
+            $row .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "% %d %b %Y %I:%M %p") . '</td>';
+            $row .= '</tr>';
+        }
+    }
+    return $row;
 }
