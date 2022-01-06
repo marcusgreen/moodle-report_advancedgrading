@@ -36,7 +36,7 @@ $data['modid'] = required_param('modid', PARAM_INT); // CM I
 
 global $PAGE;
 
-// $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
+$PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
 $PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $data));
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -76,8 +76,8 @@ $data['dodload'] = true;
 $data['studentspan'] = count($data['profilefields']);
 $data['grademethod'] =  'guide';
 
-$form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
-$table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
+$form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
+$table = $OUTPUT->render_from_template('report_advancedgrading/guide', $data);
 $rows = get_rows($data);
 
 $table .= $rows;

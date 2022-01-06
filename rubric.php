@@ -78,8 +78,8 @@ $data['dodload'] = true;
 $data['studentspan'] = count($data['profilefields']);
 
 $data['grademethod'] = 'rubric';
-$form = $OUTPUT->render_from_template('report_advancedgrading/rubric/header_form', $data);
-$table = $OUTPUT->render_from_template('report_advancedgrading/rubric/header', $data);
+$form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
+$table = $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
 
 $rows = get_rows($data);
 
