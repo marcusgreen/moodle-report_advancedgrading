@@ -64,6 +64,8 @@ $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfi
 $gdef = get_grading_definition($assign->instance);
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
 $criteria = get_criteria('gradingform_guide_criteria', (int) $gdef->definitionid);
+
+$data['silverbackground'] = "background-color:#D2D2D2;'";
 $data = header_fields($data, $criteria, $course, $assign, $gdef);
 $dbrecords = guide_get_data($assign);
 
@@ -100,7 +102,7 @@ function guide_get_data($cm) {
     ggc.description,
     ggc.shortname, ggf.score, ggf.remark, ggf.criterionid, rubm.username AS grader,
     stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-    stu.username AS student, gin.timemodified AS modified, ag.grade
+    stu.username AS student, gin.timemodified AS modified, ag.grade, assign_comment.commenttext as overallfeedback
     FROM {course} crs
     JOIN {course_modules} cm ON crs.id = cm.course
     JOIN {assign} asg ON asg.id = cm.instance
@@ -110,6 +112,7 @@ function guide_get_data($cm) {
     JOIN {gradingform_guide_criteria} ggc ON (ggc.definitionid = gd.id)
     JOIN {grading_instances} gin ON gin.definitionid = gd.id
     JOIN {assign_grades} ag ON ag.id = gin.itemid
+    JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
     JOIN {user} stu ON stu.id = ag.userid
     JOIN {user} rubm ON rubm.id = gin.raterid
     JOIN {gradingform_guide_fillings} ggf ON (ggf.instanceid = gin.id)
@@ -133,6 +136,7 @@ function get_rows(array $data): string {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
+            $row .= '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
             $row .= '<td>' . number_format($student['gradeinfo']['grade'], 2) . '</td>';
             $row .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
             $row .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "% %d %b %Y %I:%M %p") . '</td>';
