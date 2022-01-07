@@ -37,6 +37,8 @@ $data['modid'] = required_param('modid', PARAM_INT); // CM I
 global $PAGE;
 
 $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
+$PAGE->requires->jquery();
+
 $PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $data));
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -151,9 +153,10 @@ function rubric_get_data(int $assignid) {
                 JOIN {user} stu ON stu.id = ag.userid
                 JOIN {user} rubm ON rubm.id = gin.raterid
                 JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
-                 AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
+                AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
                 WHERE cm.id = :assignid AND gin.status = 1
-                AND  stu.deleted = 0";
+                AND  stu.deleted = 0
+                ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
 
     $data = $DB->get_records_sql($sql, ['assignid' => $assignid]);
     $firstrecord = reset($data);

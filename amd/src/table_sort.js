@@ -30,11 +30,10 @@
 // };
 
 import 'report_advancedgrading/datatables';
-// import 'report_advancedgrading/dataTables.fixedColumns';
 
 export const init = () => {
         debugger;
         $("#rubric-header").DataTable({
-            paging: true,
+            paging: true
         });
 };
