@@ -67,6 +67,8 @@ $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
 
 $criteria = get_criteria('gradingform_rubric_criteria', (int) $gdef->definitionid);
 
+$data['silverbackground'] = "background-color:#D2D2D2;'";
+
 $data = header_fields($data, $criteria, $course, $assign, $gdef);
 $dbrecords = rubric_get_data($assign->id);
 $data = user_fields($data, $dbrecords);
@@ -78,6 +80,7 @@ $data['dodload'] = true;
 $data['studentspan'] = count($data['profilefields']);
 
 $data['grademethod'] = 'rubric';
+
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
 
@@ -111,6 +114,7 @@ function get_rows(array $data): string {
                 $row .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
+            $row .= '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
             $row .= '<td>' . number_format($student['gradeinfo']['grade'], 2) . '</td>';
             $row .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
             $row .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "% %d %b %Y %I:%M %p") . '</td>';
@@ -133,7 +137,7 @@ function rubric_get_data(int $assignid) {
                      stu.email,
                      rubm.username AS grader,
                      gin.timemodified AS modified,
-                     ctx.instanceid, ag.grade, asg.blindmarking
+                     ctx.instanceid, ag.grade, asg.blindmarking, assign_comment.commenttext as overallfeedback
                 FROM {assign} asg
                 JOIN {course_modules} cm ON cm.instance = asg.id
                 JOIN {context} ctx ON ctx.instanceid = cm.id
@@ -143,6 +147,7 @@ function rubric_get_data(int $assignid) {
                 JOIN {gradingform_rubric_levels} level ON (level.criterionid = criteria.id)
                 JOIN {grading_instances} gin ON gin.definitionid = gd.id
                 JOIN {assign_grades} ag ON ag.id = gin.itemid
+                JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
                 JOIN {user} stu ON stu.id = ag.userid
                 JOIN {user} rubm ON rubm.id = gin.raterid
                 JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)

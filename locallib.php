@@ -130,7 +130,7 @@ function header_fields($data, $criteria, $course, $assign, $gdef) {
     $criterion = [];
     $data['studentheaders'] = "";
     foreach ($data['profilefields'] as $field) {
-        $data['studentheaders'] .= "<th><b>" . ucfirst($field) . "</b></th>";
+        $data['studentheaders'] .= "<th style=".$data['silverbackground']. "><b>" . ucfirst($field) . "</b></th>";
     }
     return $data;
 }
@@ -157,6 +157,7 @@ function get_grades($data, $dbrecords){
             'feedback' => $grade->remark
         ];
         $gi = [
+            'overallfeedback' => $grade->overallfeedback,
             'grader' => $grade->grader,
             'timegraded' => $grade->modified,
             'grade' => $grade->grade
