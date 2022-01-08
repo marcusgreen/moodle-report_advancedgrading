@@ -95,34 +95,52 @@ if ($dload) {
 }
 echo $OUTPUT->footer();
 
-
-function guide_get_data($cm) {
+/**
+ * Assemble the table rows for grading informationin an array from the database records returned.
+ * for eCh student
+ *
+ * @param array $data
+ * @return string
+ */
+function guide_get_data($cm) :array{
         global $DB;
         $sql = "SELECT ggf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, gd.name AS guide,
-        ggc.description,
-        ggc.shortname, ggf.score, ggf.remark, ggf.criterionid, rubm.username AS grader,
-        stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-        stu.username AS student, gin.timemodified AS modified, ag.grade, assign_comment.commenttext as overallfeedback
-        FROM {course} crs
-        JOIN {course_modules} cm ON crs.id = cm.course
-        JOIN {assign} asg ON asg.id = cm.instance
-        JOIN {context} c ON cm.id = c.instanceid
-        JOIN {grading_areas} ga ON c.id=ga.contextid
-        JOIN {grading_definitions} gd ON ga.id = gd.areaid
-        JOIN {gradingform_guide_criteria} ggc ON (ggc.definitionid = gd.id)
-        JOIN {grading_instances} gin ON gin.definitionid = gd.id
-        JOIN {assign_grades} ag ON ag.id = gin.itemid
-        JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
-        JOIN {user} stu ON stu.id = ag.userid
-        JOIN {user} rubm ON rubm.id = gin.raterid
-        JOIN {gradingform_guide_fillings} ggf ON (ggf.instanceid = gin.id)
-         AND (ggf.criterionid = ggc.id)
-       WHERE cm.id = ? AND gin.status = 1
-         AND stu.deleted = 0
-    ORDER BY lastname ASC, firstname ASC, userid ASC, ggc.sortorder ASC, ggc.shortname ASC";
+                ggc.description,
+                ggc.shortname, ggf.score, ggf.remark, ggf.criterionid, rubm.username AS grader,
+                stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
+                stu.username AS student, gin.timemodified AS modified, ag.grade,
+                assign_comment.commenttext as overallfeedback
+                FROM {course} crs
+                JOIN {course_modules} cm ON crs.id = cm.course
+                JOIN {assign} asg ON asg.id = cm.instance
+                JOIN {context} c ON cm.id = c.instanceid
+                JOIN {grading_areas} ga ON c.id=ga.contextid
+                JOIN {grading_definitions} gd ON ga.id = gd.areaid
+                JOIN {gradingform_guide_criteria} ggc ON (ggc.definitionid = gd.id)
+                JOIN {grading_instances} gin ON gin.definitionid = gd.id
+                JOIN {assign_grades} ag ON ag.id = gin.itemid
+                JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
+                JOIN {user} stu ON stu.id = ag.userid
+                JOIN {user} rubm ON rubm.id = gin.raterid
+                JOIN {gradingform_guide_fillings} ggf ON (ggf.instanceid = gin.id)
+                 AND (ggf.criterionid = ggc.id)
+               WHERE cm.id = ? AND gin.status = 1
+                 AND stu.deleted = 0
+            ORDER BY lastname ASC, firstname ASC,
+                     userid ASC,
+                     ggc.sortorder ASC,
+                     ggc.shortname ASC";
         $data = $DB->get_records_sql($sql,[$cm->id]);
         return $data;
 }
+
+/**
+ * Assemble the table rows for grading informationin an array from the database records returned.
+ * for eCh student
+ *
+ * @param array $data
+ * @return string
+ */
 function get_rows(array $data): string {
     $row = '';
     $criterion = $data['criterion'];

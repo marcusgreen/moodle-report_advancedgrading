@@ -52,7 +52,7 @@ require_capability('mod/assign:grade', $modcontext);
 
 $context = context_course::instance($course->id);
 
-$PAGE->set_context($context);
+//$PAGE->set_context($context);
 $PAGE->set_pagelayout('incourse');
 $renderer = $PAGE->get_renderer('core_user');
 
@@ -101,7 +101,13 @@ if ($dload) {
 }
 echo $OUTPUT->footer();
 
-
+/**
+ * Assemble the table rows for grading informationin an array from the database records returned.
+ * for eCh student
+ *
+ * @param array $data
+ * @return string
+ */
 function get_rows(array $data): string {
     $row = '';
     $criterion = $data['criterion'];
@@ -125,8 +131,13 @@ function get_rows(array $data): string {
     }
     return $row;
 }
-
-function rubric_get_data(int $assignid) {
+/**
+ * Query the database for the student grades.
+ *
+ * @param integer $assignid
+ * @return array
+ */
+function rubric_get_data(int $assignid) : array {
      global $DB;
      $sql = "SELECT grf.id as grfid,
                      cm.course,
