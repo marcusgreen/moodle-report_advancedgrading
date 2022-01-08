@@ -76,8 +76,19 @@ function get_criteria(string $table, int $definitionid) {
     $criteria = $DB->get_records_menu($table, ['definitionid' => $definitionid], null, 'id, description');
     return $criteria;
 }
-function header_fields($data, $criteria, $course, $assign, $gdef) :array{
-    foreach ($criteria as $key => $criterion) {
+/**
+ * Get the descriptive header fields that detail
+ * the details of the grading setup
+ *
+ * @param array $data
+ * @param array $criteria
+ * @param \stdClass $course
+ * @param \cm_info $assign
+ * @param \stdClass $gdef
+ * @return array
+ */
+function header_fields(array $data, array $criteria, \stdClass $course,\cm_info $assign, \stdClass $gdef) :array{
+    foreach ($criteria as $criterion) {
         $data['criteria'][] = [
             'description' => $criterion
         ];
@@ -97,10 +108,19 @@ function header_fields($data, $criteria, $course, $assign, $gdef) :array{
     }
     return $data;
 }
-function user_fields($data, $dbrecords) {
+
+/**
+ * Assemble the profile fields as configured in
+ * settings and also the criterion
+ *
+ * @param array $data
+ * @param array $dbrecords
+ * @return array
+ */
+function user_fields(array $data, array $dbrecords) : array{
     foreach ($dbrecords as $grade) {
         $student['userid'] = $grade->userid;
-        foreach ($data['profilefields'] as $key => $field) {
+        foreach ($data['profilefields'] as $field) {
             if ($field == 'groups') {
                 continue;
             }
@@ -112,6 +132,14 @@ function user_fields($data, $dbrecords) {
     return $data;
 }
 
+/**
+ * Assemble the grades into the data array from
+ * the returned deatabase records.
+ *
+ * @param array $data
+ * @param array $dbrecords
+ * @return array
+ */
 function get_grades(array $data, array $dbrecords) : array{
     foreach ($dbrecords as $grade) {
         $g[$grade->userid][$grade->criterionid] = [
@@ -136,6 +164,13 @@ function get_grades(array $data, array $dbrecords) : array{
     }
     return $data;
 }
+/**
+ * Add group membership to student data
+ *
+ * @param array $data
+ * @param integer $courseid
+ * @return array
+ */
 function add_groups(array$data, int $courseid) :array {
     $groups = report_advancedgrading_get_user_groups($courseid);
 
@@ -148,16 +183,31 @@ function add_groups(array$data, int $courseid) :array {
     }
     return $data;
 }
+/**
+ * Download the Excel format spreadsheet
+ * with the name of the grading method
+ *
+ * @param string $spreadsheet
+ * @param string $filename
+ * @return void
+ */
 function download(string $spreadsheet, string $filename) {
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
     $spreadsheet = $reader->loadFromString($spreadsheet);
 
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
-    hout($filename);
+    output_header($filename);
     $writer->save('php://output');
     exit();
 }
-function hout(string $filename) {
+
+/**
+ * Output the http header
+ *
+ * @param string $filename
+ * @return void
+ */
+function output_header(string $filename) {
 
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
