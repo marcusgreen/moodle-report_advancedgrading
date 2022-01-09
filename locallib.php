@@ -71,11 +71,7 @@ function report_advancedgrading_get_user_groups($courseid) :array {
     $rs->close();
     return $groupsbyuser;
 }
-function get_criteria(string $table, int $definitionid) {
-    global $DB;
-    $criteria = $DB->get_records_menu($table, ['definitionid' => $definitionid], null, 'id, description');
-    return $criteria;
-}
+
 /**
  * Get the descriptive header fields that detail
  * the details of the grading setup

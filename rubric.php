@@ -52,8 +52,9 @@ require_capability('mod/assign:grade', $modcontext);
 
 $context = context_course::instance($course->id);
 
-//$PAGE->set_context($context);
-$PAGE->set_pagelayout('incourse');
+// $PAGE->set_context($context);
+// $PAGE->set_pagelayout('incourse');
+
 $renderer = $PAGE->get_renderer('core_user');
 
 $PAGE->set_title('Rubric Report');
@@ -66,8 +67,7 @@ $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfi
 $gdef = get_grading_definition($assign->instance);
 
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
-
-$criteria = get_criteria('gradingform_rubric_criteria', (int) $gdef->definitionid);
+$criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => (int) $gdef->definitionid], null, 'id, description');
 
 $data['silverbackground'] = "background-color:#D2D2D2;'";
 

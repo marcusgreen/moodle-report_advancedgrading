@@ -51,8 +51,9 @@ require_capability('mod/assign:grade', $modcontext);
 $context = context_course::instance($course->id);
 
 $PAGE->set_context($context);
-$PAGE->set_pagelayout('incourse');
-$renderer = $PAGE->get_renderer('core_user');
+
+// $PAGE->set_pagelayout('incourse');
+// $renderer = $PAGE->get_renderer('core_user');
 
 $PAGE->set_title('Marking Guide Report');
 $PAGE->set_heading('Report Name');
@@ -63,11 +64,12 @@ $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfi
 
 $gdef = get_grading_definition($assign->instance);
 $cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
-$criteria = get_criteria('gradingform_guide_criteria', (int) $gdef->definitionid);
+
+$criteria =  $DB->get_records_menu('gradingform_guide_criteria', ['definitionid' => (int) $gdef->definitionid], null, 'id, description');
 
 $data['silverbackground'] = "background-color:#D2D2D2;'";
 $data = header_fields($data, $criteria, $course, $assign, $gdef);
-$dbrecords = guide_get_data($assign);
+$dbrecords = guide_get_data($assign->id);
 
 $data = user_fields($data, $dbrecords);
 $data = add_groups($data, $courseid);
@@ -100,9 +102,9 @@ echo $OUTPUT->footer();
  * for eCh student
  *
  * @param array $data
- * @return string
+ * @return array
  */
-function guide_get_data($cm) :array{
+function guide_get_data(int $assignid) :array {
         global $DB;
         $sql = "SELECT ggf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, gd.name AS guide,
                 ggc.description,
@@ -130,7 +132,7 @@ function guide_get_data($cm) :array{
                      userid ASC,
                      ggc.sortorder ASC,
                      ggc.shortname ASC";
-        $data = $DB->get_records_sql($sql,[$cm->id]);
+        $data = $DB->get_records_sql($sql,[$assignid]);
         return $data;
 }
 
