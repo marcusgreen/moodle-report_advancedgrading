@@ -109,11 +109,11 @@ echo $OUTPUT->footer();
  * @return string
  */
 function get_rows(array $data): string {
-    if ($data['students']) {
+    if (isset($data['students'])) {
         foreach ($data['students'] as $student) {
             $row = '<tr>';
             $row .= get_student_cells($data,$student);
-            foreach (array_keys($$data['criterion']) as $crikey) {
+            foreach (array_keys($data['criterion']) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
