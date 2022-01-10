@@ -52,9 +52,6 @@ require_capability('mod/assign:grade', $modcontext);
 
 $context = context_course::instance($course->id);
 
-// $PAGE->set_context($context);
-// $PAGE->set_pagelayout('incourse');
-
 $renderer = $PAGE->get_renderer('core_user');
 
 $PAGE->set_title('Rubric Report');
@@ -73,9 +70,12 @@ $data['silverbackground'] = "background-color:#D2D2D2;'";
 
 $data = header_fields($data, $criteria, $course, $assign, $gdef);
 $dbrecords = rubric_get_data($assign->id);
+
 $data = user_fields($data, $dbrecords);
-$data = add_groups($data, $courseid);
-$data = get_grades($data, $dbrecords);
+if(isset($data['students'])) {
+    $data = add_groups($data, $courseid);
+    $data = get_grades($data, $dbrecords);
+}
 
 $data['definition'] = get_grading_definition($cm->instance);
 $data['dodload'] = true;
@@ -103,33 +103,26 @@ echo $OUTPUT->footer();
 
 /**
  * Assemble the table rows for grading informationin an array from the database records returned.
- * for eCh student
+ * for each student
  *
  * @param array $data
  * @return string
  */
 function get_rows(array $data): string {
-    $row = '';
-    $criterion = $data['criterion'];
     if ($data['students']) {
         foreach ($data['students'] as $student) {
-            $row .= '<tr>';
-            foreach ($data['profilefields'] as $field) {
-                $row .= '<td>' . $student[$field] . '</td>';
-            }
-            foreach (array_keys($criterion) as $crikey) {
+            $row = '<tr>';
+            $row .= get_student_cells($data,$student);
+            foreach (array_keys($$data['criterion']) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
-            $row .= '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
-            $row .= '<td>' . number_format($student['gradeinfo']['grade'], 2) . '</td>';
-            $row .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
-            $row .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "% %d %b %Y %I:%M %p") . '</td>';
+            $row .= get_summary_cells($student);
             $row .= '</tr>';
         }
     }
-    return $row;
+    return $row ?? '';
 }
 /**
  * Query the database for the student grades.
@@ -140,15 +133,12 @@ function get_rows(array $data): string {
 function rubric_get_data(int $assignid) : array {
      global $DB;
      $sql = "SELECT grf.id as grfid,
-                     cm.course,
-                     asg.name as assignment,
-                     criteria.description,  level.score, level.definition, grf.remark, grf.criterionid,
-                     stu.id AS userid,
-                     stu.idnumber AS idnumber,
+                     cm.course, asg.name as assignment,
+                     criteria.description, level.score,
+                     level.definition, grf.remark, grf.criterionid,
+                     stu.id AS userid, stu.idnumber AS idnumber,
                      stu.firstname, stu.lastname, stu.username,
-                     stu.username AS student,
-                     stu.email,
-                     rubm.username AS grader,
+                     stu.username, stu.email, rubm.username AS grader,
                      gin.timemodified AS modified,
                      ctx.instanceid, ag.grade, asg.blindmarking, assign_comment.commenttext as overallfeedback
                 FROM {assign} asg
@@ -170,17 +160,6 @@ function rubric_get_data(int $assignid) : array {
                 ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
 
     $data = $DB->get_records_sql($sql, ['assignid' => $assignid]);
-    $firstrecord = reset($data);
-    if ($firstrecord && $firstrecord->blindmarking == 1) {
-        $modinfo = get_fast_modinfo($firstrecord->course);
-        $assign = $modinfo->get_cm($assignid);
-        $cm = get_coursemodule_from_instance('assign', $assign->instance, $firstrecord->course);
-        foreach ($data as &$user) {
-            $user->firstname = '';
-            $user->lastname = '';
-            $user->student = get_string('participant', 'assign') .
-                ' ' . \assign::get_uniqueid_for_user_static($cm->instance, $user->userid);
-        }
-    }
+    $data = set_blindmarking($data, $assignid);
     return $data;
 }

@@ -71,7 +71,11 @@ function report_advancedgrading_get_user_groups($courseid) :array {
     $rs->close();
     return $groupsbyuser;
 }
-
+function get_criteria(string $table, int $definitionid) {
+    global $DB;
+    $criteria = $DB->get_records_menu($table, ['definitionid' => $definitionid], null, 'id, description');
+    return $criteria;
+}
 /**
  * Get the descriptive header fields that detail
  * the details of the grading setup
@@ -123,7 +127,6 @@ function user_fields(array $data, array $dbrecords) : array{
             $student[$field] = $grade->$field;
         }
         $data['students'][$grade->userid] = $student;
-        $data['criterion'][$grade->criterionid] = $grade->description;
     }
     return $data;
 }
@@ -138,6 +141,7 @@ function user_fields(array $data, array $dbrecords) : array{
  */
 function get_grades(array $data, array $dbrecords) : array{
     foreach ($dbrecords as $grade) {
+        $data['criterion'][$grade->criterionid] = $grade->description;
         $g[$grade->userid][$grade->criterionid] = [
             'userid' => $grade->userid,
             'score' => $grade->score,
@@ -169,8 +173,7 @@ function get_grades(array $data, array $dbrecords) : array{
  */
 function add_groups(array$data, int $courseid) :array {
     $groups = report_advancedgrading_get_user_groups($courseid);
-
-    foreach ($data['students'] as $userid => $student) {
+    foreach (array_keys($data['students']) as $userid) {
         if(isset($groups[$userid])) {
               $data['students'][$userid]['groups'] = implode(" ", $groups[$userid]);
         } else {
@@ -178,6 +181,38 @@ function add_groups(array$data, int $courseid) :array {
         }
     }
     return $data;
+}
+function get_student_cells(array $data, array $student) {
+        $cell ='';
+        foreach ($data['profilefields'] as $field) {
+                $cell .= '<td>' . $student[$field] . '</td>';
+            }
+    return $cell;
+}
+function set_blindmarking(array $data, int $assignid) : array {
+    $firstrecord = reset($data);
+    if ($firstrecord && $firstrecord->blindmarking == 1) {
+        $modinfo = get_fast_modinfo($firstrecord->course);
+        $assign = $modinfo->get_cm($assignid);
+        $cm = get_coursemodule_from_instance('assign', $assign->instance, $firstrecord->course);
+        foreach ($data as &$user) {
+            $user->firstname = '';
+            $user->lastname = '';
+            $user->username = '';
+            $user->email = '';
+            $user->idnumber = '';
+            $user->student = get_string('participant', 'assign') .
+                ' ' . \assign::get_uniqueid_for_user_static($cm->instance, $user->userid);
+        }
+    }
+    return $data;
+}
+function get_summary_cells($student){
+    $cell= '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
+    $cell .= '<td>' . number_format($student['gradeinfo']['grade'], 2) . '</td>';
+    $cell.= '<td>' . $student['gradeinfo']['grader'] . '</td>';
+    $cell .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "% %d %b %Y %I:%M %p") . '</td>';
+    return $cell;
 }
 /**
  * Download the Excel format spreadsheet
