@@ -45,12 +45,15 @@ $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 require_login($course);
 
 $modinfo = get_fast_modinfo($courseid);
-$assign = $modinfo->get_cm($data['modid']);
+$cm = $modinfo->get_cm($data['modid']);
+$context = context_module::instance($cm->id);
 
-$modcontext = context_module::instance($assign->id);
-require_capability('mod/assign:grade', $modcontext);
+$assign = new assign($context, $cm, $cm->get_course());
 
-$context = context_course::instance($course->id);
+
+require_capability('mod/assign:grade', $context);
+
+// $context = context_course::instance($course->id);
 
 $renderer = $PAGE->get_renderer('core_user');
 
@@ -61,15 +64,15 @@ $PAGE->set_heading('Report Name');
 $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
 $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
 
-$gdef = get_grading_definition($assign->instance);
+$gdef = get_grading_definition($cm->instance);
 
-$cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
+//$cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
 $criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => (int) $gdef->definitionid], null, 'id, description');
 
 $data['silverbackground'] = "background-color:#D2D2D2;'";
 
-$data = header_fields($data, $criteria, $course, $assign, $gdef);
-$dbrecords = rubric_get_data($assign->id);
+$data = header_fields($data, $criteria, $course, $cm, $gdef);
+$dbrecords = rubric_get_data($assign, $cm);
 
 $data = user_fields($data, $dbrecords);
 if(isset($data['students'])) {
@@ -130,7 +133,7 @@ function get_rows(array $data): string {
  * @param integer $assignid
  * @return array
  */
-function rubric_get_data(int $assignid) : array {
+function rubric_get_data($assign, $cm) : array {
      global $DB;
      $sql = "SELECT grf.id as grfid,
                      cm.course, asg.name as assignment,
@@ -150,7 +153,7 @@ function rubric_get_data(int $assignid) : array {
                 JOIN {gradingform_rubric_levels} level ON (level.criterionid = criteria.id)
                 JOIN {grading_instances} gin ON gin.definitionid = gd.id
                 JOIN {assign_grades} ag ON ag.id = gin.itemid
-                JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
+          LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
                 JOIN {user} stu ON stu.id = ag.userid
                 JOIN {user} rubm ON rubm.id = gin.raterid
                 JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
@@ -159,7 +162,7 @@ function rubric_get_data(int $assignid) : array {
                 AND  stu.deleted = 0
                 ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
 
-    $data = $DB->get_records_sql($sql, ['assignid' => $assignid]);
-    $data = set_blindmarking($data, $assignid);
+    $data = $DB->get_records_sql($sql, ['assignid' => $cm->id]);
+    $data = set_blindmarking($data, $assign, $cm);
     return $data;
 }

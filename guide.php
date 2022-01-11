@@ -37,39 +37,45 @@ $data['modid'] = required_param('modid', PARAM_INT); // CM I
 global $PAGE;
 
 $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
+$PAGE->requires->jquery();
+
 $PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $data));
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 require_login($course);
 
 $modinfo = get_fast_modinfo($courseid);
-$assign = $modinfo->get_cm($data['modid']);
+$cm = $modinfo->get_cm($data['modid']);
+$context = context_module::instance($cm->id);
 
-$modcontext = context_module::instance($assign->id);
-require_capability('mod/assign:grade', $modcontext);
+$assign = new assign($context, $cm, $cm->get_course());
 
-$context = context_course::instance($course->id);
 
-$PAGE->set_context($context);
+require_capability('mod/assign:grade', $context);
 
-$PAGE->set_title('Marking Guide Report');
+// $context = context_course::instance($course->id);
+
+$renderer = $PAGE->get_renderer('core_user');
+
+$PAGE->set_title('Rubric Report');
 $PAGE->set_heading('Report Name');
 
 // Profile fields.
 $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
 $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
 
-$gdef = get_grading_definition($assign->instance);
-$cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
+$gdef = get_grading_definition($cm->instance);
 
-$criteria =  $DB->get_records_menu('gradingform_guide_criteria', ['definitionid' => (int) $gdef->definitionid], null, 'id, description');
+//$cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
+$criteria = $DB->get_records_menu('gradingform_guide_criteria', ['definitionid' => (int) $gdef->definitionid], null, 'id, description');
 
 $data['silverbackground'] = "background-color:#D2D2D2;'";
-$data = header_fields($data, $criteria, $course, $assign, $gdef);
-$dbrecords = guide_get_data($assign->id);
+
+$data = header_fields($data, $criteria, $course, $cm, $gdef);
+$dbrecords = guide_get_data($assign,$cm);
 
 $data = user_fields($data, $dbrecords);
-if($data['students']) {
+if(isset($data['students'])) {
     $data = add_groups($data, $courseid);
     $data = get_grades($data, $dbrecords);
 }
@@ -105,12 +111,11 @@ echo $OUTPUT->footer();
  * @return string
  */
 function get_rows(array $data): string {
-    $criterion = $data['criterion'];
-    if ($data['students']) {
+    if (isset($data['students'])) {
         foreach ($data['students'] as $student) {
             $row = '<tr>';
             $row .= get_student_cells($data,$student);
-            foreach (array_keys($criterion) as $crikey) {
+            foreach (array_keys($data['criterion']) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
@@ -118,7 +123,7 @@ function get_rows(array $data): string {
             $row .= '</tr>';
         }
     }
-    return $row;
+    return $row ?? "";
 }
 /**
  * Assemble the table rows for grading informationin an array from the database records returned.
@@ -127,35 +132,31 @@ function get_rows(array $data): string {
  * @param array $data
  * @return array
  */
-function guide_get_data(int $assignid) :array {
+function guide_get_data($assign, $cm) :array {
     global $DB;
-    $sql = "SELECT ggf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, gd.name AS guide,
-            ggc.description,
-            ggc.shortname, ggf.score, ggf.remark, ggf.criterionid, rubm.username AS grader,
-            stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-            stu.username, stu.email, gin.timemodified AS modified, ag.grade,
-            assign_comment.commenttext as overallfeedback
-            FROM {course} crs
-            JOIN {course_modules} cm ON crs.id = cm.course
-            JOIN {assign} asg ON asg.id = cm.instance
-            JOIN {context} c ON cm.id = c.instanceid
-            JOIN {grading_areas} ga ON c.id=ga.contextid
-            JOIN {grading_definitions} gd ON ga.id = gd.areaid
-            JOIN {gradingform_guide_criteria} ggc ON (ggc.definitionid = gd.id)
-            JOIN {grading_instances} gin ON gin.definitionid = gd.id
-            JOIN {assign_grades} ag ON ag.id = gin.itemid
-            JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
-            JOIN {user} stu ON stu.id = ag.userid
-            JOIN {user} rubm ON rubm.id = gin.raterid
-            JOIN {gradingform_guide_fillings} ggf ON (ggf.instanceid = gin.id)
-             AND (ggf.criterionid = ggc.id)
-           WHERE cm.id = ? AND gin.status = 1
-             AND stu.deleted = 0
-        ORDER BY lastname ASC, firstname ASC,
-                 userid ASC,
-                 ggc.sortorder ASC,
-                 ggc.shortname ASC";
-    $data = $DB->get_records_sql($sql,[$assignid]);
-    $data = set_blindmarking($data, $assignid);
+        $sql = "SELECT fillings.id AS ggfid, cm.course AS course, asg.name AS assignment, gd.name AS guide,
+        criteria.description,
+        criteria.shortname, fillings.score, fillings.remark, fillings.criterionid, rubm.username AS grader,
+        stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
+        stu.username, stu.email, gin.timemodified AS modified, ag.grade,
+        assign_comment.commenttext as overallfeedback
+        FROM {assign} asg
+        JOIN {course_modules} cm ON cm.instance = asg.id
+        JOIN {context} ctx ON ctx.instanceid = cm.id
+        JOIN {grading_areas}  ga ON ctx.id = ga.contextid
+        JOIN {grading_definitions} gd ON ga.id = gd.areaid
+        JOIN {gradingform_guide_criteria} criteria ON (criteria.definitionid = gd.id)
+        JOIN {grading_instances} gin ON gin.definitionid = gd.id
+        JOIN {assign_grades} ag ON ag.id = gin.itemid
+  LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
+        JOIN {user} stu ON stu.id = ag.userid
+        JOIN {user} rubm ON rubm.id = gin.raterid
+        JOIN {gradingform_guide_fillings} fillings ON (fillings.instanceid = gin.id)
+         AND (fillings.criterionid = criteria.id)
+         WHERE cm.id = :assignid AND gin.status = 1
+         AND  stu.deleted = 0
+         ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
+    $data = $DB->get_records_sql($sql, ['assignid' => $cm->id]);
+    $data = set_blindmarking($data, $assign, $cm);
     return $data;
 }

@@ -189,22 +189,19 @@ function get_student_cells(array $data, array $student) {
             }
     return $cell;
 }
-function set_blindmarking(array $data, int $assignid) : array {
-    $firstrecord = reset($data);
-    if ($firstrecord && $firstrecord->blindmarking == 1) {
-        $modinfo = get_fast_modinfo($firstrecord->course);
-        $assign = $modinfo->get_cm($assignid);
-        $cm = get_coursemodule_from_instance('assign', $assign->instance, $firstrecord->course);
-        foreach ($data as &$user) {
-            $user->firstname = '';
-            $user->lastname = '';
-            $user->username = '';
-            $user->email = '';
-            $user->idnumber = '';
-            $user->student = get_string('participant', 'assign') .
-                ' ' . \assign::get_uniqueid_for_user_static($cm->instance, $user->userid);
+function set_blindmarking(array $data, $assign,$cm) : array {
+        if($assign->is_blind_marking()){
+         foreach ($data as &$user) {
+            $anonymousid = get_string('participant','report_advancedgrading') .
+            ' ' . \assign::get_uniqueid_for_user_static($cm->instance, $user->userid);
+            $user->username = $anonymousid;
+            $user->firstname = $anonymousid;
+            $user->lastname = $anonymousid;
+            $user->email = $anonymousid;
+            $user->idnumber = $anonymousid;
         }
-    }
+
+}
     return $data;
 }
 function get_summary_cells($student){

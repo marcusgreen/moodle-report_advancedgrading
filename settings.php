@@ -24,9 +24,9 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     $rawchoices = [
+        'username',
         'firstname',
         'lastname',
-        'username',
         'idnumber',
         'email',
         'groups',
@@ -40,7 +40,7 @@ if ($ADMIN->fulltree) {
         'report_advancedgrading/profilefields',
         new lang_string('profilefields', 'report_advancedgrading'),
         new lang_string('profilefields_desc', 'report_advancedgrading'),
-        ['email', 'idnumber'],
+        ['username' => 1],
         $choices
     ));
 
