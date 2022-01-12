@@ -66,7 +66,7 @@ $gdef = get_grading_definition($cm->instance);
 
 $criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => (int) $gdef->definitionid], null, 'id, description');
 
-$data['silverbackground'] = "background-color:#D2D2D2;'";
+$data['headerstyle'] = 'style="background-color:#D2D2D2;"';
 
 $data = header_fields($data, $criteria, $course, $cm, $gdef);
 $dbrecords = rubric_get_data($assign, $cm);
@@ -80,7 +80,7 @@ if(isset($data['students'])) {
 $data['dodload'] = true;
 $data['colcount'] =  $data['studentspan'] = count($data['profilefields']);
 $data['colcount'] += count($criteria) * 3;
-$data['colcount'] += 4; //Always 3 cols in the summary;
+$data['colcount'] += 4; //Always 4 cols in the summary;
 
 $data['definition'] = get_grading_definition($cm->instance);
 
