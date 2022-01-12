@@ -53,8 +53,6 @@ $assign = new assign($context, $cm, $cm->get_course());
 
 require_capability('mod/assign:grade', $context);
 
-// $context = context_course::instance($course->id);
-
 $renderer = $PAGE->get_renderer('core_user');
 
 $PAGE->set_title('Rubric Report');
@@ -66,7 +64,6 @@ $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfi
 
 $gdef = get_grading_definition($cm->instance);
 
-//$cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
 $criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => (int) $gdef->definitionid], null, 'id, description');
 
 $data['silverbackground'] = "background-color:#D2D2D2;'";
@@ -113,8 +110,9 @@ echo $OUTPUT->footer();
  */
 function get_rows(array $data): string {
     if (isset($data['students'])) {
+        $row = '';
         foreach ($data['students'] as $student) {
-            $row = '<tr>';
+            $row .= '<tr>';
             $row .= get_student_cells($data,$student);
             foreach (array_keys($data['criterion']) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
