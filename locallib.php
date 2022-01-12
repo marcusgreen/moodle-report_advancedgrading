@@ -69,7 +69,7 @@ function report_advancedgrading_get_user_groups($courseid) :array {
         $groupsbyuser[$row->userid][] = $row->name;
     }
     $rs->close();
-    return $groupsbyuser;
+    return $groupsbyuser ?? [];
 }
 function get_criteria(string $table, int $definitionid) {
     global $DB;
