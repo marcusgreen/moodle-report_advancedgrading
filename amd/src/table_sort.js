@@ -20,6 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+<<<<<<< HEAD
  import  'report_advancedgrading/datatables';
  import  $ from 'jquery';
 
@@ -28,3 +29,12 @@
              paging: true
          });
  };
+=======
+import  'report_advancedgrading/datatables';
+import {$} from 'jquery';
+export const init = () => {
+        $("#rubric-header").DataTable({
+            paging: true
+        });
+};
+>>>>>>> f4c5084190319b5e2c332e7eebb38482c9416f5e

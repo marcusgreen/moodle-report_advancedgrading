@@ -1,0 +1,70 @@
+{{!
+This file is part of Moodle - https://moodle.org/
+
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Moodle. If not, see
+<http: //www.gnu.org/licenses />.
+}}
+
+<div style="width:101%;">
+<table class="table table-bordered table-striped ">
+    <thead>
+        {{#header}}
+        <tr>
+            <th>
+                <b>{{#str}}course{{/str}}:{{coursename}}</b>
+            </th>
+        </tr>
+        <tr>
+            <th>
+              <b>{{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}</b>
+            </th>
+        </tr>
+
+        <tr>
+            <th>
+               <b>{{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}</b>
+            </tr>
+            <tr>
+            <th>
+              <b>  {{definition}}</b>
+            </th>
+        </tr>
+        {{/header}}
+    </thead>
+</table>
+
+<table  id="rubric-header" class="table table-bordered table-striped" style="width:101%;" >
+    <thead>
+     <tr>
+            <th colspan={{studentspan}}>
+                {{#str}}student, report_advancedgrading{{/str}}
+            </th>
+            {{#criteria}}
+            <th colspan=2 class="align-top">{{description}}</th>
+            {{/criteria}}
+            <th colspan=4>{{#str}}gradesummary, report_advancedgrading{{/str}}</th>
+        </tr>
+        <tr>
+            {{{studentheaders}}}
+            {{#criteria}}
+            <th style={{silverbackground}} ><b>{{#str}}score, report_advancedgrading {{/str}}</b></th>
+            <th style={{silverbackground}} ><b>{{#str}}feedback, report_advancedgrading{{/str}}</b></th>
+            {{/criteria}}
+            <th style={{silverbackground}} ><b>{{#str}}overall_feedback, report_advancedgrading{{/str}} </b></th>
+            <th style={{silverbackground}} ><b>{{#str}}grade, report_advancedgrading{{/str}} </b></th>
+            <th style={{silverbackground}} ><b>{{#str}}gradedby, report_advancedgrading{{/str}}</b></th>
+            <th width="16em" style={{silverbackground}} ><b>{{#str}}timegraded, report_advancedgrading {{/str}}</b></th>
+       </tr>
+    </thead>
+    <tbody>
