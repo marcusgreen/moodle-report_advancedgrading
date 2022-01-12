@@ -207,19 +207,16 @@ table.dataTable thead th.sorting_desc:after {
 table.dataTable thead th.sorting:after {
 	content: "\f0dc";
 	color: darkslategrey;
-	font-size: 0.8em;
 	padding-top: 0.12em;
+
 }
 table.dataTable thead th.sorting_asc:after {
 	color: darkslategrey;
 	content: "\f0de";
-	z-index:10;
 }
 table.dataTable thead th.sorting_desc:after {
 	color:darkslategrey;
 	content: "\f0dd";
-	z-index:10;
-
 }
 
 div.dataTables_scrollBody table.dataTable thead th.sorting:after,

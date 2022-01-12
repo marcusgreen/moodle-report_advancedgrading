@@ -77,9 +77,13 @@ if(isset($data['students'])) {
     $data = get_grades($data, $dbrecords);
 }
 
-$data['definition'] = get_grading_definition($cm->instance);
 $data['dodload'] = true;
-$data['studentspan'] = count($data['profilefields']);
+$data['colcount'] =  $data['studentspan'] = count($data['profilefields']);
+$data['colcount'] += count($criteria) * 3;
+$data['colcount'] += 4; //Always 3 cols in the summary;
+
+$data['definition'] = get_grading_definition($cm->instance);
+
 
 $data['grademethod'] = 'rubric';
 
