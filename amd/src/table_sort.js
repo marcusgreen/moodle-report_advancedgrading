@@ -16,24 +16,15 @@
 /**
  * JavaScript report_advancedgrading
  *
- * @copyright  2021 Marcus Green
+ * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-//  */
-import {DataTable} from 'report_advancedgrading/sdt/datatable';
+ */
 
-export const init = () => {
-    const dataTable = new DataTable("#rubric-header", {
-        sortable: true,
-        paging: true,
-        // searchable: true
-    } );
-};
+ import  'report_advancedgrading/datatables';
+ import  $ from 'jquery';
 
-// import 'report_advancedgrading/datatables';
-
-// export const init = () => {
-//         debugger;
-//         $("#rubric-header").DataTable({
-//             paging: true
-//         });
-// };
+ export const init = () => {
+         $("#rubric-header").DataTable({
+             paging: true
+         });
+ };

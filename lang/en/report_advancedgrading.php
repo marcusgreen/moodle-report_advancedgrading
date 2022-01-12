@@ -46,3 +46,4 @@ $string['gradesummary'] = 'Grade summary';
 $string['overall_feedback'] = 'Overall feedback';
 $string['student'] = 'Student';
 $string['definition'] = 'Definition';
+$string['participant'] = 'participant';
