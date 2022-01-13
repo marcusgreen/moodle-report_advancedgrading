@@ -70,7 +70,6 @@ $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
 
 $data = header_fields($data, $criteria, $course, $cm, $gdef);
 $dbrecords = rubric_get_data($assign, $cm);
-
 $data = user_fields($data, $dbrecords);
 if(isset($data['students'])) {
     $data = add_groups($data, $courseid);
@@ -119,7 +118,7 @@ function get_rows(array $data): string {
             $row .= '<tr>';
             $row .= get_student_cells($data,$student);
             foreach (array_keys($data['criterion']) as $crikey) {
-                $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
+                $row .= '<td>' . $student['grades'][$crikey]['score'] . '</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
@@ -138,7 +137,7 @@ function get_rows(array $data): string {
 function rubric_get_data($assign, $cm) : array {
      global $DB;
      $sql = "SELECT grf.id as grfid,
-                     cm.course, asg.name as assignment,
+                     cm.course, asg.name as assignment,asg.grade as gradeoutof,
                      criteria.description, level.score,
                      level.definition, grf.remark, grf.criterionid,
                      stu.id AS userid, stu.idnumber AS idnumber,

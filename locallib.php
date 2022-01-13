@@ -140,11 +140,25 @@ function user_fields(array $data, array $dbrecords) : array{
  * @return array
  */
 function get_grades(array $data, array $dbrecords) : array{
+    global $DB;
+    $gradeoutof = reset($dbrecords)->gradeoutof;
+    if($gradeoutof < 0) {
+        $scale = $DB->get_record('scale', ['id'=> -($gradeoutof)],'scale');
+        $scaleoptions =  make_menu_from_list($scale->scale);
+    }
     foreach ($dbrecords as $grade) {
+        $scalegrade = null;
+        $formattedgrade = '';
+        if($scaleoptions){
+            $formattedscore= $scaleoptions[(int) $grade->score] ?? 0;
+        } else {
+
+            $formattedscore = number_format($grade->score, 2);
+        }
         $data['criterion'][$grade->criterionid] = $grade->description;
         $g[$grade->userid][$grade->criterionid] = [
             'userid' => $grade->userid,
-            'score' => $grade->score,
+            'score' => $formattedscore,
             'definition' => $grade->definition ?? "",
             'feedback' => $grade->remark
         ];
@@ -181,6 +195,10 @@ function add_groups(array$data, int $courseid) :array {
         }
     }
     return $data;
+}
+
+function convert_scale_grade($grade){
+
 }
 function get_student_cells(array $data, array $student) {
         $cell ='';

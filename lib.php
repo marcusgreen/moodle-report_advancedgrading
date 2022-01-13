@@ -28,13 +28,10 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/grade/grading/lib.php');
-global $PAGE;
-$PAGE->requires->jquery();
 
 function report_advancedgrading_extend_navigation_module(navigation_node $navigation, cm_info $cm) {
     $context = context_module::instance($cm->id);
     $gradingmanager = get_grading_manager($context, 'mod_assign', 'submissions');
-    $gradinginstance = null;
     switch ($gradingmanager->get_active_method()) {
         case 'rubric':
             $url = new moodle_url('/report/advancedgrading/rubric.php', array('id' => $cm->course, 'modid' => $cm->id));

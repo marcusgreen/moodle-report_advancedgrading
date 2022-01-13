@@ -116,7 +116,7 @@ function get_rows(array $data): string {
             $row = '<tr>';
             $row .= get_student_cells($data,$student);
             foreach (array_keys($data['criterion']) as $crikey) {
-                $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
+                $row .= '<td>' . $student['grades'][$crikey]['score'] . '</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
             $row .= get_summary_cells($student);
