@@ -91,7 +91,9 @@ $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
 
 $rows = get_rows($data);
-
+if($rows == "") {
+    $rows= '<tr><td colspan='.$data['colcount'].'> No marked submissions found </td></tr>';
+}
 $table .= $rows;
 $table .= '   </tbody> </table> </div>';
 if ($dload) {
@@ -114,20 +116,20 @@ echo $OUTPUT->footer();
  */
 function get_rows(array $data): string {
     if (isset($data['students'])) {
-        $row = '';
+        $rows = '';
         foreach ($data['students'] as $student) {
-            $row .= '<tr>';
-            $row .= get_student_cells($data,$student);
+            $rows .= '<tr>';
+            $rows .= get_student_cells($data,$student);
             foreach (array_keys($data['criterion']) as $crikey) {
-                $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
-                $row .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
-                $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+                $rows .= '<td>' . $student['grades'][$crikey]['score'] . '</td>';
+                $rows .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
+                $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
-            $row .= get_summary_cells($student);
-            $row .= '</tr>';
+            $rows .= get_summary_cells($student);
+            $rows.= '</tr>';
         }
     }
-    return $row ?? '';
+    return $rows ?? '';
 }
 /**
  * Query the database for the student grades.
