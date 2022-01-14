@@ -30,31 +30,17 @@ require_once $CFG->dirroot . '/grade/lib.php';
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 
-$courseid  = required_param('id', PARAM_INT); // Course ID.
-$data['courseid'] = $courseid;
-$data['modid'] = required_param('modid', PARAM_INT); // CM I
+$data = page_setup($courseid);
 
-global $PAGE;
-
-$PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
-$PAGE->requires->jquery();
-
-$PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $data));
-
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-require_login($course);
-
-$modinfo = get_fast_modinfo($courseid);
+require_login($data['course']);
+$modinfo = get_fast_modinfo($data['courseid']);
 $cm = $modinfo->get_cm($data['modid']);
 $context = context_module::instance($cm->id);
-
 $assign = new assign($context, $cm, $cm->get_course());
-
 
 require_capability('mod/assign:grade', $context);
 
-$renderer = $PAGE->get_renderer('core_user');
-
+global $PAGE;
 $PAGE->set_title('Rubric Report');
 $PAGE->set_heading('Report Name');
 
@@ -68,12 +54,12 @@ $criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid'
 
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
 
-$data = header_fields($data, $criteria, $course, $cm, $gdef);
+$data = header_fields($data, $criteria, $data['course'], $cm, $gdef);
 $dbrecords = rubric_get_data($assign, $cm);
 
 $data = user_fields($data, $dbrecords);
 if(isset($data['students'])) {
-    $data = add_groups($data, $courseid);
+    $data = add_groups($data, $data['courseid']);
     $data = get_grades($data, $dbrecords);
 }
 

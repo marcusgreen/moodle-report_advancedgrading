@@ -130,6 +130,16 @@ function user_fields(array $data, array $dbrecords) : array{
     }
     return $data;
 }
+function page_setup() : array{
+    global $PAGE, $DB;
+    $data['modid'] = required_param('modid', PARAM_INT); // CM I
+    $data['courseid'] = required_param('id', PARAM_INT); // Course ID.
+    $PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $data));
+    $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
+    $PAGE->requires->jquery();
+    $data['course'] = $DB->get_record('course', array('id' => $data['courseid']), '*', MUST_EXIST);
+    return $data;
+}
 
 /**
  * Assemble the grades into the data array from
