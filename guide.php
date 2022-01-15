@@ -27,63 +27,33 @@ require_once(__DIR__ . '/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ . '/../../lib/excellib.class.php');
 
 require_once $CFG->dirroot . '/grade/lib.php';
+global $PAGE;
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 
-$courseid  = required_param('id', PARAM_INT); // Course ID.
-$data['courseid'] = $courseid;
-$data['modid'] = required_param('modid', PARAM_INT); // CM I
+$data['headerstyle'] = 'style="background-color:#D2D2D2;"';
+$data['reportname'] = 'Marking guide report';
+$data['gradeplugin'] = 'guide';
+$data = page_setup($data);
+$criteria = $DB->get_records_menu('gradingform_guide_criteria', ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
+$data = header_fields($data, $criteria, $data['course'], $data['cm'], $data['gradingdefinition']);
 
-global $PAGE;
-
-$PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
-$PAGE->requires->jquery();
-
-$PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $data));
-
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-require_login($course);
-
-$modinfo = get_fast_modinfo($courseid);
-$cm = $modinfo->get_cm($data['modid']);
-$context = context_module::instance($cm->id);
-
-$assign = new assign($context, $cm, $cm->get_course());
-
+$context = context_module::instance($data['cm']->id);
+$assign = new assign($context, $data['cm'], $data['cm']->get_course());
 
 require_capability('mod/assign:grade', $context);
 
-// $context = context_course::instance($course->id);
-
-$renderer = $PAGE->get_renderer('core_user');
-
-$PAGE->set_title('Rubric Report');
-$PAGE->set_heading('Report Name');
-
-// Profile fields.
-$profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
-$data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
-
-$gdef = get_grading_definition($cm->instance);
-
-//$cm = get_coursemodule_from_instance('assign', $assign->instance, $course->id);
-$criteria = $DB->get_records_menu('gradingform_guide_criteria', ['definitionid' => (int) $gdef->definitionid], null, 'id, description');
-
-$data['silverbackground'] = "background-color:#D2D2D2;'";
-
-$data = header_fields($data, $criteria, $course, $cm, $gdef);
-$dbrecords = guide_get_data($assign,$cm);
+$dbrecords = guide_get_data($assign, $data['cm']);
 
 $data = user_fields($data, $dbrecords);
 if(isset($data['students'])) {
-    $data = add_groups($data, $courseid);
+    $data = add_groups($data, $data['courseid']);
     $data = get_grades($data, $dbrecords);
 }
 
-$data['definition'] = get_grading_definition($cm->instance);
-$data['dodload'] = true;
-$data['studentspan'] = count($data['profilefields']);
-$data['grademethod'] =  'guide';
+$data['colcount'] = $data['studentspan'] = count($data['profilefields']);
+$data['colcount'] += count($data['criteria']) * 2;
+$data['colcount'] += 4; //Always 4 cols in the summary;
 
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/guide', $data);
@@ -96,24 +66,25 @@ if ($dload) {
     echo $OUTPUT->header();
 } else {
     $html = $form . $table;
-    $PAGE->set_pagelayout('standard');
-    echo $OUTPUT->header();
-    echo $OUTPUT->container($html, 'advancedgrading-main');
+    $output = $PAGE->get_renderer('report_log');
+    $PAGE->set_pagelayout('report');
+    echo $output->header();
+    echo $output->container($html, 'advancedgrading-main');
 }
 echo $OUTPUT->footer();
 
 
 /**
  * Assemble the table rows for grading informationin an array from the database records returned.
- * for eCh student
+ * for each student
  *
  * @param array $data
  * @return string
  */
 function get_rows(array $data): string {
     if (isset($data['students'])) {
+        $row = '<tr>';
         foreach ($data['students'] as $student) {
-            $row = '<tr>';
             $row .= get_student_cells($data,$student);
             foreach (array_keys($data['criterion']) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';

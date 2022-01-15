@@ -30,32 +30,19 @@ require_once $CFG->dirroot . '/grade/lib.php';
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 
-$data = page_setup($courseid);
+$data['headerstyle'] = 'style="background-color:#D2D2D2;"';
+$data['reportname'] = 'Marking guide report';
+$data = page_setup($data);
 
-require_login($data['course']);
-$modinfo = get_fast_modinfo($data['courseid']);
-$cm = $modinfo->get_cm($data['modid']);
-$context = context_module::instance($cm->id);
-$assign = new assign($context, $cm, $cm->get_course());
+$criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
+$data = header_fields($data, $criteria, $data['course'], $data['cm'], $data['gradingdefinition']);
+$context = context_module::instance($data['cm']->id);
+$assign = new assign($context, $data['cm'], $data['cm']->get_course());
 
 require_capability('mod/assign:grade', $context);
-
 global $PAGE;
-$PAGE->set_title('Rubric Report');
-$PAGE->set_heading('Report Name');
 
-// Profile fields.
-$profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
-$data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
-
-$gdef = get_grading_definition($cm->instance);
-
-$criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => (int) $gdef->definitionid], null, 'id, description');
-
-$data['headerstyle'] = 'style="background-color:#D2D2D2;"';
-
-$data = header_fields($data, $criteria, $data['course'], $cm, $gdef);
-$dbrecords = rubric_get_data($assign, $cm);
+$dbrecords = rubric_get_data($assign, $data['cm']);
 
 $data = user_fields($data, $dbrecords);
 if(isset($data['students'])) {
@@ -63,14 +50,11 @@ if(isset($data['students'])) {
     $data = get_grades($data, $dbrecords);
 }
 
-$data['dodload'] = true;
 $data['colcount'] =  $data['studentspan'] = count($data['profilefields']);
-$data['colcount'] += count($criteria) * 3;
+$data['colcount'] += count($data['criteria']) * 3;
 $data['colcount'] += 4; //Always 4 cols in the summary;
 
-$data['definition'] = get_grading_definition($cm->instance);
-
-
+$data['definition'] = get_grading_definition($data['cm']->instance);
 $data['grademethod'] = 'rubric';
 
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
@@ -147,10 +131,10 @@ function rubric_get_data($assign, $cm) : array {
                 JOIN {user} stu ON stu.id = ag.userid
                 JOIN {user} rubm ON rubm.id = gin.raterid
                 JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
-                AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
-                WHERE cm.id = :assignid AND gin.status = 1
-                AND  stu.deleted = 0
-                ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
+                 AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
+               WHERE cm.id = :assignid AND gin.status = 1
+                 AND  stu.deleted = 0
+             ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
 
     $data = $DB->get_records_sql($sql, ['assignid' => $cm->id]);
     $data = set_blindmarking($data, $assign, $cm);

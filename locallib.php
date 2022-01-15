@@ -130,14 +130,36 @@ function user_fields(array $data, array $dbrecords) : array{
     }
     return $data;
 }
-function page_setup() : array{
+function page_setup(array $data) : array{
     global $PAGE, $DB;
-    $data['modid'] = required_param('modid', PARAM_INT); // CM I
     $data['courseid'] = required_param('id', PARAM_INT); // Course ID.
-    $PAGE->set_url(new moodle_url('/report/advancedgrading/index.php', $data));
+    require_login($data['courseid']);
+    $data['modid'] = required_param('modid', PARAM_INT); // CM ID
+
+
+    $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
+    $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
+
+    $modinfo = get_fast_modinfo($data['courseid']);
+    $data['cm'] = $modinfo->get_cm($data['modid']);
+    $data['course'] = $DB->get_record('course', array('id' => $data['courseid']), '*', MUST_EXIST);
+    $data['gradingdefinition'] = get_grading_definition($data['cm']->instance);
+
+    $urlparams['id'] = $data['courseid'];
+    $urlparams['modid'] = $data['modid'];
+
+    $url = new moodle_url('/report/advancedgrading/'.$data['gradeplugin'].'.php', $urlparams);
+    $PAGE->set_url($url, $urlparams);
+    $returnurl =  new moodle_url('/mod/assign/view.php',['id'=> $data['modid']]);
+    $PAGE->navbar->add($data['cm']->name,$returnurl);
+    $PAGE->navbar->add($data['reportname']);
+
+    $PAGE->set_context(context_course::instance($data['courseid']));
     $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
     $PAGE->requires->jquery();
-    $data['course'] = $DB->get_record('course', array('id' => $data['courseid']), '*', MUST_EXIST);
+    $PAGE->set_pagelayout('report');
+    $PAGE->set_title($data['reportname']);
+
     return $data;
 }
 
@@ -195,7 +217,7 @@ function add_groups(array$data, int $courseid) :array {
 function get_student_cells(array $data, array $student) {
         $cell ='';
         foreach ($data['profilefields'] as $field) {
-                $cell .= '<td>' . $student[$field] . '</td>';
+                $cell .= '<td style="'.$data['headerstyle']. '>' . $student[$field] . '</td>';
             }
     return $cell;
 }
