@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Exports an Excel spreadsheet of the component grades in a rubric-graded assignment.
+ * Exports an Excel spreadsheet of the  grades in a rubric-graded assignment.
  *
  * @package    report_advancedgrading
- * @copyright  2021 Marcus Green
+ * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,14 +32,15 @@ $dload = optional_param("dload", '', PARAM_BOOL);
 
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
 $data['reportname'] = 'Marking guide report';
+$data['grademethod'] = 'rubric';
+
 $data = page_setup($data);
 
 $criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
 $data = header_fields($data, $criteria, $data['course'], $data['cm'], $data['gradingdefinition']);
-$context = context_module::instance($data['cm']->id);
-$assign = new assign($context, $data['cm'], $data['cm']->get_course());
+$assign = new assign($data['context'], $data['cm'], $data['cm']->get_course());
 
-require_capability('mod/assign:grade', $context);
+require_capability('mod/assign:grade', $data['context']);
 global $PAGE;
 
 $dbrecords = rubric_get_data($assign, $data['cm']);
@@ -50,12 +51,8 @@ if(isset($data['students'])) {
     $data = get_grades($data, $dbrecords);
 }
 
-$data['colcount'] =  $data['studentspan'] = count($data['profilefields']);
 $data['colcount'] += count($data['criteria']) * 3;
-$data['colcount'] += 4; //Always 4 cols in the summary;
-
 $data['definition'] = get_grading_definition($data['cm']->instance);
-$data['grademethod'] = 'rubric';
 
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
@@ -66,16 +63,8 @@ if($rows == "") {
 }
 $table .= $rows;
 $table .= '   </tbody> </table> </div>';
-if ($dload) {
-    download($table, $data['grademethod']);
-    echo $OUTPUT->header();
-} else {
-    $html = $form . $table;
-    $PAGE->set_pagelayout('standard');
-    echo $OUTPUT->header();
-    echo $OUTPUT->container($html, 'advancedgrading-main');
-}
-echo $OUTPUT->footer();
+
+send_output($form, $dload, $data, $table);
 
 /**
  * Assemble the table rows for grading informationin an array from the database records returned.

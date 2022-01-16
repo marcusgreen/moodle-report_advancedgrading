@@ -16,10 +16,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'report_advancedgrading'
+ * Strings for 'report_advancedgrading'
  *
  * @package   report_advancedgrading
- * @copyright 2021 Marcus Green
+ * @copyright 2022 Marcus Green
  * @author    Marcus Green
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

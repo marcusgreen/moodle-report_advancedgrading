@@ -21,7 +21,7 @@
  * Language strings to be used by report/rubrics
  *
  * @package    report_advancedgrading
- * @copyright  2021 Marcus Green
+ * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -130,15 +130,30 @@ function user_fields(array $data, array $dbrecords) : array{
     }
     return $data;
 }
+function send_output($form, $dload, $data, $table) {
+    global $OUTPUT, $PAGE;
+    if ($dload) {
+        download($table, $data['grademethod']);
+        echo $OUTPUT->header();
+    } else {
+        $html = $form . $table;
+        $PAGE->set_pagelayout('standard');
+        echo $OUTPUT->header();
+        echo $OUTPUT->container($html, 'advancedgrading-main');
+    }
+    echo $OUTPUT->footer();
+}
 function page_setup(array $data) : array{
     global $PAGE, $DB;
     $data['courseid'] = required_param('id', PARAM_INT); // Course ID.
     require_login($data['courseid']);
     $data['modid'] = required_param('modid', PARAM_INT); // CM ID
 
-
     $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
     $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
+
+    $data['colcount'] =  $data['studentspan'] = count($data['profilefields']);
+    $data['colcount'] += 4; //Always 4 cols in the summary;
 
     $modinfo = get_fast_modinfo($data['courseid']);
     $data['cm'] = $modinfo->get_cm($data['modid']);
@@ -147,8 +162,18 @@ function page_setup(array $data) : array{
 
     $urlparams['id'] = $data['courseid'];
     $urlparams['modid'] = $data['modid'];
+    $data['context'] = context_module::instance($data['cm']->id);
 
-    $url = new moodle_url('/report/advancedgrading/'.$data['gradeplugin'].'.php', $urlparams);
+    $event = \report_advancedgrading\event\report_viewed::create(array(
+        'context' => $data['context'],
+        'other' => array(
+            'gradingmethod' => $data['grademethod']
+        )
+    ));
+    $event->add_record_snapshot('course_modules', $data['cm']);
+    $event->trigger();
+
+    $url = new moodle_url('/report/advancedgrading/'.$data['grademethod'].'.php', $urlparams);
     $PAGE->set_url($url, $urlparams);
     $returnurl =  new moodle_url('/mod/assign/view.php',['id'=> $data['modid']]);
     $PAGE->navbar->add($data['cm']->name,$returnurl);
@@ -217,7 +242,7 @@ function add_groups(array$data, int $courseid) :array {
 function get_student_cells(array $data, array $student) {
         $cell ='';
         foreach ($data['profilefields'] as $field) {
-                $cell .= '<td style="'.$data['headerstyle']. '>' . $student[$field] . '</td>';
+                $cell .= '<td>' . $student[$field] . '</td>';
             }
     return $cell;
 }

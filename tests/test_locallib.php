@@ -17,8 +17,8 @@
 /**
  * Tests for rubrics report events.
  *
- * @package    report_rubrics
- * @copyright  2021 Marcus Green
+ * @package    report_advancedgrading
+ * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 defined('MOODLE_INTERNAL') || die();
@@ -38,8 +38,8 @@ require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
  *
  * Class for tests related to reubrics report events.
  *
- * @package    report_rubrics
- * @copyright  2021 Marcus Green
+ * @package    report_advancedgrading
+ * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 class test_locallib extends advanced_testcase {
