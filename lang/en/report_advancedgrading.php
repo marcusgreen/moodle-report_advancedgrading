@@ -47,3 +47,6 @@ $string['overall_feedback'] = 'Overall feedback';
 $string['student'] = 'Student';
 $string['definition'] = 'Definition';
 $string['participant'] = 'participant';
+$string['rubricreportname'] = 'Rubric report';
+$string['guidereportname'] = 'Marking guide report';
+

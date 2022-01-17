@@ -31,7 +31,7 @@ global $PAGE;
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
-$data['reportname'] = 'Marking guide report';
+$data['reportname'] = get_string('guidereportname','report_advancedgrading');
 $data['grademethod'] = 'guide';
 $data = page_setup($data);
 $criteria = $DB->get_records_menu('gradingform_guide_criteria', ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
@@ -51,11 +51,10 @@ if(isset($data['students'])) {
 
 $data['colcount'] += count($data['criteria']) * 2;
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
-
 $table = $OUTPUT->render_from_template('report_advancedgrading/guide', $data);
 $rows = get_rows($data);
 $table .= $rows;
-$table .= '  s</tbody> </table> </div>';
+$table .= '  </tbody> </table> </div>';
 
 send_output($form, $dload, $data, $table);
 

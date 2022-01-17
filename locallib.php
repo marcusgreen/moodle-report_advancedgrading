@@ -269,7 +269,7 @@ function get_summary_cells($student){
     return $cell;
 }
 /**
- * Download the Excel format spreadsheet
+ * Download the formatted spreadsheet
  * with the name of the grading method
  *
  * @param string $spreadsheet
@@ -279,9 +279,14 @@ function get_summary_cells($student){
 function download(string $spreadsheet, string $filename) {
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
     $spreadsheet = $reader->loadFromString($spreadsheet);
-
-    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Csv');
-    output_header($filename);
+    $csvdownload = optional_param('csvdownload','',PARAM_TEXT);
+    if($csvdownload > ""){
+        $filetype = 'Csv';
+    } else {
+        $filetype = 'Xlsx';
+    }
+    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, $filetype);
+    output_header($filename, $filetype);
     $writer->save('php://output');
     exit();
 }
@@ -292,32 +297,15 @@ function download(string $spreadsheet, string $filename) {
  * @param string $filename
  * @return void
  */
-function output_header(string $filename) {
-
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
-    return true;
-    $filename = preg_replace('/\.xlsx?$/i', '', $filename);
-
-    $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    $filename = $filename . '.xlsx';
-
-    if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
-        header('Cache-Control: max-age=10');
-        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
-        header('Pragma: ');
-    } else { // normal http - prevent caching at all cost
-        header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
-        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
-        header('Pragma: no-cache');
-    }
-
-    if (core_useragent::is_ie() || core_useragent::is_edge()) {
-        $filename = rawurlencode($filename);
+function output_header(string $filename, $filetype) {
+    if($filetype =='Xlsx') {
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     } else {
-        $filename = s($filename);
+        header('Content-Type: application/text/csv');
     }
+    $filetype = strtolower($filetype);
+    $filename = $filename .".".$filetype;
+    header('Content-Disposition: attachment;filename="' . $filename);
+    return true;
 
-    header('Content-Type: ' . $mimetype);
-    header('Content-Disposition: attachment;filename="' . $filename . '"');
 }

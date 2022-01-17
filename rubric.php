@@ -31,7 +31,7 @@ require_once $CFG->dirroot . '/grade/lib.php';
 $dload = optional_param("dload", '', PARAM_BOOL);
 
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
-$data['reportname'] = 'Marking guide report';
+$data['reportname'] = get_string('rubricreportname','report_advancedgrading');
 $data['grademethod'] = 'rubric';
 
 $data = page_setup($data);
