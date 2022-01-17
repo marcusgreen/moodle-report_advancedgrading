@@ -24,8 +24,6 @@
 
 namespace report_advancedgrading\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The report_advancedgrading report viewed event class.
  *

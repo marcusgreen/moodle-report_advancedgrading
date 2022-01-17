@@ -32,20 +32,26 @@
     {
     }
 }}
+
 <form method="POST" action={{grademethod}}.php?id={{courseid}}&modid={{modid}}>
+
 <div class="form-group" >
     <input type="hidden" name="id" value={{courseid}}>
     <input type="hidden" value="exceldownload">
     <input type="hidden" name="dload" value=true>
     <input type="submit" class="btn btn-primary"  value="{{#str}}exceldownload, report_advancedgrading{{/str}}" id="exceldownload">
-    <input type="submit" class="btn btn-primary"  value="CSV Download" name="csvdownload">
-
+    <a class="btn btn-link p-0" role="button"
+    data-container="body" data-toggle="popover"
+    data-placement="{{#ltr}}right{{/ltr}}{{^ltr}}left{{/ltr}}" data-content="{{#str}}exceldownload_help, report_advancedgrading{{/str}}"
+    data-html="true" tabindex="0" data-trigger="focus">
+  {{#pix}}help, core, {{{alt}}}{{/pix}}
+</a>
+    <input type="submit" class="btn btn-primary"  value="{{#str}}csvdownload, report_advancedgrading{{/str}}" id="csvdownload">
+    <a class="btn btn-link p-0" role="button"
+    data-container="body" data-toggle="popover"
+    data-placement="{{#ltr}}right{{/ltr}}{{^ltr}}left{{/ltr}}" data-content="{{#str}}csvdownload_help, report_advancedgrading{{/str}}"
+    data-html="true" tabindex="0" data-trigger="focus">
+  {{#pix}}help, core, {{{alt}}}{{/pix}}
+</a>
 </div>
 </form>
-<form method="POST" action={{grademethod}}.php?id={{courseid}}&modid={{modid}}>
-    <div class="form-group" >
-        <input type="hidden" name="id" value={{courseid}}>
-        <input type="hidden" name="csvdownload" value="csvdownload">
-        <input type="hidden" name="dload" value=true>
-    </div>
-    </form>

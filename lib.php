@@ -29,7 +29,6 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/grade/grading/lib.php');
 global $PAGE;
-$PAGE->requires->jquery();
 
 function report_advancedgrading_extend_navigation_module(navigation_node $navigation, cm_info $cm) {
     $context = context_module::instance($cm->id);

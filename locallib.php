@@ -25,6 +25,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
 defined('MOODLE_INTERNAL') || die;
@@ -35,7 +37,7 @@ defined('MOODLE_INTERNAL') || die;
  * @param integer $assignid
  * @return \stdClass
  */
-function get_grading_definition(int $assignid) :\stdClass {
+function get_grading_definition(int $assignid): \stdClass {
     global $DB;
     $sql = "SELECT gdef.id AS definitionid, ga.activemethod, gdef.name AS definition
               FROM {assign} assign
@@ -53,7 +55,7 @@ function get_grading_definition(int $assignid) :\stdClass {
  * Credit to Dan Marsden for this idea/function
  * @param int $courseid
  */
-function report_advancedgrading_get_user_groups($courseid) :array {
+function report_advancedgrading_get_user_groups($courseid): array {
     global $DB;
 
     $sql = "SELECT gm.userid,g.id, g.name
@@ -87,7 +89,7 @@ function get_criteria(string $table, int $definitionid) {
  * @param \stdClass $gdef
  * @return array
  */
-function header_fields(array $data, array $criteria, \stdClass $course,\cm_info $assign, \stdClass $gdef) :array{
+function header_fields(array $data, array $criteria, \stdClass $course, \cm_info $assign, \stdClass $gdef): array {
     foreach ($criteria as $criterion) {
         $data['criteria'][] = [
             'description' => $criterion
@@ -104,7 +106,7 @@ function header_fields(array $data, array $criteria, \stdClass $course,\cm_info 
     $criterion = [];
     $data['studentheaders'] = "";
     foreach ($data['profilefields'] as $field) {
-        $data['studentheaders'] .= "<th ".$data['headerstyle']. "><b>" . ucfirst($field) . "</b></th>";
+        $data['studentheaders'] .= "<th " . $data['headerstyle'] . "><b>" . ucfirst($field) . "</b></th>";
     }
     return $data;
 }
@@ -117,7 +119,7 @@ function header_fields(array $data, array $criteria, \stdClass $course,\cm_info 
  * @param array $dbrecords
  * @return array
  */
-function user_fields(array $data, array $dbrecords) : array{
+function user_fields(array $data, array $dbrecords): array {
     foreach ($dbrecords as $grade) {
         $student['userid'] = $grade->userid;
         foreach ($data['profilefields'] as $field) {
@@ -143,17 +145,21 @@ function send_output($form, $dload, $data, $table) {
     }
     echo $OUTPUT->footer();
 }
-function page_setup(array $data) : array{
+/**
+ * Initialise stuff common to all grading methods
+ *
+ * @param array $data
+ * @return array
+ */
+function page_setup(array $data): array {
     global $PAGE, $DB;
-    $data['courseid'] = required_param('id', PARAM_INT); // Course ID.
-    require_login($data['courseid']);
-    $data['modid'] = required_param('modid', PARAM_INT); // CM ID
+    $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
     $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
     $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
 
-    $data['colcount'] =  $data['studentspan'] = count($data['profilefields']);
-    $data['colcount'] += 4; //Always 4 cols in the summary;
+    $data['colcount'] = $data['studentspan'] = count($data['profilefields']);
+    $data['colcount'] += 4; // Always 4 cols in the summary.
 
     $modinfo = get_fast_modinfo($data['courseid']);
     $data['cm'] = $modinfo->get_cm($data['modid']);
@@ -173,10 +179,10 @@ function page_setup(array $data) : array{
     $event->add_record_snapshot('course_modules', $data['cm']);
     $event->trigger();
 
-    $url = new moodle_url('/report/advancedgrading/'.$data['grademethod'].'.php', $urlparams);
+    $url = new moodle_url('/report/advancedgrading/' . $data['grademethod'] . '.php', $urlparams);
     $PAGE->set_url($url, $urlparams);
-    $returnurl =  new moodle_url('/mod/assign/view.php',['id'=> $data['modid']]);
-    $PAGE->navbar->add($data['cm']->name,$returnurl);
+    $returnurl = new moodle_url('/mod/assign/view.php', ['id' => $data['modid']]);
+    $PAGE->navbar->add($data['cm']->name, $returnurl);
     $PAGE->navbar->add($data['reportname']);
 
     $PAGE->set_context(context_course::instance($data['courseid']));
@@ -196,12 +202,12 @@ function page_setup(array $data) : array{
  * @param array $dbrecords
  * @return array
  */
-function get_grades(array $data, array $dbrecords) : array{
+function get_grades(array $data, array $dbrecords): array {
     foreach ($dbrecords as $grade) {
         $data['criterion'][$grade->criterionid] = $grade->description;
         $g[$grade->userid][$grade->criterionid] = [
             'userid' => $grade->userid,
-            'score' => number_format($grade->score,2),
+            'score' => number_format($grade->score, 2),
             'definition' => $grade->definition ?? "",
             'feedback' => $grade->remark
         ];
@@ -228,43 +234,42 @@ function get_grades(array $data, array $dbrecords) : array{
  * @param integer $courseid
  * @return array
  */
-function add_groups(array$data, int $courseid) :array {
+function add_groups(array $data, int $courseid): array {
     $groups = report_advancedgrading_get_user_groups($courseid);
     foreach (array_keys($data['students']) as $userid) {
-        if(isset($groups[$userid])) {
-              $data['students'][$userid]['groups'] = implode(" ", $groups[$userid]);
+        if (isset($groups[$userid])) {
+            $data['students'][$userid]['groups'] = implode(" ", $groups[$userid]);
         } else {
-            $data['students'][$userid]['groups'] ="";
+            $data['students'][$userid]['groups'] = "";
         }
     }
     return $data;
 }
 function get_student_cells(array $data, array $student) {
-        $cell ='';
-        foreach ($data['profilefields'] as $field) {
-                $cell .= '<td>' . $student[$field] . '</td>';
-            }
+    $cell = '';
+    foreach ($data['profilefields'] as $field) {
+        $cell .= '<td>' . $student[$field] . '</td>';
+    }
     return $cell;
 }
-function set_blindmarking(array $data, $assign,$cm) : array {
-        if($assign->is_blind_marking()){
-         foreach ($data as &$user) {
-            $anonymousid = get_string('participant','report_advancedgrading') .
-            ' ' . \assign::get_uniqueid_for_user_static($cm->instance, $user->userid);
+function set_blindmarking(array $data, $assign, $cm): array {
+    if ($assign->is_blind_marking()) {
+        foreach ($data as &$user) {
+            $anonymousid = get_string('participant', 'report_advancedgrading') .
+                ' ' . \assign::get_uniqueid_for_user_static($cm->instance, $user->userid);
             $user->username = $anonymousid;
             $user->firstname = $anonymousid;
             $user->lastname = $anonymousid;
             $user->email = $anonymousid;
             $user->idnumber = $anonymousid;
         }
-
-}
+    }
     return $data;
 }
-function get_summary_cells($student){
-    $cell= '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
+function get_summary_cells($student) {
+    $cell = '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
     $cell .= '<td>' . number_format($student['gradeinfo']['grade'], 2) . '</td>';
-    $cell.= '<td>' . $student['gradeinfo']['grader'] . '</td>';
+    $cell .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
     $cell .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "% %d %b %Y %I:%M %p") . '</td>';
     return $cell;
 }
@@ -279,13 +284,17 @@ function get_summary_cells($student){
 function download(string $spreadsheet, string $filename) {
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
     $spreadsheet = $reader->loadFromString($spreadsheet);
-    $csvdownload = optional_param('csvdownload','',PARAM_TEXT);
-    if($csvdownload > ""){
+    $csvdownload = optional_param('csvdownload', '', PARAM_TEXT);
+    if ($csvdownload > "") {
         $filetype = 'Csv';
     } else {
         $filetype = 'Xlsx';
     }
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, $filetype);
+    if ($filetype == 'Xlsx') {
+        $sheet = $writer->getSpreadsheet()->getActiveSheet();
+        $sheet->setTitle($filename);
+    }
     output_header($filename, $filetype);
     $writer->save('php://output');
     exit();
@@ -298,14 +307,13 @@ function download(string $spreadsheet, string $filename) {
  * @return void
  */
 function output_header(string $filename, $filetype) {
-    if($filetype =='Xlsx') {
+    if ($filetype == 'Xlsx') {
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     } else {
         header('Content-Type: application/text/csv');
     }
     $filetype = strtolower($filetype);
-    $filename = $filename .".".$filetype;
+    $filename = $filename . "." . $filetype;
     header('Content-Disposition: attachment;filename="' . $filename);
     return true;
-
 }

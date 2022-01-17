@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -35,6 +34,9 @@ $string['showstudentid_text'] = 'Show student id in the report';
 $string['showgroups'] = 'Show groups';
 $string['showgroups_desc'] = 'Show groups in the report';
 $string['exceldownload'] = 'Excel download';
+$string['exceldownload_help'] = 'Download an Excel format (xlsx) version of the table';
+$string['csvdownload'] = 'CSV download';
+$string['csvdownload_help'] = 'Download a comma Separated values version of the table';
 $string['profilefields'] = 'Profile fields';
 $string['profilefields_desc'] = 'Additional user fields shown in report';
 $string['score'] = 'Score';

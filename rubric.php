@@ -26,17 +26,21 @@ require(__DIR__ . '../../../config.php');
 require_once(__DIR__ . '/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ . '/../../lib/excellib.class.php');
 
-require_once $CFG->dirroot . '/grade/lib.php';
+require_once($CFG->dirroot . '/grade/lib.php');
+
+$data['courseid'] = required_param('id', PARAM_INT); // Course ID.
+require_login($data['courseid']);
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
-$data['reportname'] = get_string('rubricreportname','report_advancedgrading');
+$data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
 $data['grademethod'] = 'rubric';
 
 $data = page_setup($data);
 
-$criteria = $DB->get_records_menu('gradingform_rubric_criteria', ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
+$criteria = $DB->get_records_menu('gradingform_rubric_criteria',
+    ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
 $data = header_fields($data, $criteria, $data['course'], $data['cm'], $data['gradingdefinition']);
 $assign = new assign($data['context'], $data['cm'], $data['cm']->get_course());
 
@@ -46,7 +50,7 @@ global $PAGE;
 $dbrecords = rubric_get_data($assign, $data['cm']);
 
 $data = user_fields($data, $dbrecords);
-if(isset($data['students'])) {
+if (isset($data['students'])) {
     $data = add_groups($data, $data['courseid']);
     $data = get_grades($data, $dbrecords);
 }
@@ -58,8 +62,8 @@ $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
 
 $rows = get_rows($data);
-if($rows == "") {
-    $rows= '<tr><td colspan='.$data['colcount'].'> No marked submissions found </td></tr>';
+if ($rows == "") {
+    $rows = '<tr><td colspan=' . $data['colcount'] . '> No marked submissions found </td></tr>';
 }
 $table .= $rows;
 $table .= '   </tbody> </table> </div>';
@@ -78,14 +82,14 @@ function get_rows(array $data): string {
         $rows = '';
         foreach ($data['students'] as $student) {
             $rows .= '<tr>';
-            $rows .= get_student_cells($data,$student);
+            $rows .= get_student_cells($data, $student);
             foreach (array_keys($data['criterion']) as $crikey) {
                 $rows .= '<td>' . $student['grades'][$crikey]['score'] . '</td>';
                 $rows .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
                 $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
             }
             $rows .= get_summary_cells($student);
-            $rows.= '</tr>';
+            $rows .= '</tr>';
         }
     }
     return $rows ?? '';

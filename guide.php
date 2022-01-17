@@ -26,15 +26,20 @@ require(__DIR__ . '../../../config.php');
 require_once(__DIR__ . '/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ . '/../../lib/excellib.class.php');
 
-require_once $CFG->dirroot . '/grade/lib.php';
+require_once($CFG->dirroot . '/grade/lib.php');
+$data['courseid'] = required_param('id', PARAM_INT); // Course ID.
+require_login($data['courseid']);
+
 global $PAGE;
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
-$data['reportname'] = get_string('guidereportname','report_advancedgrading');
+$data['reportname'] = get_string('guidereportname', 'report_advancedgrading');
 $data['grademethod'] = 'guide';
 $data = page_setup($data);
-$criteria = $DB->get_records_menu('gradingform_guide_criteria', ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
+$criteria = $DB->get_records_menu('gradingform_guide_criteria',
+    ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
+
 $data = header_fields($data, $criteria, $data['course'], $data['cm'], $data['gradingdefinition']);
 
 $assign = new assign($data['context'], $data['cm'], $data['cm']->get_course());
@@ -44,7 +49,7 @@ require_capability('mod/assign:grade', $data['context']);
 $dbrecords = guide_get_data($assign, $data['cm']);
 
 $data = user_fields($data, $dbrecords);
-if(isset($data['students'])) {
+if (isset($data['students'])) {
     $data = add_groups($data, $data['courseid']);
     $data = get_grades($data, $dbrecords);
 }
@@ -70,7 +75,7 @@ function get_rows(array $data): string {
         $row = '';
         foreach ($data['students'] as $student) {
             $row .= '<tr>';
-            $row .= get_student_cells($data,$student);
+            $row .= get_student_cells($data, $student);
             foreach (array_keys($data['criterion']) as $crikey) {
                 $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
                 $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
