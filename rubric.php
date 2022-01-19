@@ -36,18 +36,18 @@ $dload = optional_param("dload", '', PARAM_BOOL);
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
 $data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
 $data['grademethod'] = 'rubric';
+$data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
 $data = page_setup($data);
 
 $criteria = $DB->get_records_menu('gradingform_rubric_criteria',
     ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
 $data = header_fields($data, $criteria, $data['course'], $data['cm'], $data['gradingdefinition']);
-$assign = new assign($data['context'], $data['cm'], $data['cm']->get_course());
 
 require_capability('mod/assign:grade', $data['context']);
 global $PAGE;
 
-$dbrecords = rubric_get_data($assign, $data['cm']);
+$dbrecords = rubric_get_data($data['assign'], $data['cm']);
 
 $data = user_fields($data, $dbrecords);
 if (isset($data['students'])) {
@@ -100,10 +100,10 @@ function get_rows(array $data): string {
  * @param integer $assignid
  * @return array
  */
-function rubric_get_data($assign, $cm) : array {
+function rubric_get_data(\assign $assign, \cm_info $cm) : array {
      global $DB;
      $sql = "SELECT grf.id as grfid,
-                     cm.course, asg.name as assignment,
+                     cm.course, asg.name as assignment,asg.grade as gradeoutof,
                      criteria.description, level.score,
                      level.definition, grf.remark, grf.criterionid,
                      stu.id AS userid, stu.idnumber AS idnumber,

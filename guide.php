@@ -36,17 +36,16 @@ $dload = optional_param("dload", '', PARAM_BOOL);
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
 $data['reportname'] = get_string('guidereportname', 'report_advancedgrading');
 $data['grademethod'] = 'guide';
+$data['modid'] = required_param('modid', PARAM_INT); // CM ID.
+
 $data = page_setup($data);
 $criteria = $DB->get_records_menu('gradingform_guide_criteria',
     ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
-
 $data = header_fields($data, $criteria, $data['course'], $data['cm'], $data['gradingdefinition']);
-
-$assign = new assign($data['context'], $data['cm'], $data['cm']->get_course());
 
 require_capability('mod/assign:grade', $data['context']);
 
-$dbrecords = guide_get_data($assign, $data['cm']);
+$dbrecords = guide_get_data($data['assign'], $data['cm']);
 
 $data = user_fields($data, $dbrecords);
 if (isset($data['students'])) {
@@ -94,14 +93,15 @@ function get_rows(array $data): string {
  * @param array $data
  * @return array
  */
-function guide_get_data($assign, $cm) :array {
+function guide_get_data(\assign $assign, \cm_info $cm) :array {
     global $DB;
-        $sql = "SELECT fillings.id AS ggfid, cm.course AS course, asg.name AS assignment, gd.name AS guide,
-        criteria.description,
-        criteria.shortname, fillings.score, fillings.remark, fillings.criterionid, rubm.username AS grader,
-        stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-        stu.username, stu.email, gin.timemodified AS modified, ag.grade,
-        assign_comment.commenttext as overallfeedback
+        $sql = "SELECT fillings.id AS ggfid, cm.course AS course, asg.name AS assignment,
+                asg.grade as gradeoutof,gd.name AS guide,
+                criteria.description,criteria.shortname,
+                fillings.score, fillings.remark, fillings.criterionid, rubm.username AS grader,
+                stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
+                stu.username, stu.email, gin.timemodified AS modified, ag.grade,
+                assign_comment.commenttext as overallfeedback
         FROM {assign} asg
         JOIN {course_modules} cm ON cm.instance = asg.id
         JOIN {context} ctx ON ctx.instanceid = cm.id

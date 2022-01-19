@@ -153,7 +153,6 @@ function send_output($form, $dload, $data, $table) {
  */
 function page_setup(array $data): array {
     global $PAGE, $DB;
-    $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
     $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
     $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
@@ -169,6 +168,7 @@ function page_setup(array $data): array {
     $urlparams['id'] = $data['courseid'];
     $urlparams['modid'] = $data['modid'];
     $data['context'] = context_module::instance($data['cm']->id);
+    $data['assign'] = new assign($data['context'], $data['cm'], $data['cm']->get_course());
 
     $event = \report_advancedgrading\event\report_viewed::create(array(
         'context' => $data['context'],
@@ -203,6 +203,13 @@ function page_setup(array $data): array {
  * @return array
  */
 function get_grades(array $data, array $dbrecords): array {
+    global $DB;
+    $gradeoutof = reset($dbrecords)->gradeoutof;
+    if($gradeoutof < 0) {
+        $scale = $DB->get_record('scale', ['id'=> -($gradeoutof)],'scale');
+        $scaleoptions =  make_menu_from_list($scale->scale);
+    }
+
     foreach ($dbrecords as $grade) {
         $data['criterion'][$grade->criterionid] = $grade->description;
         $g[$grade->userid][$grade->criterionid] = [
@@ -211,11 +218,17 @@ function get_grades(array $data, array $dbrecords): array {
             'definition' => $grade->definition ?? "",
             'feedback' => $grade->remark
         ];
+        if($scaleoptions){
+            $formattedgrade= $scaleoptions[ round($grade->grade)] ?? $scaleoptions[1];
+        } else {
+            $formattedgrade = number_format($grade->score, 2);
+        }
+
         $gi = [
             'overallfeedback' => $grade->overallfeedback,
             'grader' => $grade->grader,
             'timegraded' => $grade->modified,
-            'grade' => $grade->grade
+            'grade' => $formattedgrade
         ];
 
         foreach ($data['students'] as $student) {
@@ -268,7 +281,7 @@ function set_blindmarking(array $data, $assign, $cm): array {
 }
 function get_summary_cells($student) {
     $cell = '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
-    $cell .= '<td>' . number_format($student['gradeinfo']['grade'], 2) . '</td>';
+    $cell .= '<td>' . $student['gradeinfo']['grade'] . '</td>';
     $cell .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
     $cell .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "% %d %b %Y %I:%M %p") . '</td>';
     return $cell;

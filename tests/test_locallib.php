@@ -70,7 +70,7 @@ class test_locallib extends advanced_testcase {
         );
         $controller->execute_precheck();
         $controller->execute_plan();
-        $this->assignid = $DB->get_field('assign', 'id', ['name' => 'Rubric Assignment']);
+        $this->assignid = $DB->get_field('assign', 'id', ['name' => 'Rubric Grading']);
     }
 
      // Use the generator helper.
@@ -78,22 +78,15 @@ class test_locallib extends advanced_testcase {
 
 
     public function test_get_data() {
-        global $DB;
         $this->resetAfterTest();
 
-        $course = $DB->get_record('course', ['id' => $this->courseid]);
         $cm = get_coursemodule_from_instance('assign', $this->assignid, $this->courseid);
         $gdef = get_grading_definition($cm->instance);
-
-        //$header = report_advancedgrading_get_header($course->fullname, $cm->name, $gdef->activemethod, $gdef->definition);
-        $dbrecords = rubric_get_data($cm->id);
-        $criteria = get_criteria('gradingform_rubric_criteria', (int) $gdef->definitionid);
-
-        //$header =  header_fields($data, $criteria, $course->fullname, $assign, $gdef) {
-
-         $assign = context_module::instance($cm->id);
-        // $students = report_componentgrades_get_students($assign, $cm);
-        $data = rubric_get_data($cm->id);
+        $data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
+        $data['grademethod'] = 'rubric';
+        $data['modid'] = $cm->id;
+        $data['courseid'] = $this->courseid;
+        $data = page_setup($data);
 
     }
     /**
