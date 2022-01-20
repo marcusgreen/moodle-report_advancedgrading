@@ -164,11 +164,16 @@ function page_setup(array $data): array {
     $data['cm'] = $modinfo->get_cm($data['modid']);
     $data['course'] = $DB->get_record('course', array('id' => $data['courseid']), '*', MUST_EXIST);
     $data['gradingdefinition'] = get_grading_definition($data['cm']->instance);
-
     $urlparams['id'] = $data['courseid'];
     $urlparams['modid'] = $data['modid'];
+
     $data['context'] = context_module::instance($data['cm']->id);
     $data['assign'] = new assign($data['context'], $data['cm'], $data['cm']->get_course());
+
+    $criteriatable = 'gradingform_'.$data['grademethod'].'_criteria';
+    $data['criteriarecord'] = $DB->get_records_menu($criteriatable,
+     ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
+    $data = header_fields($data, $data['criteriarecord'], $data['course'], $data['cm'], $data['gradingdefinition']);
 
     $event = \report_advancedgrading\event\report_viewed::create(array(
         'context' => $data['context'],

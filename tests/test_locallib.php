@@ -32,6 +32,7 @@ require_once($CFG->dirroot . '/mod/assign/externallib.php');
 
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+require_once($CFG->dirroot . '/report/advancedgrading/rubric.php');
 
 /**
  * Class report
@@ -87,6 +88,8 @@ class test_locallib extends advanced_testcase {
         $data['modid'] = $cm->id;
         $data['courseid'] = $this->courseid;
         $data = page_setup($data);
+        $dbrecords = rubric_get_data($data['assign'], $data['cm']);
+        $i = 1;
 
     }
     /**

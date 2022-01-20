@@ -39,9 +39,6 @@ $data['grademethod'] = 'guide';
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
 $data = page_setup($data);
-$criteria = $DB->get_records_menu('gradingform_guide_criteria',
-    ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
-$data = header_fields($data, $criteria, $data['course'], $data['cm'], $data['gradingdefinition']);
 
 require_capability('mod/assign:grade', $data['context']);
 

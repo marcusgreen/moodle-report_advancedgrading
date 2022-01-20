@@ -40,19 +40,14 @@ $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
 $data = page_setup($data);
 
-$criteria = $DB->get_records_menu('gradingform_rubric_criteria',
-    ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
-$data = header_fields($data, $criteria, $data['course'], $data['cm'], $data['gradingdefinition']);
-
 require_capability('mod/assign:grade', $data['context']);
-global $PAGE;
 
-$dbrecords = rubric_get_data($data['assign'], $data['cm']);
+$data['dbrecords'] = rubric_get_data($data['assign'], $data['cm']);
 
-$data = user_fields($data, $dbrecords);
+$data = user_fields($data, $data['dbrecords']);
 if (isset($data['students'])) {
     $data = add_groups($data, $data['courseid']);
-    $data = get_grades($data, $dbrecords);
+    $data = get_grades($data, $data['dbrecords']);
 }
 
 $data['colcount'] += count($data['criteria']) * 3;
