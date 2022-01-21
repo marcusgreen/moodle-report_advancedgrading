@@ -32,7 +32,7 @@ require_once($CFG->dirroot . '/mod/assign/externallib.php');
 
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/report/advancedgrading/rubric.php');
+//require_once($CFG->dirroot . '/report/advancedgrading/rubric.php');
 
 /**
  * Class report
@@ -45,11 +45,28 @@ require_once($CFG->dirroot . '/report/advancedgrading/rubric.php');
  */
 class test_locallib extends advanced_testcase {
 
+    /**
+     * Unique id of course from db
+     *
+     * @var $courseid
+     */
     public $courseid;
+
+    /**
+     * assignment id
+     *
+     * @var int
+     */
     public $assign;
 
+    /**
+     * Extract and install the mbz backup of a course
+     * containing assignments using the advanced grading
+     * methods with user attempts
+     *
+     * @return void
+     */
     public function setUp() : void {
-       // $this->preventResetByRollback();
         global $USER, $CFG, $DB;
         $this->setAdminUser();
 
@@ -77,19 +94,20 @@ class test_locallib extends advanced_testcase {
      // Use the generator helper.
      use mod_assign_test_generator;
 
-
-    public function test_get_data() {
+    public function test_init() {
         $this->resetAfterTest();
 
         $cm = get_coursemodule_from_instance('assign', $this->assignid, $this->courseid);
-        $gdef = get_grading_definition($cm->instance);
+        $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
         $data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
         $data['grademethod'] = 'rubric';
         $data['modid'] = $cm->id;
         $data['courseid'] = $this->courseid;
-        $data = page_setup($data);
-        $dbrecords = rubric_get_data($data['assign'], $data['cm']);
-        $i = 1;
+        $data = init($data);
+        $this->assertContains('username',$data['profilefields']);
+
+        //$dbrecords = rubric_get_data($data['assign'], $data['cm']);
+
 
     }
     /**

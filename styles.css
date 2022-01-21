@@ -339,3 +339,11 @@ div.columns div.dataTables_paginate li.next a:after,
 div.columns div.dataTables_paginate li.last a:after {
 	top: 0;
 }
+div.dataTables_wrapper div.dataTables_filter input {
+	margin-left: 0.5em;
+	display: inline-block;
+	width: auto;
+  }
+  div.dataTables_wrapper div.dataTables_filter {
+	text-align: right;
+  }

@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die;
 /**
  * Get the structure of this grading definition
  *
- * @param integer $assignid
+ * @param int $assignid
  * @return \stdClass
  */
 function get_grading_definition(int $assignid): \stdClass {
@@ -73,11 +73,7 @@ function report_advancedgrading_get_user_groups($courseid): array {
     $rs->close();
     return $groupsbyuser ?? [];
 }
-function get_criteria(string $table, int $definitionid) {
-    global $DB;
-    $criteria = $DB->get_records_menu($table, ['definitionid' => $definitionid], null, 'id, description');
-    return $criteria;
-}
+
 /**
  * Get the descriptive header fields that detail
  * the details of the grading setup
@@ -132,7 +128,18 @@ function user_fields(array $data, array $dbrecords): array {
     }
     return $data;
 }
-function send_output($form, $dload, $data, $table) {
+
+/**
+ * Send output either to the browser or
+ * to a file download
+ *
+ * @param string $form
+ * @param int $dload
+ * @param array $data
+ * @param string $table
+ * @return void
+ */
+function send_output(string $form, int $dload, array $data, string $table) : void{
     global $OUTPUT, $PAGE;
     if ($dload) {
         download($table, $data['grademethod']);
@@ -151,7 +158,7 @@ function send_output($form, $dload, $data, $table) {
  * @param array $data
  * @return array
  */
-function page_setup(array $data): array {
+function init(array $data): array {
     global $PAGE, $DB;
 
     $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
@@ -192,8 +199,8 @@ function page_setup(array $data): array {
     $PAGE->navbar->add($data['reportname']);
 
     $PAGE->set_context(context_course::instance($data['courseid']));
-    $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
     $PAGE->requires->jquery();
+    $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
     $PAGE->set_pagelayout('report');
     $PAGE->set_title($data['reportname']);
 
@@ -250,7 +257,7 @@ function get_grades(array $data, array $dbrecords): array {
  * Add group membership to student data
  *
  * @param array $data
- * @param integer $courseid
+ * @param int $courseid
  * @return array
  */
 function add_groups(array $data, int $courseid): array {
@@ -348,9 +355,10 @@ function download(string $spreadsheet, string $filename) {
  * Output the http header
  *
  * @param string $filename
- * @return void
+ * @param string $filetype
+ * @return boolean
  */
-function output_header(string $filename, $filetype) {
+function output_header(string $filename, string$filetype) : bool{
     if ($filetype == 'Xlsx') {
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     } else {

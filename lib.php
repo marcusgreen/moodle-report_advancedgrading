@@ -29,7 +29,13 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/grade/grading/lib.php');
 global $PAGE;
-
+/**
+ * Add an item to the dropdown when viewing the assignment
+ *
+ * @param navigation_node $navigation
+ * @param cm_info $cm
+ * @return void
+ */
 function report_advancedgrading_extend_navigation_module(navigation_node $navigation, cm_info $cm) {
     $context = context_module::instance($cm->id);
     $gradingmanager = get_grading_manager($context, 'mod_assign', 'submissions');

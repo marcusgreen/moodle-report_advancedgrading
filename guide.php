@@ -37,7 +37,7 @@ $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
 $data['reportname'] = get_string('guidereportname', 'report_advancedgrading');
 $data['grademethod'] = 'guide';
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
-$data = page_setup($data);
+$data = init($data);
 
 require_capability('mod/assign:grade', $data['context']);
 
@@ -83,11 +83,13 @@ function get_rows(array $data): string {
     }
     return $row ?? "";
 }
+
 /**
  * Assemble the table rows for grading informationin an array from the database records returned.
  * for each student
  *
- * @param array $data
+ * @param \assign $assign
+ * @param \cm_info $cm
  * @return array
  */
 function guide_get_data(\assign $assign, \cm_info $cm) :array {

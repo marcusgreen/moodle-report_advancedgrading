@@ -38,7 +38,7 @@ $data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
 $data['grademethod'] = 'rubric';
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
-$data = page_setup($data);
+$data = init($data);
 
 require_capability('mod/assign:grade', $data['context']);
 
@@ -91,7 +91,8 @@ function get_rows(array $data): string {
 /**
  * Query the database for the student grades.
  *
- * @param integer $assignid
+ * @param \assign $assign
+ * @param \cm_info $cm
  * @return array
  */
 function rubric_get_data(\assign $assign, \cm_info $cm) : array {
