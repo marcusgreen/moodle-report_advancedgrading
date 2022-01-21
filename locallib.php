@@ -174,6 +174,7 @@ function page_setup(array $data): array {
     $data['criteriarecord'] = $DB->get_records_menu($criteriatable,
      ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
     $data = header_fields($data, $data['criteriarecord'], $data['course'], $data['cm'], $data['gradingdefinition']);
+    $data['definition'] = get_grading_definition($data['cm']->instance);
 
     $event = \report_advancedgrading\event\report_viewed::create(array(
         'context' => $data['context'],
@@ -263,13 +264,31 @@ function add_groups(array $data, int $courseid): array {
     }
     return $data;
 }
-function get_student_cells(array $data, array $student) {
+/**
+ * Get student data for each
+ * student column
+ *
+ * @param array $data
+ * @param array $student
+ * @return string
+ */
+function get_student_cells(array $data, array $student) :string {
     $cell = '';
     foreach ($data['profilefields'] as $field) {
         $cell .= '<td>' . $student[$field] . '</td>';
     }
     return $cell;
 }
+/**
+ * Obscure the identify of students when blind marking
+ * is enabled. These identities will match those shown
+ * in gthe gradebook.
+ *
+ * @param array $data
+ * @param [type] $assign
+ * @param [type] $cm
+ * @return array
+ */
 function set_blindmarking(array $data, $assign, $cm): array {
     if ($assign->is_blind_marking()) {
         foreach ($data as &$user) {
@@ -284,7 +303,13 @@ function set_blindmarking(array $data, $assign, $cm): array {
     }
     return $data;
 }
-function get_summary_cells($student) {
+/**
+ * Columns shown at the end of the tabale summarisng
+ * The marking and who did it.
+ * @param mixed $student
+ * @return string
+ */
+function get_summary_cells($student) : string{
     $cell = '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
     $cell .= '<td>' . $student['gradeinfo']['grade'] . '</td>';
     $cell .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
@@ -292,7 +317,8 @@ function get_summary_cells($student) {
     return $cell;
 }
 /**
- * Download the formatted spreadsheet
+ * Download the formatted spreadsheet or
+ * CSV (comma separated values) file.
  * with the name of the grading method
  *
  * @param string $spreadsheet

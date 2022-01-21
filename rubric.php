@@ -50,9 +50,8 @@ if (isset($data['students'])) {
     $data = get_grades($data, $data['dbrecords']);
 }
 
+// Each rubric criteria has a score,definition and feedback column.
 $data['colcount'] += count($data['criteria']) * 3;
-$data['definition'] = get_grading_definition($data['cm']->instance);
-
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
 

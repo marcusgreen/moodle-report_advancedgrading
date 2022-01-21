@@ -37,7 +37,6 @@ $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
 $data['reportname'] = get_string('guidereportname', 'report_advancedgrading');
 $data['grademethod'] = 'guide';
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
-
 $data = page_setup($data);
 
 require_capability('mod/assign:grade', $data['context']);
@@ -50,6 +49,7 @@ if (isset($data['students'])) {
     $data = get_grades($data, $dbrecords);
 }
 
+// Each guid criteria has a score,definition and feedback column.
 $data['colcount'] += count($data['criteria']) * 2;
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/guide', $data);
