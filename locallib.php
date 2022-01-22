@@ -139,7 +139,7 @@ function user_fields(array $data, array $dbrecords): array {
  * @param string $table
  * @return void
  */
-function send_output(string $form, int $dload, array $data, string $table) : void{
+function send_output(string $form, string $dload, array $data, string $table) : void{
     global $OUTPUT, $PAGE;
     if ($dload) {
         download($table, $data['grademethod']);

@@ -25,12 +25,12 @@
 require(__DIR__ . '../../../config.php');
 require_once(__DIR__ . '/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ . '/../../lib/excellib.class.php');
+require_once(__DIR__ . '../../../grade/lib.php');
 
-require_once($CFG->dirroot . '/grade/lib.php');
 $data['courseid'] = required_param('id', PARAM_INT); // Course ID.
 require_login($data['courseid']);
+use report_advancedgrading\guide;
 
-global $PAGE;
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
@@ -41,83 +41,21 @@ $data = init($data);
 
 require_capability('mod/assign:grade', $data['context']);
 
-$dbrecords = guide_get_data($data['assign'], $data['cm']);
+$guide = new guide();
+$data['dbrecords']= $guide->get_data($data['assign'], $data['cm']);
 
-$data = user_fields($data, $dbrecords);
+$data = user_fields($data, $data['dbrecords']);
 if (isset($data['students'])) {
     $data = add_groups($data, $data['courseid']);
-    $data = get_grades($data, $dbrecords);
+    $data = get_grades($data, $data['dbrecords']);
 }
 
 // Each guid criteria has a score,definition and feedback column.
 $data['colcount'] += count($data['criteria']) * 2;
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/guide', $data);
-$rows = get_rows($data);
+$rows = $guide->get_rows($data);
 $table .= $rows;
 $table .= '  </tbody> </table> </div>';
 
 send_output($form, $dload, $data, $table);
-
-/**
- * Assemble the table rows for grading informationin an array from the database records returned.
- * for each student
- *
- * @param array $data
- * @return string
- */
-function get_rows(array $data): string {
-    if (isset($data['students'])) {
-        $row = '';
-        foreach ($data['students'] as $student) {
-            $row .= '<tr>';
-            $row .= get_student_cells($data, $student);
-            foreach (array_keys($data['criterion']) as $crikey) {
-                $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
-                $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
-            }
-            $row .= get_summary_cells($student);
-            $row .= '</tr>';
-        }
-
-    }
-    return $row ?? "";
-}
-
-/**
- * Assemble the table rows for grading informationin an array from the database records returned.
- * for each student
- *
- * @param \assign $assign
- * @param \cm_info $cm
- * @return array
- */
-function guide_get_data(\assign $assign, \cm_info $cm) :array {
-    global $DB;
-        $sql = "SELECT fillings.id AS ggfid, cm.course AS course, asg.name AS assignment,
-                asg.grade as gradeoutof,gd.name AS guide,
-                criteria.description,criteria.shortname,
-                fillings.score, fillings.remark, fillings.criterionid, rubm.username AS grader,
-                stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-                stu.username, stu.email, gin.timemodified AS modified, ag.grade,
-                assign_comment.commenttext as overallfeedback
-        FROM {assign} asg
-        JOIN {course_modules} cm ON cm.instance = asg.id
-        JOIN {context} ctx ON ctx.instanceid = cm.id
-        JOIN {grading_areas}  ga ON ctx.id = ga.contextid
-        JOIN {grading_definitions} gd ON ga.id = gd.areaid
-        JOIN {gradingform_guide_criteria} criteria ON (criteria.definitionid = gd.id)
-        JOIN {grading_instances} gin ON gin.definitionid = gd.id
-        JOIN {assign_grades} ag ON ag.id = gin.itemid
-  LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
-        JOIN {user} stu ON stu.id = ag.userid
-        JOIN {user} rubm ON rubm.id = gin.raterid
-        JOIN {gradingform_guide_fillings} fillings ON (fillings.instanceid = gin.id)
-         AND (fillings.criterionid = criteria.id)
-         WHERE cm.id = :assignid AND gin.status = 1
-         AND  stu.deleted = 0
-         ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
-    $data = $DB->get_records_sql($sql, ['assignid' => $cm->id]);
-    $data = set_blindmarking($data, $assign, $cm);
-    return $data;
-}
