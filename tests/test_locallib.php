@@ -31,8 +31,10 @@ require_once($CFG->dirroot . '/mod/assign/externallib.php');
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 require_once($CFG->dirroot . '/report/advancedgrading/locallib.php');
+
 use report_advancedgrading\rubric;
 use report_advancedgrading\guide;
+
 /**
  * Class report
  *
@@ -65,7 +67,7 @@ class test_locallib extends advanced_testcase {
      *
      * @return void
      */
-    public function setUp() : void {
+    public function setUp(): void {
         global $USER, $CFG, $DB;
         $this->setAdminUser();
 
@@ -76,7 +78,10 @@ class test_locallib extends advanced_testcase {
         $fp->extract_to_pathname($CFG->dirroot . '/report/advancedgrading/tests/fixtures/backup-advgrade.mbz', $tempdir);
 
         $this->courseid = restore_dbops::create_new_course(
-            'Test fullname', 'Test shortname', 1);
+            'Test fullname',
+            'Test shortname',
+            1
+        );
         $controller = new restore_controller(
             'backup-advgrade',
             $this->courseid,
@@ -87,17 +92,13 @@ class test_locallib extends advanced_testcase {
         );
         $controller->execute_precheck();
         $controller->execute_plan();
-        $assigns = $DB->get_records('assign');
-        foreach($assigns as $a) {
-           // echo $a->name;
-        }
+
         $this->rubricassignid = $DB->get_field('assign', 'id', ['name' => 'Rubric with Blind Marking']);
         $this->guideassignid = $DB->get_field('assign', 'id', ['name' => 'Marking Guide With Blind Marking']);
-
     }
 
-     // Use the generator helper.
-     use mod_assign_test_generator;
+    // Use the generator helper.
+    use mod_assign_test_generator;
 
     public function test_rubric() {
         $this->resetAfterTest();
@@ -111,19 +112,18 @@ class test_locallib extends advanced_testcase {
         $data = init($data);
 
         $this->assertContains('username', $data['profilefields']);
-        $this->assertCount(2,$data['criteriarecord']);
+        $this->assertCount(2, $data['criteriarecord']);
 
         $rubric = new rubric();
-        $data['dbrecords']= $rubric->get_data($data['assign'], $data['cm']);
+        $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
         $gradeduser = reset($data['dbrecords'])->username;
         $enrolledusers = get_enrolled_users($data['context']);
         $enrollednames = [];
-        foreach($enrolledusers as $enuser) {
+        foreach ($enrolledusers as $enuser) {
             $enrollednames[] = $enuser->username;
         }
         // Confirme blind marking does not show real names.
-       $this->assertNotContains($gradeduser, $enrollednames);
-
+        $this->assertNotContains($gradeduser, $enrollednames);
     }
     public function test_guide() {
         $this->resetAfterTest();
@@ -139,17 +139,14 @@ class test_locallib extends advanced_testcase {
         $this->assertCount(2, $data['criteriarecord']);
 
         $guide = new guide();
-        $data['dbrecords']= $guide->get_data($data['assign'], $data['cm']);
+        $data['dbrecords'] = $guide->get_data($data['assign'], $data['cm']);
         $gradeduser = reset($data['dbrecords'])->username;
         $enrolledusers = get_enrolled_users($data['context']);
         $enrollednames = [];
-        foreach($enrolledusers as $enuser) {
+        foreach ($enrolledusers as $enuser) {
             $enrollednames[] = $enuser->username;
         }
         // Confirme blind marking does not show real names.
-       $this->assertNotContains($gradeduser, $enrollednames);
-
+        $this->assertNotContains($gradeduser, $enrollednames);
     }
-
-
 }

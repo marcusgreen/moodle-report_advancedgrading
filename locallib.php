@@ -139,7 +139,7 @@ function user_fields(array $data, array $dbrecords): array {
  * @param string $table
  * @return void
  */
-function send_output(string $form, string $dload, array $data, string $table) : void{
+function send_output(string $form, string $dload, array $data, string $table) : void {
     global $OUTPUT, $PAGE;
     if ($dload) {
         download($table, $data['grademethod']);
@@ -218,9 +218,9 @@ function init(array $data): array {
 function get_grades(array $data, array $dbrecords): array {
     global $DB;
     $gradeoutof = reset($dbrecords)->gradeoutof;
-    if($gradeoutof < 0) {
-        $scale = $DB->get_record('scale', ['id'=> -($gradeoutof)],'scale');
-        $scaleoptions =  make_menu_from_list($scale->scale);
+    if ($gradeoutof < 0) {
+        $scale = $DB->get_record('scale', ['id' => - ($gradeoutof)], 'scale');
+        $scaleoptions = make_menu_from_list($scale->scale);
     }
 
     foreach ($dbrecords as $grade) {
@@ -231,8 +231,8 @@ function get_grades(array $data, array $dbrecords): array {
             'definition' => $grade->definition ?? "",
             'feedback' => $grade->remark
         ];
-        if($scaleoptions){
-            $formattedgrade= $scaleoptions[ round($grade->grade)] ?? $scaleoptions[1];
+        if ($scaleoptions) {
+            $formattedgrade = $scaleoptions[round($grade->grade)] ?? $scaleoptions[1];
         } else {
             $formattedgrade = number_format($grade->score, 2);
         }
@@ -316,7 +316,7 @@ function set_blindmarking(array $data, $assign, $cm): array {
  * @param mixed $student
  * @return string
  */
-function get_summary_cells($student) : string{
+function get_summary_cells($student) : string {
     $cell = '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
     $cell .= '<td>' . $student['gradeinfo']['grade'] . '</td>';
     $cell .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
@@ -358,7 +358,7 @@ function download(string $spreadsheet, string $filename) {
  * @param string $filetype
  * @return boolean
  */
-function output_header(string $filename, string$filetype) : bool{
+function output_header(string $filename, string$filetype) : bool {
     if ($filetype == 'Xlsx') {
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     } else {

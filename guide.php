@@ -42,7 +42,7 @@ $data = init($data);
 require_capability('mod/assign:grade', $data['context']);
 
 $guide = new guide();
-$data['dbrecords']= $guide->get_data($data['assign'], $data['cm']);
+$data['dbrecords'] = $guide->get_data($data['assign'], $data['cm']);
 
 $data = user_fields($data, $data['dbrecords']);
 if (isset($data['students'])) {

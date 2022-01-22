@@ -43,7 +43,7 @@ $data = init($data);
 require_capability('mod/assign:grade', $data['context']);
 
 $rubric = new rubric();
-$data['dbrecords']= $rubric->get_data($data['assign'], $data['cm']);
+$data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
 
 $data = user_fields($data, $data['dbrecords']);
 if (isset($data['students'])) {
