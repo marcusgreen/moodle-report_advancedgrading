@@ -51,7 +51,8 @@ class test_locallib extends advanced_testcase {
      *
      * @var $courseid
      */
-    public $courseid;
+    public $rubricassignid;
+    public $guideassignid;
 
     /**
      * assignment id
@@ -102,6 +103,7 @@ class test_locallib extends advanced_testcase {
 
     public function test_rubric() {
         $this->resetAfterTest();
+        global $DB;
 
         $cm = get_coursemodule_from_instance('assign', $this->rubricassignid, $this->courseid);
         $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
@@ -122,11 +124,21 @@ class test_locallib extends advanced_testcase {
         foreach ($enrolledusers as $enuser) {
             $enrollednames[] = $enuser->username;
         }
-        // Confirme blind marking does not show real names.
+        // Confirm blind marking prevents showing real names.
         $this->assertNotContains($gradeduser, $enrollednames);
+
+        $teacher =  $DB->get_record('user',['username' => 't1']);
+        $this->setUser($teacher);
+        // Reveal identities and confirmm that shows in repor.
+        $data['assign']->reveal_identities();
+        $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
+        $gradeduser = reset($data['dbrecords'])->username;
+        $this->assertContains($gradeduser, $enrollednames);
+
     }
     public function test_guide() {
         $this->resetAfterTest();
+        global $DB;
         $cm = get_coursemodule_from_instance('assign', $this->guideassignid, $this->courseid);
         $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
         $data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
@@ -146,7 +158,16 @@ class test_locallib extends advanced_testcase {
         foreach ($enrolledusers as $enuser) {
             $enrollednames[] = $enuser->username;
         }
-        // Confirme blind marking does not show real names.
+        // Confirm blind marking does not show real names.
         $this->assertNotContains($gradeduser, $enrollednames);
+
+        $teacher =  $DB->get_record('user',['username' => 't1']);
+        $this->setUser($teacher);
+        // Reveal identities and confirmm that shows in repor.
+        $data['assign']->reveal_identities();
+        $data['dbrecords'] = $guide->get_data($data['assign'], $data['cm']);
+        $gradeduser = reset($data['dbrecords'])->username;
+        $this->assertContains($gradeduser, $enrollednames);
+
     }
 }
