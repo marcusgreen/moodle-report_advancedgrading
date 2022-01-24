@@ -231,7 +231,7 @@ function get_grades(array $data, array $dbrecords): array {
             'definition' => $grade->definition ?? "",
             'feedback' => $grade->remark
         ];
-        if ($scaleoptions) {
+        if (isset($scaleoptions)) {
             $formattedgrade = $scaleoptions[round($grade->grade)] ?? $scaleoptions[1];
         } else {
             $formattedgrade = number_format($grade->score, 2);
