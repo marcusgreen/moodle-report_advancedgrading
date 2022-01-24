@@ -234,7 +234,7 @@ function get_grades(array $data, array $dbrecords): array {
         if (isset($scaleoptions)) {
             $formattedgrade = $scaleoptions[round($grade->grade)] ?? $scaleoptions[1];
         } else {
-            $formattedgrade = number_format($grade->score, 2);
+            $formattedgrade = number_format($grade->grade, 2);
         }
 
         $gi = [
