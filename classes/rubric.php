@@ -47,7 +47,10 @@ class rubric {
                 $rows .= '</tr>';
             }
         }
-        return $rows ?? '';
+        if ($rows == "") {
+            $rows = '<tr><td colspan=' . $data['colcount'] . '>'.get_string('nomarkedsubmissions','report_advancedgrading') .'</td></tr>';
+        }
+        return $rows;
     }
     /**
      * Query the database for the student grades.

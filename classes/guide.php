@@ -34,20 +34,23 @@ class guide {
      */
     public function get_rows(array $data): string {
         if (isset($data['students'])) {
-            $row = '';
+            $rows = '';
             foreach ($data['students'] as $student) {
-                $row .= '<tr>';
-                $row .= get_student_cells($data, $student);
+                $rows .= '<tr>';
+                $rows .= get_student_cells($data, $student);
                 foreach (array_keys($data['criterion']) as $crikey) {
-                    $row .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
-                    $row .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+                    $rows .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
+                    $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
                 }
-                $row .= get_summary_cells($student);
-                $row .= '</tr>';
+                $rows .= get_summary_cells($student);
+                $rows .= '</tr>';
             }
 
         }
-        return $row ?? "";
+        if ($rows == "") {
+            $rows = '<tr><td colspan=' . $data['colcount'] . '>'.get_string('nomarkedsubmissions','report_advancedgrading') .'</td></tr>';
+        }
+        return $rows;
     }
 
     /**
@@ -75,14 +78,14 @@ class guide {
             JOIN {gradingform_guide_criteria} criteria ON (criteria.definitionid = gd.id)
             JOIN {grading_instances} gin ON gin.definitionid = gd.id
             JOIN {assign_grades} ag ON ag.id = gin.itemid
-    LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
+      LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
             JOIN {user} stu ON stu.id = ag.userid
             JOIN {user} rubm ON rubm.id = gin.raterid
             JOIN {gradingform_guide_fillings} fillings ON (fillings.instanceid = gin.id)
-            AND (fillings.criterionid = criteria.id)
-            WHERE cm.id = :assignid AND gin.status = 1
-            AND  stu.deleted = 0
-            ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
+             AND (fillings.criterionid = criteria.id)
+           WHERE cm.id = :assignid AND gin.status = 1
+             AND  stu.deleted = 0
+        ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
         $data = $DB->get_records_sql($sql, ['assignid' => $cm->id]);
         $data = set_blindmarking($data, $assign, $cm);
         return $data;
