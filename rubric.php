@@ -57,9 +57,7 @@ $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
 
 $rows = $rubric->get_rows($data);
-if ($rows == "") {
-    $rows = '<tr><td colspan=' . $data['colcount'] . '> No marked submissions found </td></tr>';
-}
+
 $table .= $rows;
 $table .= '   </tbody> </table> </div>';
 
