@@ -53,8 +53,6 @@ class guide {
                 $rows .='<td></td>';
             }
             $rows .='</tr>';
-
-            //$rows = '<tr><td colspan=' . $data['colcount'] . '>'.get_string('nomarkedsubmissions','report_advancedgrading') .'</td></tr>';
         }
         return $rows;
     }
