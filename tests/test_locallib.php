@@ -101,6 +101,32 @@ class test_locallib extends advanced_testcase {
     // Use the generator helper.
     use mod_assign_test_generator;
 
+    public function test_userfields() {
+        $this->resetAfterTest();
+        $cm = get_coursemodule_from_instance('assign', $this->rubricassignid, $this->courseid);
+        $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
+        $data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
+        $data['grademethod'] = 'rubric';
+        $data['modid'] = $cm->id;
+        $data['courseid'] = $this->courseid;
+
+        set_config('profilefields','username,firstname,lastname,email,groups','report_advancedgrading');
+
+        $data = init($data);
+        $rubric = new rubric();
+
+        $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
+        $data = user_fields($data, $data['dbrecords']);
+        $student = reset($data['students']);
+        $this->assertArrayHasKey('firstname', $student);
+        $this->assertArrayHasKey('lastname', $student);
+        $this->assertArrayHasKey('email', $student);
+
+        $data = add_groups($data, $data['courseid']);
+        $data = get_grades($data, $data['dbrecords']);
+        $rows = $rubric->get_rows($data);
+        $this->assertStringContainsString('Group1',$rows);
+    }
     public function test_rubric() {
         $this->resetAfterTest();
         global $DB;
@@ -134,6 +160,10 @@ class test_locallib extends advanced_testcase {
         $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
         $gradeduser = reset($data['dbrecords'])->username;
         $this->assertContains($gradeduser, $enrollednames);
+        set_config('groups',true,'report_advancedgrading');
+        $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
+        $data = user_fields($data, $data['dbrecords']);
+
 
     }
     public function test_guide() {

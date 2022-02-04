@@ -33,8 +33,8 @@ class rubric {
      * @return string
      */
     public function get_rows(array $data): string {
+        $rows = '';
         if (isset($data['students'])) {
-            $rows = '';
             foreach ($data['students'] as $student) {
                 $rows .= '<tr>';
                 $rows .= get_student_cells($data, $student);

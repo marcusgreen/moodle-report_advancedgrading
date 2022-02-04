@@ -39,7 +39,7 @@ $data['grademethod'] = 'rubric';
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
 $data = init($data);
-
+$cfg  = get_config('report_advancedgrading');
 require_capability('mod/assign:grade', $data['context']);
 
 $rubric = new rubric();
