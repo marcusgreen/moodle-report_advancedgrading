@@ -48,11 +48,11 @@ class guide {
 
         }
         if ($rows == "") {
-            $rows .='<tr> <td>'.get_string('nomarkedsubmissions','report_advancedgrading') .'</td>';
-            for ($i=0; $i < $data['colcount']-1; $i++) {
-                $rows .='<td></td>';
+            $rows .= '<tr> <td>' . get_string('nomarkedsubmissions', 'report_advancedgrading') . '</td>';
+            for ($i = 0; $i < $data['colcount'] - 1; $i++) {
+                $rows .= '<td></td>';
             }
-            $rows .='</tr>';
+            $rows .= '</tr>';
         }
         return $rows;
     }

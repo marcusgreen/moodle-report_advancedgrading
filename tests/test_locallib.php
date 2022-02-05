@@ -110,7 +110,7 @@ class test_locallib extends advanced_testcase {
         $data['modid'] = $cm->id;
         $data['courseid'] = $this->courseid;
 
-        set_config('profilefields','username,firstname,lastname,email,groups','report_advancedgrading');
+        set_config('profilefields', 'username,firstname,lastname,email,groups', 'report_advancedgrading');
 
         $data = init($data);
         $rubric = new rubric();
@@ -125,7 +125,7 @@ class test_locallib extends advanced_testcase {
         $data = add_groups($data, $data['courseid']);
         $data = get_grades($data, $data['dbrecords']);
         $rows = $rubric->get_rows($data);
-        $this->assertStringContainsString('Group1',$rows);
+        $this->assertStringContainsString('Group1', $rows);
     }
     public function test_rubric() {
         $this->resetAfterTest();
@@ -153,17 +153,16 @@ class test_locallib extends advanced_testcase {
         // Confirm blind marking prevents showing real names.
         $this->assertNotContains($gradeduser, $enrollednames);
 
-        $teacher =  $DB->get_record('user',['username' => 't1']);
+        $teacher = $DB->get_record('user', ['username' => 't1']);
         $this->setUser($teacher);
         // Reveal identities and confirmm that shows in repor.
         $data['assign']->reveal_identities();
         $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
         $gradeduser = reset($data['dbrecords'])->username;
         $this->assertContains($gradeduser, $enrollednames);
-        set_config('groups',true,'report_advancedgrading');
+        set_config('groups', true, 'report_advancedgrading');
         $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
         $data = user_fields($data, $data['dbrecords']);
-
 
     }
     public function test_guide() {
@@ -191,7 +190,7 @@ class test_locallib extends advanced_testcase {
         // Confirm blind marking does not show real names.
         $this->assertNotContains($gradeduser, $enrollednames);
 
-        $teacher =  $DB->get_record('user',['username' => 't1']);
+        $teacher = $DB->get_record('user', ['username' => 't1']);
         $this->setUser($teacher);
         // Reveal identities and confirmm that shows in repor.
         $data['assign']->reveal_identities();
