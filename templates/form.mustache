@@ -36,7 +36,7 @@
 <form method="POST" action="{{grademethod}}.php?id={{courseid}}&modid={{modid}}"">
 
 <div class="form-group" >
-    <input type="hidden" name="id" value="{{courseid}}">
+    <input type="hidden" name="id" {{courseidvalue}}>
     <input type="hidden" value="exceldownload">
     <input type="hidden" name="dload" value=true>
     <input type="submit" class="btn btn-primary"  value="{{#str}}exceldownload, report_advancedgrading{{/str}}" id="exceldownload">
