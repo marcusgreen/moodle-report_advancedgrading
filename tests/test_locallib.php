@@ -52,6 +52,12 @@ class test_locallib extends advanced_testcase {
      * @var $courseid
      */
     public $rubricassignid;
+
+    /**
+     * guide assignent id
+     *
+     * @var int
+     */
     public $guideassignid;
 
     /**
@@ -100,7 +106,12 @@ class test_locallib extends advanced_testcase {
 
     // Use the generator helper.
     use mod_assign_test_generator;
-
+    /**
+     * check that values in settings configure
+     * what userfields are displayed
+     *
+     * @return void
+     */
     public function test_userfields() {
         $this->resetAfterTest();
         $cm = get_coursemodule_from_instance('assign', $this->rubricassignid, $this->courseid);
@@ -127,6 +138,11 @@ class test_locallib extends advanced_testcase {
         $rows = $rubric->get_rows($data);
         $this->assertStringContainsString('Group1', $rows);
     }
+    /**
+     * Check output of report for rubric grading method
+     *
+     * @return void
+     */
     public function test_rubric() {
         $this->resetAfterTest();
         global $DB;
@@ -165,6 +181,11 @@ class test_locallib extends advanced_testcase {
         $data = user_fields($data, $data['dbrecords']);
 
     }
+    /**
+     * Check output of report for marking guide grading method
+     *
+     * @return void
+     */
     public function test_guide() {
         $this->resetAfterTest();
         global $DB;

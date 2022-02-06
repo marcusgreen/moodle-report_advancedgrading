@@ -23,6 +23,12 @@
  */
 namespace report_advancedgrading;
 
+/**
+ * Logic to process data for assignments using the rubric grading ethod
+ *
+ * @copyright  2022 Marcus Green
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class rubric {
 
     /**

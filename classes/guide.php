@@ -23,8 +23,7 @@
  */
 namespace report_advancedgrading;
 /**
- * Logic to process data for assignents using the marking guid
- * advanced grading method
+ * Logic to process data for assignments using the marking guide
  *
  * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

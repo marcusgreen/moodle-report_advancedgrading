@@ -15,10 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Shared code for the advancedgrading (rubrice)
- * report
+ * Shared code for the advancedgrading methods
  *
- * Language strings to be used by report/rubrics
  *
  * @package    report_advancedgrading
  * @copyright  2022 Marcus Green
@@ -134,7 +132,7 @@ function user_fields(array $data, array $dbrecords): array {
  * to a file download
  *
  * @param string $form
- * @param int $dload
+ * @param string $dload
  * @param array $data
  * @param string $table
  * @return void
