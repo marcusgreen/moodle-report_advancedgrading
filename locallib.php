@@ -162,7 +162,8 @@ function init(array $data): array {
     $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
     $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
 
-    $data['colcount'] = $data['studentspan'] = count($data['profilefields']);
+    $data['colcount'] = count($data['profilefields']);
+    $data['studentspan'] = 'colspan = '.count($data['profilefields']);
     $data['colcount'] += 4; // Always 4 cols in the summary.
 
     $modinfo = get_fast_modinfo($data['courseid']);

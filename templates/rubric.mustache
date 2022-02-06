@@ -31,17 +31,17 @@ along with Moodle. If not, see
     }
 }}
 
-<div style="width:101%;">
+<div>
 <table class="table table-bordered table-striped ">
     <thead>
         {{#header}}
         <tr>
-            <th colspan={{colcount}}>
+            <th colspan={{{colcount}}}>
                 <b>{{#str}}course{{/str}}:{{coursename}}</b>
             </th>
         </tr>
         <tr>
-            <th colspan={{colcount}}>
+            <th colspan={{{colcount}}}>
               <b>{{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}</b>
             </th>
         </tr>
@@ -62,7 +62,7 @@ along with Moodle. If not, see
 <table  id="rubric-header" class="table table-hover table-bordered table-striped" style="width:101%;" >
     <thead>
      <tr>
-            <th colspan={{studentspan}}>
+            <th {{{studentspan}}}>
                 {{#str}}student, report_advancedgrading{{/str}}
             </th>
             {{#criteria}}
@@ -80,7 +80,7 @@ along with Moodle. If not, see
             <th {{{headerstyle}}} ><b>{{#str}}overall_feedback, report_advancedgrading{{/str}} </b></th>
             <th {{{headerstyle}}} ><b>{{#str}}grade, report_advancedgrading{{/str}} </b></th>
             <th {{{headerstyle}}} ><b>{{#str}}gradedby, report_advancedgrading{{/str}}</b></th>
-            <th width="16em" {{{headerstyle}}} ><b>{{#str}}timegraded, report_advancedgrading {{/str}}</b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}timegraded, report_advancedgrading {{/str}}</b></th>
         </tr>
     </thead>
     <tbody>

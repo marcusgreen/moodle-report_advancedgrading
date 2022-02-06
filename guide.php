@@ -50,7 +50,7 @@ if (isset($data['students'])) {
     $data = get_grades($data, $data['dbrecords']);
 }
 
-// Each guid criteria has a score,definition and feedback column.
+// Each guide criteria has a score,definition and feedback column.
 $data['colcount'] += count($data['criteria']) * 2;
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 
