@@ -180,7 +180,7 @@ function init(array $data): array {
      ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
     $data = header_fields($data, $data['criteriarecord'], $data['course'], $data['cm'], $data['gradingdefinition']);
     $data['definition'] = get_grading_definition($data['cm']->instance);
-
+    $data['formaction'] = 'action='.$data['grademethod'] .'.php?id='.$data['courseid'].'&modid='.$data['modid'];
     $event = \report_advancedgrading\event\report_viewed::create(array(
         'context' => $data['context'],
         'other' => array(

@@ -129,6 +129,7 @@ class test_locallib extends advanced_testcase {
 
         $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
         $data = user_fields($data, $data['dbrecords']);
+        //mavg
         $student = reset($data['students']);
         $this->assertArrayHasKey('firstname', $student);
         $this->assertArrayHasKey('lastname', $student);
