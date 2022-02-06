@@ -182,7 +182,7 @@ function init(array $data): array {
     $data['definition'] = get_grading_definition($data['cm']->instance);
     $data['formaction'] = 'action='.$data['grademethod'] .'.php?id='.$data['courseid'].'&modid='.$data['modid'];
     // Summary always has 4 columns.
-    $data['summaryspan'] =' colspan = "4" ';
+    $data['summaryspan'] = ' colspan = "4" ';
     $data['courseidvalue'] = ' value = '.$data['courseid'];
     $event = \report_advancedgrading\event\report_viewed::create(array(
         'context' => $data['context'],

@@ -157,7 +157,7 @@ class locallib_test extends advanced_testcase {
         $data = init($data);
 
         $this->assertContains('username', $data['profilefields']);
-        // Assignment was set up with 3 criteria
+        // Assignment was set up with 3 criteria.
         $this->assertCount(3, $data['criteriarecord']);
 
         $rubric = new rubric();
