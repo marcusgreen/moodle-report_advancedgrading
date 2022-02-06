@@ -55,6 +55,7 @@ $data['colcount'] += count($data['criteria']) * 2;
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 
 $data['rows'] = $guide->get_rows($data);
+
 $table = $OUTPUT->render_from_template('report_advancedgrading/guide', $data);
 
 send_output($form, $dload, $data, $table);
