@@ -3,106 +3,104 @@
     width: 100%;
     display: inline-flex;
     flex-direction: column;
-	min-width:200px;
+    min-width:200px;
 }
-.agtable {
 
-}
 .dataTable-wrapper.no-header .dataTable-container {
-	border-top: 1px solid #d9d9d9;
+    border-top: 1px solid #d9d9d9;
 }
 
 .dataTable-wrapper.no-footer .dataTable-container {
-	border-bottom: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
 }
 
 .dataTable-top,
 .dataTable-bottom {
-	padding: 8px 10px;
+    padding: 8px 10px;
 }
 
 .dataTable-top > nav:first-child,
 .dataTable-top > div:first-child,
 .dataTable-bottom > nav:first-child,
 .dataTable-bottom > div:first-child {
-	float: left;
+    float: left;
 }
 
 .dataTable-top > nav:last-child,
 .dataTable-top > div:last-child,
 .dataTable-bottom > nav:last-child,
 .dataTable-bottom > div:last-child {
-	float: right;
+    float: right;
 }
 
 .dataTable-selector {
-	padding: 6px;
+    padding: 6px;
 }
 
 .dataTable-input {
-	padding: 6px 12px;
+    padding: 6px 12px;
 }
 
 .dataTable-info {
-	margin: 7px 0;
+    margin: 7px 0;
 }
 
 /* PAGER */
 .dataTable-pagination ul {
-	margin: 0;
-	padding-left: 0;
+    margin: 0;
+    padding-left: 0;
 }
 
 .dataTable-pagination li {
-	list-style: none;
-	float: left;
+    list-style: none;
+    float: left;
 }
 
 .dataTable-pagination a {
-	border: 1px solid transparent;
-	float: left;
-	margin-left: 2px;
-	padding: 6px 12px;
-	position: relative;
-	text-decoration: none;
-	color: #333;
+    border: 1px solid transparent;
+    float: left;
+    margin-left: 2px;
+    padding: 6px 12px;
+    position: relative;
+    text-decoration: none;
+    color: #333;
 }
 
 .dataTable-pagination a:hover {
-	background-color: #d9d9d9;
+    background-color: #d9d9d9;
 }
 
 .dataTable-pagination .active a,
 .dataTable-pagination .active a:focus,
 .dataTable-pagination .active a:hover {
-	background-color: #d9d9d9;
-	cursor: default;
+    background-color: #d9d9d9;
+    cursor: default;
 }
 
 .dataTable-pagination .ellipsis a,
 .dataTable-pagination .disabled a,
 .dataTable-pagination .disabled a:focus,
 .dataTable-pagination .disabled a:hover {
-	cursor: not-allowed;
+    cursor: not-allowed;
 }
 
 .dataTable-pagination .disabled a,
 .dataTable-pagination .disabled a:focus,
 .dataTable-pagination .disabled a:hover {
-	cursor: not-allowed;
-	opacity: 0.4;
+    cursor: not-allowed;
+    opacity: 0.4;
 }
 
 .dataTable-pagination .pager a {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 /* TABLE */
 .dataTable-table {
-	max-width: 100%;
-	width: 100%;
-	border-spacing: 0;
-	border-collapse: separate;
+    max-width: 100%;
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: separate;
 }
 
 .dataTable-table > tbody > tr > td,
@@ -111,75 +109,75 @@
 .dataTable-table > tfoot > tr > th,
 .dataTable-table > thead > tr > td,
 .dataTable-table > thead > tr > th {
-	vertical-align: top;
-	padding: 8px 10px;
+    vertical-align: top;
+    padding: 8px 10px;
 }
 
 .dataTable-table > thead > tr > th {
-	vertical-align: bottom;
-	text-align: left;
-	border-bottom: 1px solid #d9d9d9;
+    vertical-align: bottom;
+    text-align: left;
+    border-bottom: 1px solid #d9d9d9;
 }
 
 .dataTable-table > tfoot > tr > th {
-	vertical-align: bottom;
-	text-align: left;
-	border-top: 1px solid #d9d9d9;
+    vertical-align: bottom;
+    text-align: left;
+    border-top: 1px solid #d9d9d9;
 }
 
 .dataTable-table th {
-	vertical-align: bottom;
-	text-align: left;
+    vertical-align: bottom;
+    text-align: left;
 }
 
 .dataTable-table th a {
-	text-decoration: none;
-	color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 .dataTable-sorter {
-	display: inline-block;
-	height: 100%;
-	position: relative;
-	width: 100%;
+    display: inline-block;
+    height: 100%;
+    position: relative;
+    width: 100%;
 }
 
 .dataTable-sorter::before,
 .dataTable-sorter::after {
-	content: "";
-	height: 0;
-	width: 0;
-	position: absolute;
-	right: 4px;
-	border-left: 4px solid transparent;
-	border-right: 4px solid transparent;
-	opacity: 0.2;
+    content: "";
+    height: 0;
+    width: 0;
+    position: absolute;
+    right: 4px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    opacity: 0.2;
 }
 
 .dataTable-sorter::before {
-	border-top: 4px solid #000;
-	bottom: 0px;
+    border-top: 4px solid #000;
+    bottom: 0px;
 }
 
 .dataTable-sorter::after {
-	border-bottom: 4px solid #000;
-	border-top: 4px solid transparent;
-	top: 0px;
+    border-bottom: 4px solid #000;
+    border-top: 4px solid transparent;
+    top: 0px;
 }
 
 .asc .dataTable-sorter::after,
 .desc .dataTable-sorter::before {
-	opacity: 0.6;
+    opacity: 0.6;
 }
 
 .dataTables-empty {
-	text-align: center;
+    text-align: center;
 }
 
 .dataTable-top::after, .dataTable-bottom::after {
-	clear: both;
-	content: " ";
-	display: table;
+    clear: both;
+    content: " ";
+    display: table;
 }
 /*!
  * DataTables + Font Awesome integration
@@ -190,46 +188,46 @@
  * Sort styling
  */
  table.dataTable thead th {
-	position: relative;
-	background-image: none !important; /* Remove the DataTables bootstrap integration styling */
+    position: relative;
+    background-image: none !important; /* Remove the DataTables bootstrap integration styling */
 }
 
 table.dataTable thead th.sorting:after,
 table.dataTable thead th.sorting_asc:after,
 table.dataTable thead th.sorting_desc:after {
-	position: absolute;
-	top: 12px;
-	right: 8px;
-	display: block;
-	font-family: FontAwesome;
+    position: absolute;
+    top: 12px;
+    right: 8px;
+    display: block;
+    font-family: FontAwesome;
 }
 
 table.dataTable thead th.sorting:after {
-	content: "\f0dc";
-	color: darkslategrey;
-	padding-top: 0.12em;
+    content: "\f0dc";
+    color: darkslategrey;
+    padding-top: 0.12em;
 
 }
 table.dataTable thead th.sorting_asc:after {
-	color: darkslategrey;
-	content: "\f0de";
+    color: darkslategrey;
+    content: "\f0de";
 }
 table.dataTable thead th.sorting_desc:after {
-	color:darkslategrey;
-	content: "\f0dd";
+    color:darkslategrey;
+    content: "\f0dd";
 }
 
 div.dataTables_scrollBody table.dataTable thead th.sorting:after,
 div.dataTables_scrollBody table.dataTable thead th.sorting_asc:after,
 div.dataTables_scrollBody table.dataTable thead th.sorting_desc:after {
-	content: "";
+    content: "";
 }
 
 /* In Bootstrap and Foundation the padding top is a little different from the DataTables stylesheet */
 table.table thead th.sorting:after,
 table.table thead th.sorting_asc:after,
 table.table thead th.sorting_desc:after {
-	top: 8px;
+    top: 8px;
 }
 
 
@@ -238,48 +236,48 @@ table.table thead th.sorting_desc:after {
  */
 div.dataTables_paginate a.paginate_button.first,
 div.dataTables_paginate a.paginate_button.previous {
-	position: relative;
-	padding-left: 24px;
+    position: relative;
+    padding-left: 24px;
 }
 
 div.dataTables_paginate a.paginate_button.next,
 div.dataTables_paginate a.paginate_button.last {
-	position: relative;
-	padding-right: 24px;
+    position: relative;
+    padding-right: 24px;
 }
 
 div.dataTables_paginate a.first:before,
 div.dataTables_paginate a.previous:before {
-	position: absolute;
-	top: 8px;
-	left: 10px;
-	display: block;
-	font-family: FontAwesome;
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    display: block;
+    font-family: FontAwesome;
 }
 
 div.dataTables_paginate a.next:after,
 div.dataTables_paginate a.last:after {
-	position: absolute;
-	top: 8px;
-	right: 10px;
-	display: block;
-	font-family: FontAwesome;
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    display: block;
+    font-family: FontAwesome;
 }
 
 div.dataTables_paginate a.first:before {
-	content: "\f100";
+    content: "\f100";
 }
 
 div.dataTables_paginate a.previous:before {
-	content: "\f104";
+    content: "\f104";
 }
 
 div.dataTables_paginate a.next:after {
-	content: "\f105";
+    content: "\f105";
 }
 
 div.dataTables_paginate a.last:after {
-	content: "\f101";
+    content: "\f101";
 }
 
 
@@ -288,48 +286,48 @@ div.dataTables_paginate a.last:after {
  */
 div.dataTables_paginate li.first > a,
 div.dataTables_paginate li.previous > a {
-	position: relative;
-	padding-left: 24px;
+    position: relative;
+    padding-left: 24px;
 }
 
 div.dataTables_paginate li.next > a,
 div.dataTables_paginate li.last > a {
-	position: relative;
-	padding-right: 24px;
+    position: relative;
+    padding-right: 24px;
 }
 
 div.dataTables_paginate li.first a:before,
 div.dataTables_paginate li.previous a:before {
-	position: absolute;
-	top: 6px;
-	left: 10px;
-	display: block;
-	font-family: FontAwesome;
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    display: block;
+    font-family: FontAwesome;
 }
 
 div.dataTables_paginate li.next a:after,
 div.dataTables_paginate li.last a:after {
-	position: absolute;
-	top: 6px;
-	right: 10px;
-	display: block;
-	font-family: FontAwesome;
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    display: block;
+    font-family: FontAwesome;
 }
 
 div.dataTables_paginate li.first a:before {
-	content: "\f100";
+    content: "\f100";
 }
 
 div.dataTables_paginate li.previous a:before {
-	content: "\f104";
+    content: "\f104";
 }
 
 div.dataTables_paginate li.next a:after {
-	content: "\f105";
+    content: "\f105";
 }
 
 div.dataTables_paginate li.last a:after {
-	content: "\f101";
+    content: "\f101";
 }
 
 /* In Foundation we don't want the padding like in bootstrap */
@@ -337,13 +335,13 @@ div.columns div.dataTables_paginate li.first a:before,
 div.columns div.dataTables_paginate li.previous a:before,
 div.columns div.dataTables_paginate li.next a:after,
 div.columns div.dataTables_paginate li.last a:after {
-	top: 0;
+    top: 0;
 }
 div.dataTables_wrapper div.dataTables_filter input {
-	margin-left: 0.5em;
-	display: inline-block;
-	width: auto;
+    margin-left: 0.5em;
+    display: inline-block;
+    width: auto;
   }
   div.dataTables_wrapper div.dataTables_filter {
-	text-align: right;
+    text-align: right;
   }
