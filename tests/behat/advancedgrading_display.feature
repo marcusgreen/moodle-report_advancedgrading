@@ -1,4 +1,4 @@
-@report_advancedgrading
+@report @report_advancedgrading
 
 Feature: Display the advanced grading report
   Background:
