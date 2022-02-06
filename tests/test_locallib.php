@@ -78,7 +78,7 @@ class test_locallib extends advanced_testcase {
         global $USER, $CFG, $DB;
         $this->setAdminUser();
 
-        set_config('import_general_duplicate_admin_allowed',1,'backup');
+        set_config('import_general_duplicate_admin_allowed', 1, 'backup');
 
         $foldername = 'backup-advgrade';
         $fp = get_file_packer('application/vnd.moodle.backup');
