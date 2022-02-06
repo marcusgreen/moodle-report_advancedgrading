@@ -65,11 +65,21 @@ along with Moodle. If not, see
                 {{#str}}student, report_advancedgrading{{/str}}
             </th>
             {{#criteria}}
-            <th colspan="2" class="align-top">{{description}}</th>
+            <th {{criteriaspan}} class="align-top">{{description}}</th>
             {{/criteria}}
-            <th colspan="4">{{#str}}gradesummary, report_advancedgrading{{/str}}</th>
+            <th {{summaryspan}}>{{#str}}gradesummary, report_advancedgrading{{/str}}</th>
     </tr>
-
+    <tr>
+            {{{studentheaders}}}
+            {{#criteria}}
+            <th {{{headerstyle}}} ><b>{{#str}}score, report_advancedgrading {{/str}}</b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}feedback, report_advancedgrading{{/str}}</b></th>
+            {{/criteria}}
+            <th {{{headerstyle}}} ><b>{{#str}}overall_feedback, report_advancedgrading{{/str}} </b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}grade, report_advancedgrading{{/str}} </b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}gradedby, report_advancedgrading{{/str}}</b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}timegraded, report_advancedgrading {{/str}}</b></th>
+    </tr>
     </thead>
     <tbody>
         {{{rows}}}
