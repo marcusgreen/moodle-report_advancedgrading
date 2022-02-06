@@ -3,7 +3,7 @@
     width: 100%;
     display: inline-flex;
     flex-direction: column;
-    min-width:200px;
+    min-width: 200px;
 }
 
 .dataTable-wrapper.no-header .dataTable-container {
@@ -156,13 +156,13 @@
 
 .dataTable-sorter::before {
     border-top: 4px solid #000;
-    bottom: 0px;
+    bottom: 0;
 }
 
 .dataTable-sorter::after {
     border-bottom: 4px solid #000;
     border-top: 4px solid transparent;
-    top: 0px;
+    top: 0;
 }
 
 .asc .dataTable-sorter::after,
@@ -174,7 +174,8 @@
     text-align: center;
 }
 
-.dataTable-top::after, .dataTable-bottom::after {
+.dataTable-top::after,
+.dataTable-bottom::after {
     clear: both;
     content: " ";
     display: table;
@@ -187,9 +188,9 @@
 /*
  * Sort styling
  */
- table.dataTable thead th {
+table.dataTable thead th {
     position: relative;
-    background-image: none !important; /* Remove the DataTables bootstrap integration styling */
+    background-image: none; /* Remove the DataTables bootstrap integration styling */
 }
 
 table.dataTable thead th.sorting:after,
@@ -213,7 +214,7 @@ table.dataTable thead th.sorting_asc:after {
     content: "\f0de";
 }
 table.dataTable thead th.sorting_desc:after {
-    color:darkslategrey;
+    color: darkslategrey;
     content: "\f0dd";
 }
 
@@ -341,7 +342,7 @@ div.dataTables_wrapper div.dataTables_filter input {
     margin-left: 0.5em;
     display: inline-block;
     width: auto;
-  }
-  div.dataTables_wrapper div.dataTables_filter {
+}
+div.dataTables_wrapper div.dataTables_filter {
     text-align: right;
-  }
+}
