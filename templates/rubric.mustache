@@ -32,17 +32,17 @@ along with Moodle. If not, see
 }}
 
 <div>
-<table class="table table-bordered table-striped ">
+<table class="table table-hover table-bordered table-striped ">
     <thead>
         {{#header}}
         <tr>
-            <th colspan={{{colcount}}}>
+            <th {{{studentspan}}}>
                 <b>{{#str}}course{{/str}}:{{coursename}}</b>
             </th>
         </tr>
         <tr>
-            <th colspan={{{colcount}}}>
-              <b>{{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}</b>
+            <th {{{studentspan}}}>
+                <b>{{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}</b>
             </th>
         </tr>
 
