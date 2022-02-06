@@ -101,8 +101,8 @@ class test_locallib extends advanced_testcase {
         $controller->execute_precheck();
         $controller->execute_plan();
 
-        $this->rubricassignid = $DB->get_field('assign', 'id', ['name' => 'Rubric with Blind Marking']);
-        $this->guideassignid = $DB->get_field('assign', 'id', ['name' => 'Marking Guide With Blind Marking']);
+        $this->rubricassignid = $DB->get_field('assign', 'id', ['name' => 'Rubric with blind marking']);
+        $this->guideassignid = $DB->get_field('assign', 'id', ['name' => 'Marking Guide with blind marking']);
     }
 
     // Use the generator helper.
@@ -129,7 +129,6 @@ class test_locallib extends advanced_testcase {
 
         $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
         $data = user_fields($data, $data['dbrecords']);
-        //mavg
         $student = reset($data['students']);
         $this->assertArrayHasKey('firstname', $student);
         $this->assertArrayHasKey('lastname', $student);
@@ -158,7 +157,8 @@ class test_locallib extends advanced_testcase {
         $data = init($data);
 
         $this->assertContains('username', $data['profilefields']);
-        $this->assertCount(2, $data['criteriarecord']);
+        // Assignment was set up with 3 criteria
+        $this->assertCount(3, $data['criteriarecord']);
 
         $rubric = new rubric();
         $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
@@ -173,7 +173,7 @@ class test_locallib extends advanced_testcase {
 
         $teacher = $DB->get_record('user', ['username' => 't1']);
         $this->setUser($teacher);
-        // Reveal identities and confirmm that shows in repor.
+        // Reveal identities and confirmm that shows in report.
         $data['assign']->reveal_identities();
         $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
         $gradeduser = reset($data['dbrecords'])->username;
