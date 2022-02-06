@@ -21,9 +21,11 @@
  * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
-defined('MOODLE_INTERNAL') || die();
-global $CFG;
+namespace report_advancedgrading;
 
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
 
 require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
 require_once($CFG->dirroot . '/mod/assign/externallib.php');
@@ -44,7 +46,7 @@ use report_advancedgrading\guide;
  * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
-class locallib_test extends advanced_testcase {
+class locallib_test extends \advanced_testcase {
 
     /**
      * Unique id of course from db
@@ -85,18 +87,18 @@ class locallib_test extends advanced_testcase {
         $tempdir = make_backup_temp_directory($foldername);
         $fp->extract_to_pathname($CFG->dirroot . '/report/advancedgrading/tests/fixtures/backup-advgrade.mbz', $tempdir);
 
-        $this->courseid = restore_dbops::create_new_course(
+        $this->courseid = \restore_dbops::create_new_course(
             'Test fullname',
             'Test shortname',
             1
         );
-        $controller = new restore_controller(
+        $controller = new \restore_controller(
             'backup-advgrade',
             $this->courseid,
-            backup::INTERACTIVE_NO,
-            backup::MODE_GENERAL,
+            \backup::INTERACTIVE_NO,
+            \backup::MODE_GENERAL,
             $USER->id,
-            backup::TARGET_NEW_COURSE
+            \backup::TARGET_NEW_COURSE
         );
         $controller->execute_precheck();
         $controller->execute_plan();
@@ -106,7 +108,7 @@ class locallib_test extends advanced_testcase {
     }
 
     // Use the generator helper.
-    use mod_assign_test_generator;
+    use \mod_assign_test_generator;
     /**
      * check that values in settings configure
      * what userfields are displayed
