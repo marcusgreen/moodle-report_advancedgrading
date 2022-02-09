@@ -183,7 +183,13 @@ function init(array $data): array {
     $data['formaction'] = 'action='.$data['grademethod'] .'.php?id='.$data['courseid'].'&modid='.$data['modid'];
     // Summary always has 4 columns.
     $data['summaryspan'] = ' colspan = "4" ';
+    $style = $data['headerstyle'];
     $data['courseidvalue'] = ' value = '.$data['courseid'];
+    $data['summaryheader'] = '<th '.$style.'><b>'.get_string('overall_feedback', 'report_advancedgrading').'</b></th>';
+    $data['summaryheader'] .= '<th '.$style.'><b>'.get_string('grade', 'report_advancedgrading').'</b></th>';
+    $data['summaryheader'] .= '<th '.$style.'><b>'.get_string('gradedby', 'report_advancedgrading').'</b></th>';
+    $data['summaryheader'] .= '<th '.$style.'><b>'.get_string('timegraded', 'report_advancedgrading').'</b></th>';
+
     $event = \report_advancedgrading\event\report_viewed::create(array(
         'context' => $data['context'],
         'other' => array(

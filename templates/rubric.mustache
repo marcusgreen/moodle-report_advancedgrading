@@ -32,32 +32,7 @@ along with Moodle. If not, see
 }}
 
 <div>
-<table class="table table-hover table-bordered table-striped ">
-    <thead>
-        {{#header}}
-        <tr>
-            <th {{{studentspan}}}>
-                <b>{{#str}}course{{/str}}:{{coursename}}</b>
-            </th>
-        </tr>
-        <tr>
-            <th {{{studentspan}}}>
-                <b>{{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}</b>
-            </th>
-        </tr>
 
-        <tr>
-            <th {{{studentspan}}}>
-               <b>{{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}</b>
-            </tr>
-            <tr>
-            <th colspan="4">
-              <b> {{definition}}</b>
-            </th>
-        </tr>
-        {{/header}}
-    </thead>
-</table>
 
 <table  id="rubric-header" class="table table-hover table-bordered table-striped" style="width:101%;" >
     <thead>
@@ -66,10 +41,10 @@ along with Moodle. If not, see
                 {{#str}}student, report_advancedgrading{{/str}}
             </th>
             {{#criteria}}
-            <th colspan=3 class="align-top">{{description}}</th>
+            <th {{criteriaspan}} class="align-top">{{description}}</th>
             {{/criteria}}
-            <th colspan="4">{{#str}}gradesummary, report_advancedgrading{{/str}}</th>
-        </tr>
+            <th {{summaryspan}}>{{#str}}gradesummary, report_advancedgrading{{/str}}</th>
+     </tr>
         <tr>
             {{{studentheaders}}}
             {{#criteria}}
@@ -77,10 +52,7 @@ along with Moodle. If not, see
             <th {{{headerstyle}}} ><b>{{#str}}definition, report_advancedgrading {{/str}}</b></th>
             <th {{{headerstyle}}} ><b>{{#str}}feedback, report_advancedgrading{{/str}}</b></th>
             {{/criteria}}
-            <th {{{headerstyle}}} ><b>{{#str}}overall_feedback, report_advancedgrading{{/str}} </b></th>
-            <th {{{headerstyle}}} ><b>{{#str}}grade, report_advancedgrading{{/str}} </b></th>
-            <th {{{headerstyle}}} ><b>{{#str}}gradedby, report_advancedgrading{{/str}}</b></th>
-            <th {{{headerstyle}}} ><b>{{#str}}timegraded, report_advancedgrading {{/str}}</b></th>
+            {{{summaryheader}}}
         </tr>
     </thead>
     <tbody>
