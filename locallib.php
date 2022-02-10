@@ -160,6 +160,8 @@ function init(array $data): array {
     global $PAGE, $DB;
 
     $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
+
+    $data['courseidvalue'] ='value='.$data['courseid'];
     $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
     $data['studentspan'] = 'colspan = '.count($data['profilefields']);
 

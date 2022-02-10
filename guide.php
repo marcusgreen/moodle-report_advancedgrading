@@ -50,13 +50,13 @@ if (isset($data['students'])) {
     $data = get_grades($data, $data['dbrecords']);
 }
 
-$form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
-$header = $OUTPUT->render_from_template('report_advancedgrading/header', $data);
-
 // Each guide criteria has a score,definition and feedback column.
-$data['criteriaspan'] = ' colspan="2" ';
+$data['criteriaspan'] = " colspan='2' ";
 $data['colcount'] += count($data['criteria']) * 2;
 $data['rows'] = $guide->get_rows($data);
-$table = $OUTPUT->render_from_template('report_advancedgrading/guide', $data);
 
-send_output($form, $dload, $data, ($header. $table));
+$form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
+$table = $OUTPUT->render_from_template('report_advancedgrading/header', $data);
+$table .= $OUTPUT->render_from_template('report_advancedgrading/guide', $data);
+
+send_output($form, $dload, $data, $table);
