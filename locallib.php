@@ -137,13 +137,13 @@ function user_fields(array $data, array $dbrecords): array {
  * @param string $table
  * @return void
  */
-function send_output(string $form, string $dload, array $data, string $table) : void {
+function send_output(string $form, string $dload, array $data, string $page) : void {
     global $OUTPUT, $PAGE;
     if ($dload) {
-        download($table, $data['grademethod']);
+        download($page, $data['grademethod']);
         echo $OUTPUT->header();
     } else {
-        $html = $form . $table;
+        $html = $form . $page;
         $PAGE->set_pagelayout('standard');
         echo $OUTPUT->header();
         echo $OUTPUT->container($html, 'advancedgrading-main');
@@ -161,16 +161,16 @@ function init(array $data): array {
 
     $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
     $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
-    $data['colcount'] = count($data['profilefields']);
     $data['studentspan'] = 'colspan = '.count($data['profilefields']);
+
+    $data['colcount'] = count($data['profilefields']);
     $data['colcount'] += 4; // Always 4 cols in the summary.
+
 
     $modinfo = get_fast_modinfo($data['courseid']);
     $data['cm'] = $modinfo->get_cm($data['modid']);
     $data['course'] = $DB->get_record('course', array('id' => $data['courseid']), '*', MUST_EXIST);
     $data['gradingdefinition'] = get_grading_definition($data['cm']->instance);
-    $urlparams['id'] = $data['courseid'];
-    $urlparams['modid'] = $data['modid'];
 
     $data['context'] = context_module::instance($data['cm']->id);
     $data['assign'] = new assign($data['context'], $data['cm'], $data['cm']->get_course());
@@ -183,13 +183,6 @@ function init(array $data): array {
     $data['formaction'] = 'action='.$data['grademethod'] .'.php?id='.$data['courseid'].'&modid='.$data['modid'];
     // Summary always has 4 columns.
     $data['summaryspan'] = ' colspan = "4" ';
-    $style = $data['headerstyle'];
-    $data['courseidvalue'] = ' value = '.$data['courseid'];
-    $data['summaryheader'] = '<th '.$style.'><b>'.get_string('overall_feedback', 'report_advancedgrading').'</b></th>';
-    $data['summaryheader'] .= '<th '.$style.'><b>'.get_string('grade', 'report_advancedgrading').'</b></th>';
-    $data['summaryheader'] .= '<th '.$style.'><b>'.get_string('gradedby', 'report_advancedgrading').'</b></th>';
-    $data['summaryheader'] .= '<th '.$style.'><b>'.get_string('timegraded', 'report_advancedgrading').'</b></th>';
-
     $event = \report_advancedgrading\event\report_viewed::create(array(
         'context' => $data['context'],
         'other' => array(
@@ -199,6 +192,8 @@ function init(array $data): array {
     $event->add_record_snapshot('course_modules', $data['cm']);
     $event->trigger();
 
+    $urlparams['id'] = $data['courseid'];
+    $urlparams['modid'] = $data['modid'];
     $url = new moodle_url('/report/advancedgrading/' . $data['grademethod'] . '.php', $urlparams);
     $PAGE->set_url($url, $urlparams);
     $returnurl = new moodle_url('/mod/assign/view.php', ['id' => $data['modid']]);

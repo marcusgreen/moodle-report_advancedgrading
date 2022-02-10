@@ -39,7 +39,6 @@ $data['grademethod'] = 'rubric';
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
 $data = init($data);
-$cfg  = get_config('report_advancedgrading');
 require_capability('mod/assign:grade', $data['context']);
 
 $rubric = new rubric();
@@ -51,14 +50,13 @@ if (isset($data['students'])) {
     $data = get_grades($data, $data['dbrecords']);
 }
 
-$form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 
 // Each rubric criteria has a score,definition and feedback column.
 $data['criteriaspan'] = ' colspan="3" ';
-
 $data['colcount'] += count($data['criteria']) * 3;
 $data['rows'] = $rubric->get_rows($data);
 
+$form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $page = $OUTPUT->render_from_template('report_advancedgrading/header', $data);
 $page .= $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
 
