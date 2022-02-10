@@ -34,28 +34,28 @@
 }}
 
 <table class="table table-hover table-bordered table-striped ">
-  <thead>
+  <tbody>
       {{#header}}
       <tr>
-          <th {{{studentspan}}}>
+           <td>
               <b>{{#str}}course{{/str}}:{{coursename}}</b>
-          </th>
+           </td>
       </tr>
       <tr>
-          <th {{{studentspan}}}>
+           <td>
               <b>{{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}</b>
-          </th>
+           </td>
       </tr>
 
       <tr>
-          <th {{{studentspan}}}>
+           <td>
              <b>{{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}</b>
           </tr>
       <tr>
-          <th {{{studentspan}}}>
+           <td>
              <b> {{definition}}</b>
-          </th>
+           </td>
       </tr>
       {{/header}}
-  </thead>
+    </tbody>
 </table>
