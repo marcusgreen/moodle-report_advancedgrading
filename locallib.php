@@ -23,6 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
+use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
+use PhpOffice\PhpSpreadsheet\Writer\Exception as WriterException;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
@@ -134,7 +138,7 @@ function user_fields(array $data, array $dbrecords): array {
  * @param string $form
  * @param string $dload
  * @param array $data
- * @param string $table
+ * @param string $page
  * @return void
  */
 function send_output(string $form, string $dload, array $data, string $page) : void {
