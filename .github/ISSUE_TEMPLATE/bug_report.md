@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help me improve Gapfill
+about: Create a report to help me improve this plugin
 title: ''
 labels: ''
 assignees: ''
