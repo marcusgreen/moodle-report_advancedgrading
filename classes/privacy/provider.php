@@ -16,7 +16,7 @@
 
 /**
  * Privacy Subsystem for reports_advancedgrading implementing null_provider.
- *
+ * @package report_advancedgrading
  * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +25,7 @@ namespace report_advancedgrading\privacy;
 
 /**
  * Privacy Subsystem for reports_advancedgrading implementing null_provider.
- *
+ * @package report_advancedgrading
  * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
