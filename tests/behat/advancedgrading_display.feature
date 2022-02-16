@@ -21,11 +21,16 @@ Feature: Display the advanced grading report
     And I navigate to "Rubric breakdown report" in current page administration
     And I should see "Rubric"
     And I should see "Score"
+    And I pause
+    And I should see "75" in the "s1" "table_row"
     And I log out
     And I log in as "admin"
     When I am on "Advanced Grading 101" course homepage
     And I click on "Marking Guide" "link"
     And I navigate to "Marking guide breakdown report" in current page administration
+    And I pause
     # And I should see "Marking guide"
     # And I should see "Score"
     # And I should see "No marked submissions found"
+    #And I should see "Approved" in the "Victim User 1" "table_row"
+
