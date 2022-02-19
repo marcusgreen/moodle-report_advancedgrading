@@ -33,7 +33,8 @@ use report_advancedgrading\rubric;
 
 $dload = optional_param("dload", '', PARAM_BOOL);
 
-$data['headerstyle'] = 'style="background-color:#D2D2D2;"';
+$data['headerstyle'] = '';
+
 $data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
 $data['grademethod'] = 'rubric';
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
