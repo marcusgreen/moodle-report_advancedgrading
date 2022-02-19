@@ -23,9 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use PhpOffice\PhpSpreadsheet\Reader\Exception;
-use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
-use PhpOffice\PhpSpreadsheet\Writer\Exception as WriterException;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -356,12 +355,22 @@ function download(string $spreadsheet, array $data) {
         $sheet = $writer->getSpreadsheet()->getActiveSheet();
         $alphabet = range('A', 'Z');
         $colcount = $data['colcount'];
-        $lastcol = $alphabet[$colcount -1];
+        $lastcol = $alphabet[$colcount+1];
         // Merge the header cells containing metadata like course name etc.
         $sheet->mergeCells('A1:'.$lastcol.'1');
         $sheet->mergeCells('A2:'.$lastcol.'2');
         $sheet->mergeCells('A3:'.$lastcol.'3');
         $sheet->mergeCells('A4:'.$lastcol.'4');
+
+        $color = new Color();
+        $color->setRGB('CDCDCD');
+        $color2 = new Color();
+        $color2->setRGB('D3D3D3');
+        $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setFillType(Fill::FILL_GRADIENT_LINEAR);
+        $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setStartColor($color);
+        $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setEndColor($color2);
+        $sheet->getColumnDimension($lastcol)->setAutoSize(true);
+
         $sheet->setTitle($filename);
     }
     output_header($filename, $filetype);
