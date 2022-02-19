@@ -94,7 +94,7 @@ class rubric {
                     JOIN {user} rubm ON rubm.id = gin.raterid
                     JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
                     AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
-                WHERE cm.id = :assignid AND gin.status = 1
+                WHERE cm.id = :assignid AND gin.status = 0
                     AND  stu.deleted = 0
                 ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
 
