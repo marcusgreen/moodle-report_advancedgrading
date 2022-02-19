@@ -144,7 +144,7 @@ function user_fields(array $data, array $dbrecords): array {
 function send_output(string $form, string $dload, array $data, string $page) : void {
     global $OUTPUT, $PAGE;
     if ($dload) {
-        download($page, $data['grademethod']);
+        download($page, $data);
         echo $OUTPUT->header();
     } else {
         $html = $form . $page;
@@ -341,7 +341,8 @@ function get_summary_cells($student) : string {
  * @param string $filename
  * @return void
  */
-function download(string $spreadsheet, string $filename) {
+function download(string $spreadsheet, array $data) {
+    $filename = $data['grademethod'];
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
     $spreadsheet = $reader->loadFromString($spreadsheet);
     $csvdownload = optional_param('csvdownload', '', PARAM_TEXT);
@@ -353,6 +354,14 @@ function download(string $spreadsheet, string $filename) {
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, $filetype);
     if ($filetype == 'Xlsx') {
         $sheet = $writer->getSpreadsheet()->getActiveSheet();
+        $alphabet = range('A', 'Z');
+        $colcount = $data['colcount'];
+        $lastcol = $alphabet[$colcount -1];
+        // Merge the header cells containing metadata like course name etc.
+        $sheet->mergeCells('A1:'.$lastcol.'1');
+        $sheet->mergeCells('A2:'.$lastcol.'2');
+        $sheet->mergeCells('A3:'.$lastcol.'3');
+        $sheet->mergeCells('A4:'.$lastcol.'4');
         $sheet->setTitle($filename);
     }
     output_header($filename, $filetype);
