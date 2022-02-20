@@ -1,5 +1,5 @@
 @report @report_advancedgrading @report_advancedgrading_rubric   @javascript
-Feature: Confirm advancedgrading report displays grading for multiple submissions
+Feature: Confirm advancedgrading report works for multiple submission of rubric
     In order to view multiple submissions of rubric
     As a teacher view the advanced grading report
 
