@@ -7,3 +7,7 @@ For custom development and consultancy contact certified Moodle Partner Titus (h
 Install from the command line at the root of your moodle installation as follows
 
 git clone https://github.com/marcusgreen/moodle-report_advancedgrading report/advancedgrading
+
+More documentation can be found here
+
+https://github.com/marcusgreen/moodle-report_advancedgrading/wiki
