@@ -77,6 +77,7 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
     And I am on "Course 1" course homepage
     And I click on "Test assignment 1" "link"
     And I navigate to "Marking guide breakdown report" in current page administration
+    And I wait "1" seconds
     And I should see "No marked submissions found"
 
     And I log out
