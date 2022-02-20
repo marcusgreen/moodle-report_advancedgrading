@@ -105,6 +105,8 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
     And I am on "Course 1" course homepage
     And I click on "Test assignment 1" "link"
     And I navigate to "Marking guide breakdown report" in current page administration
+    And I wait "1" seconds
+
     And I should see "99.00"
     And I should see "Awesome"
     And I am on "Course 1" course homepage
