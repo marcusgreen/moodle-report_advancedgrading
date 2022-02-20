@@ -41,7 +41,6 @@ Feature: Display the advanced grading report
     And I navigate to "Rubric breakdown report" in current page administration
     And I should see "Rubric"
     # And I should see "Score"
-    # And I pause
     # And I should see "75" in the "s1" "table_row"
     # And I log out
     # And I log in as "admin"

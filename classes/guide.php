@@ -92,7 +92,7 @@ class guide {
             JOIN {user} rubm ON rubm.id = gin.raterid
             JOIN {gradingform_guide_fillings} fillings ON (fillings.instanceid = gin.id)
              AND (fillings.criterionid = criteria.id)
-           WHERE cm.id = :assignid AND gin.status = 1
+           WHERE cm.id = :assignid AND gin.status = 0
              AND  stu.deleted = 0
         ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
         $data = $DB->get_records_sql($sql, ['assignid' => $cm->id]);
