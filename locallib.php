@@ -355,7 +355,7 @@ function download(string $spreadsheet, array $data) {
         $sheet = $writer->getSpreadsheet()->getActiveSheet();
         $alphabet = range('A', 'Z');
         $colcount = $data['colcount'];
-        $lastcol = $alphabet[$colcount +1 ];
+        $lastcol = $alphabet[$colcount + 1];
         // Merge the header cells containing metadata like course name etc.
         $sheet->mergeCells('A1:'.$lastcol.'1');
         $sheet->mergeCells('A2:'.$lastcol.'2');
