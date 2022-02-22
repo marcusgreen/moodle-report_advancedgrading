@@ -345,6 +345,15 @@ function download(string $spreadsheet, array $data) {
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
     $spreadsheet = $reader->loadFromString($spreadsheet);
     $csvdownload = optional_param('csvdownload', '', PARAM_TEXT);
+    $viewsubmissions = optional_param('viewsubmissions', '', PARAM_TEXT);
+
+    if ($viewsubmissions > "") {
+        $params = [
+            'id' => $data['modid'],
+            'action' => 'grading'
+        ];
+        redirect(new moodle_url("/mod/assign/view.php?", $params));
+    }
     if ($csvdownload > "") {
         $filetype = 'Csv';
     } else {
@@ -369,7 +378,7 @@ function download(string $spreadsheet, array $data) {
         $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setFillType(Fill::FILL_GRADIENT_LINEAR);
         $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setStartColor($color);
         $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setEndColor($color2);
-        $sheet->getColumnDimension($lastcol)->setAutoSize(true);
+       // $sheet->getColumnDimension($lastcol)->setAutoSize(true);
 
         $sheet->setTitle($filename);
     }

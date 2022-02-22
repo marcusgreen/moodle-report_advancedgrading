@@ -53,4 +53,5 @@ $string['rubricreportname'] = 'Rubric report';
 $string['guidereportname'] = 'Marking guide report';
 $string['nomarkedsubmissions'] = 'No marked submissions found';
 $string['privacy:metadata'] = 'The advanced grading report plugin does not store any personal data.';
-
+$string['viewsubmissions'] = 'View submissions';
+$string['viewsubmissions_help'] = 'View submissions';
