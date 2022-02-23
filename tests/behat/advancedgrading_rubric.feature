@@ -2,7 +2,9 @@
 Feature: Confirm advancedgrading report works for multiple submission of rubric
     In order to view multiple submissions of rubric
     As a teacher view the advanced grading report
-
+  Background:
+    Given the following config values are set as admin:
+        | enable_javascriptlayout | 0 | report_advancedgrading |
   Scenario: Convert rubric scores to grades.
     Given the following "users" exist:
         | username | firstname | lastname | email                |
