@@ -207,7 +207,7 @@ function init(array $data): array {
     $PAGE->navbar->add($data['reportname']);
 
     $PAGE->set_context(context_course::instance($data['courseid']));
-    if (get_config('report_advancedgrading','enable_javascriptlayout') == 1) {
+    if (get_config('report_advancedgrading', 'enable_javascriptlayout') == 1) {
         $PAGE->requires->jquery();
         $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
     }

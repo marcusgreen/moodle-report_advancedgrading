@@ -1,4 +1,7 @@
-@report @report_advancedgrading @report_advancedgrading_rubric   @javascript
+  @report @report_advancedgrading @report_advancedgrading_rubric   @javascript
+  Background:
+    Given the following config values are set as admin:
+        | enable_javascriptlayout | 0 | report_advancedgrading |
 Feature: Confirm advancedgrading report works for multiple submission of rubric
     In order to view multiple submissions of rubric
     As a teacher view the advanced grading report
