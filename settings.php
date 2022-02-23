@@ -44,4 +44,11 @@ if ($ADMIN->fulltree) {
         $choices
     ));
 
+    $settings->add(new admin_setting_configcheckbox(
+        'report_advancedgrading/enable_javascriptlayout',
+        get_string('enable_javascriptlayout', 'report_advancedgrading'),
+        get_string('enable_javascriptlayout_desc', 'report_advancedgrading'),
+        '0'
+    ));
+
 }

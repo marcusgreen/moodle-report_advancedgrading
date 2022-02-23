@@ -55,3 +55,5 @@ $string['nomarkedsubmissions'] = 'No marked submissions found';
 $string['privacy:metadata'] = 'The advanced grading report plugin does not store any personal data.';
 $string['viewsubmissions'] = 'View submissions';
 $string['viewsubmissions_help'] = 'View submissions';
+$string['enable_javascriptlayout'] = 'Enable javascript layout';
+$string['enable_javascriptlayout_desc'] = 'Adds paging and sorting to the table layout, may add a performance overhead';
