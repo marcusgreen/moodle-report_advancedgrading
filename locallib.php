@@ -378,7 +378,7 @@ function download(string $spreadsheet, array $data) {
         $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setFillType(Fill::FILL_GRADIENT_LINEAR);
         $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setStartColor($color);
         $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setEndColor($color2);
-       // $sheet->getColumnDimension($lastcol)->setAutoSize(true);
+        $sheet->getColumnDimension($lastcol)->setAutoSize(true);
 
         $sheet->setTitle($filename);
     }
