@@ -1,9 +1,12 @@
 @report @report_advancedgrading @report_advancedgrading_guide   @javascript
+
 Feature: Confirm advancedgrading report works for multiple submission of guide
     In order to view view advanced grades with marking guide
     Set blind marking, make an attempt and view report, make second submission and view report
     Reveal student names and view report
-
+  Background:
+    Given the following config values are set as admin:
+        | enable_javascriptlayout | 0 | report_advancedgrading |
   Scenario: Submit marking guid then grade,reset and grade again.
     Given the following "users" exist:
         | username | firstname | lastname | email                |
