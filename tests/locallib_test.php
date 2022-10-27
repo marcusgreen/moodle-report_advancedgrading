@@ -105,7 +105,13 @@ class locallib_test extends \advanced_testcase {
 
         $this->rubricassignid = $DB->get_field('assign', 'id', ['name' => 'Rubric with blind marking']);
         $this->guideassignid = $DB->get_field('assign', 'id', ['name' => 'Marking Guide with blind marking']);
+
+        $generator = $this->getDataGenerator();
+        $teacher1 = $generator->create_user(['username' => 't1']);
+
+        $generator->enrol_user($teacher1->id, $this->courseid, 'editingteacher');
     }
+
 
     // Use the generator helper.
     use \mod_assign_test_generator;
