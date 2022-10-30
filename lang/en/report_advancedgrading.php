@@ -24,6 +24,7 @@
  */
 
 $string['pluginname'] = 'Advanced Grading report';
+$string['btecgrades'] = 'BTEC breakdown report';
 $string['rubricgrades'] = 'Rubric breakdown report';
 $string['guidegrades'] = 'Marking guide breakdown report';
 $string['rubric'] = 'Rubric';

@@ -207,11 +207,8 @@ function init(array $data): array {
     $PAGE->navbar->add($data['reportname']);
 
     $PAGE->set_context(context_course::instance($data['courseid']));
-    if (get_config('report_advancedgrading', 'enable_javascriptlayout') == 1) {
-        $PAGE->requires->jquery();
-        $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
-    }
-
+    $PAGE->requires->jquery();
+    $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
     $PAGE->set_pagelayout('report');
     $PAGE->set_title($data['reportname']);
 
@@ -331,7 +328,7 @@ function get_summary_cells($student) : string {
     $cell = '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
     $cell .= '<td>' . $student['gradeinfo']['grade'] . '</td>';
     $cell .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
-    $cell .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "% %d %b %Y %I:%M %p") . '</td>';
+    $cell .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "%d %b %Y %I:%M %p") . '</td>';
     return $cell;
 }
 /**
@@ -365,8 +362,15 @@ function download(string $spreadsheet, array $data) {
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, $filetype);
     if ($filetype == 'Xlsx') {
         $sheet = $writer->getSpreadsheet()->getActiveSheet();
-        $alphabet = range('A', 'Z');
         $colcount = $data['colcount'];
+        $colcount = $data['colcount'];
+
+        // Generate the alphabet based on the column quantity.
+        $alphabet = [];
+        for ($l = 'A', $i = 0; $i <= $colcount + 1; $l++, $i++) {
+            $alphabet[] = $l;
+        }
+
         $lastcol = $alphabet[$colcount + 1];
         // Merge the header cells containing metadata like course name etc.
         $sheet->mergeCells('A1:'.$lastcol.'1');

@@ -49,7 +49,11 @@ function report_advancedgrading_extend_navigation_module(navigation_node $naviga
             $url = new moodle_url('/report/advancedgrading/guide.php', array('id' => $cm->course, 'modid' => $cm->id));
             $navigation->add(get_string('guidegrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
                     'guidegrades');
-
+                    break;
+        case 'btec':
+            $url = new moodle_url('/report/advancedgrading/btec.php', array('id' => $cm->course, 'modid' => $cm->id));
+            $navigation->add(get_string('btecgrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
+                    'btecgrades');
     }
 }
 
