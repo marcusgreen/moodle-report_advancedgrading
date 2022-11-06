@@ -27,24 +27,26 @@ require_once(__DIR__ . '/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ . '/../../lib/excellib.class.php');
 require_once(__DIR__ . '../../../grade/lib.php');
 
-$data['courseid'] = required_param('id', PARAM_INT); // Course ID.
-require_login($data['courseid']);
 use report_advancedgrading\btec;
 
-
+$data['courseid'] = required_param('id', PARAM_INT); // Course ID.
 $dload = optional_param("dload", '', PARAM_BOOL);
-$data['headerstyle'] = 'style="background-color:#D2D2D2;"';
-$data['reportname'] = get_string('guidereportname', 'report_advancedgrading');
-$data['grademethod'] = 'btec';
-
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
+
+$filename = pathinfo(__FILE__, PATHINFO_FILENAME);
+
+$data['headerstyle'] = 'style="background-color:#D2D2D2;"';
+$data['reportname'] = get_string($filename.'reportname', 'report_advancedgrading');
+$data['grademethod'] = $filename;
+
 $data = init($data);
 
 require_capability('mod/assign:grade', $data['context']);
 
-$grademethod = new btec();
-$data['dbrecords'] = $grademethod->get_data($data['cm']);
+$classname = 'report_advancedgrading\\'.$filename;
+$grademethod = new $classname;
 
+$data['dbrecords'] = $grademethod->get_data($data['cm']);
 
 $data = user_fields($data, $data['dbrecords']);
 if (isset($data['students'])) {
