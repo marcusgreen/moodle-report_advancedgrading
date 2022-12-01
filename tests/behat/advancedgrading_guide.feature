@@ -4,7 +4,7 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
     In order to view view advanced grades with marking guide
     Set blind marking, make an attempt and view report, make second submission and view report
     Reveal student names and view report
-  Background:
+        Background:
     Given the following config values are set as admin:
         | enable_javascriptlayout | 0 | report_advancedgrading |
   Scenario: Submit marking guid then grade,reset and grade again.
@@ -23,7 +23,7 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
     And I am on "Course 1" course homepage with editing mode on
 
     And I add a "Assignment" to section "1" and I fill the form with:
-        | Assignment name                     | Test assignment 1 name      |
+        | Assignment name                     | Test assignment 1           |
         | Description                         | Test assignment description |
         | Grading method                      | Marking guide               |
         | assignsubmission_onlinetext_enabled | 1                           |
@@ -32,7 +32,7 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
         | id_blindmarking                     | Yes                         |
     And I am on "Course 1" course homepage with editing mode on
     # Defining a marking guide
-    When I go to "Test assignment 1 name" advanced grading definition page
+    When I go to "Test assignment 1" advanced grading definition page
     And I set the following fields to these values:
         | Name        | Assignment 1 marking guide     |
         | Description | Marking guide test description |
@@ -42,21 +42,22 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
         | Guide criterion B | Guide B description for students | Guide B description for markers | 30            |
         | Guide criterion C | Guide C description for students | Guide C description for markers | 40            |
     And I press "Save marking guide and make it ready"
-    And I am on "Course 1" course homepage
-    And I click on "Test assignment 1" "link"
+
+    And I am on "Course 1" course homepage with editing mode on
+    And I follow "Test assignment 1"
     And I navigate to "Marking guide breakdown report" in current page administration
 
     And I should see "No marked submissions found"
     And I log out
     And I log in as "student1"
     And I am on "Course 1" course homepage
-    And I click on "Test assignment 1 name" "link"
+    And I click on "Test assignment 1" "link"
     And I click on "Add submission" "button"
     And I set the field "Online text" to "First response"
     And I click on "Save changes" "button"
     And I log out
 
-    And I log in as "admin"
+    And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
     And I go to "Student 1" "Test assignment 1" activity advanced grading page
     And I grade by filling the marking guide with:
@@ -86,7 +87,7 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
     And I log out
     And I log in as "student1"
     And I am on "Course 1" course homepage
-    And I click on "Test assignment 1 name" "link"
+    And I click on "Test assignment 1" "link"
 
     And I click on "Add a new attempt" "button"
     And I set the field "Online text" to "Second response"

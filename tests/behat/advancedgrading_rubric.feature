@@ -2,7 +2,7 @@
 Feature: Confirm advancedgrading report works for multiple submission of rubric
     In order to view multiple submissions of rubric
     As a teacher view the advanced grading report
-  Background:
+        Background:
     Given the following config values are set as admin:
         | enable_javascriptlayout | 0 | report_advancedgrading |
   Scenario: Convert rubric scores to grades.
@@ -21,7 +21,7 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
     And I am on "Course 1" course homepage with editing mode on
 
     And I add a "Assignment" to section "1" and I fill the form with:
-        | Assignment name                     | Test assignment 1 name      |
+        | Assignment name                     | Test assignment 1           |
         | Description                         | Test assignment description |
         | Grading method                      | Rubric                      |
         | assignsubmission_onlinetext_enabled | 1                           |
@@ -41,13 +41,14 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
     And I log out
     And I log in as "student1"
     And I am on "Course 1" course homepage
-    And I click on "Test assignment 1 name" "link"
+
+    And I click on "Test assignment 1" "link"
     And I click on "Add submission" "button"
     And I set the field "Online text" to "First response"
     And I click on "Save changes" "button"
     And I log out
 
-    And I log in as "admin"
+    And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
 
     And I go to "Student 1" "Test assignment 1" activity advanced grading page
@@ -58,8 +59,10 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
     And I press "Save changes"
     And I complete the advanced grading form with these values:
         | Feedback comments | In general... work harder... |
+    And I log out
+    And I log in as "teacher1 "
     And I am on "Course 1" course homepage
-    And I click on "Test assignment 1" "link"
+    When I click on "Test assignment 1" "link"
     And I navigate to "Rubric breakdown report" in current page administration
 
     And I go to "Student 1" "Test assignment 1" activity advanced grading page
@@ -70,14 +73,14 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
     And I log out
     And I log in as "student1"
     And I am on "Course 1" course homepage
-    And I click on "Test assignment 1 name" "link"
+    And I click on "Test assignment 1" "link"
 
     And I click on "Add a new attempt" "button"
     And I set the field "Online text" to "Second response"
     And I click on "Save changes" "button"
     And I log out
 
-    And I log in as "admin"
+    And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
 
     And I go to "Student 1" "Test assignment 1" activity advanced grading page
@@ -89,5 +92,5 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
     And I complete the advanced grading form with these values:
         | Feedback comments | A massive improvement, well done you... |
     And I am on "Course 1" course homepage
-    And I click on "Test assignment 1" "link"
+    And I follow "Test assignment 1"
     And I navigate to "Rubric breakdown report" in current page administration
