@@ -8,7 +8,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:10
         env:
           POSTGRES_USER: 'postgres'
           POSTGRES_HOST_AUTH_METHOD: 'trust'
@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4','8.0']
+        php: ['7.4', '8.0']
         moodle-branch: ['MOODLE_401_STABLE']
         database: [pgsql, mariadb]
 
@@ -90,9 +90,13 @@ jobs:
         if: ${{ always() }}
         run: moodle-plugin-ci savepoints
 
-      # - name: Mustache Lint
-      #   if: ${{ always() }}
-      #   run: moodle-plugin-ci mustache
+      - name: Mustache Lint
+        if: ${{ always() }}
+        run: moodle-plugin-ci mustache
+
+      - name: Grunt
+        if: ${{ matrix.moodle-branch == 'master' }}
+        run: moodle-plugin-ci grunt
 
       - name: PHPUnit tests
         if: ${{ always() }}
