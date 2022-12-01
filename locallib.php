@@ -96,7 +96,7 @@ function header_fields(array $data, array $criteria, \stdClass $course, \cm_info
     $data['header'] = [
         'coursename' => format_string($course->fullname),
         'assignment' => format_string($assign->name),
-        'gradingmethod' => $gdef->activemethod,
+        'gradingmethod' => get_string('pluginname', 'gradingform_'.$gdef->activemethod),
         'definition' => $gdef->definition
     ];
 
