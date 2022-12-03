@@ -7,7 +7,7 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
         Background:
     Given the following config values are set as admin:
         | enable_javascriptlayout | 0 | report_advancedgrading |
-  Scenario: Submit marking guid then grade,reset and grade again.
+  Scenario: Submit marking guide then grade,reset and grade again.
     Given the following "users" exist:
         | username | firstname | lastname | email                |
         | teacher1 | Teacher   | 1        | teacher1@example.com |
@@ -46,6 +46,7 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
     When I am on the "Test assignment 1" "assign activity" page
     And I navigate to "Marking guide breakdown report" in current page administration
 
+    And I wait "2" seconds
     And I should see "No marked submissions found"
     And I log out
     And I log in as "student1"
