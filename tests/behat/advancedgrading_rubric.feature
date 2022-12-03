@@ -38,17 +38,17 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
         | Criterion 3 | Slightly original | 15 | Truly original      | 40 |
     And I press "Save rubric and make it ready"
 
-    # And I log out
-    # And I log in as "student1"
-    # And I am on "Course 1" course homepage
+    And I log out
+    And I log in as "student1"
+    And I am on "Course 1" course homepage
 
-    # And I click on "Test assignment 1" "link"
-    # And I click on "Add submission" "button"
-    # And I set the field "Online text" to "First response"
-    # And I click on "Save changes" "button"
-    # And I log out
+    And I click on "Test assignment 1" "link"
+    And I click on "Add submission" "button"
+    And I set the field "Online text" to "First response"
+    And I click on "Save changes" "button"
+    And I log out
 
-    # And I log in as "teacher1"
+    And I log in as "teacher1"
     # And I am on "Course 1" course homepage with editing mode on
 
     # # And I go to "Student 1" "Test assignment 1" activity advanced grading page
