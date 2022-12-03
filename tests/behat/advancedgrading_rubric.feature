@@ -18,40 +18,40 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
         | teacher1 | C1     | editingteacher |
         | student1 | C1     | student        |
     When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
+    # And I am on "Course 1" course homepage with editing mode on
 
-    And I add a "Assignment" to section "1" and I fill the form with:
-        | Assignment name                     | Test assignment 1           |
-        | Description                         | Test assignment description |
-        | Grading method                      | Rubric                      |
-        | assignsubmission_onlinetext_enabled | 1                           |
-        | assignsubmission_file_enabled       | 0                           |
-        | id_attemptreopenmethod              | Manual                      |
-    And I am on "Course 1" course homepage with editing mode on
-    And I go to "Test assignment 1" advanced grading definition page
-    And I set the following fields to these values:
-        | Name        | Assignment 1 rubric     |
-        | Description | Rubric test description |
-    And I define the following rubric:
-        | Criterion 1 | Good writing      | 10 | Excellent writing   | 30 |
-        | Criterion 2 | OK Punctuation    | 20 | Perfect Punctuation | 35 |
-        | Criterion 3 | Slightly original | 15 | Truly original      | 40 |
-    And I press "Save rubric and make it ready"
+    # And I add a "Assignment" to section "1" and I fill the form with:
+    #     | Assignment name                     | Test assignment 1           |
+    #     | Description                         | Test assignment description |
+    #     | Grading method                      | Rubric                      |
+    #     | assignsubmission_onlinetext_enabled | 1                           |
+    #     | assignsubmission_file_enabled       | 0                           |
+    #     | id_attemptreopenmethod              | Manual                      |
+    # And I am on "Course 1" course homepage with editing mode on
+    # And I go to "Test assignment 1" advanced grading definition page
+    # And I set the following fields to these values:
+    #     | Name        | Assignment 1 rubric     |
+    #     | Description | Rubric test description |
+    # And I define the following rubric:
+    #     | Criterion 1 | Good writing      | 10 | Excellent writing   | 30 |
+    #     | Criterion 2 | OK Punctuation    | 20 | Perfect Punctuation | 35 |
+    #     | Criterion 3 | Slightly original | 15 | Truly original      | 40 |
+    # And I press "Save rubric and make it ready"
 
-    And I log out
-    And I log in as "student1"
-    And I am on "Course 1" course homepage
+    # And I log out
+    # And I log in as "student1"
+    # And I am on "Course 1" course homepage
 
-    And I click on "Test assignment 1" "link"
-    And I click on "Add submission" "button"
-    And I set the field "Online text" to "First response"
-    And I click on "Save changes" "button"
-    And I log out
+    # And I click on "Test assignment 1" "link"
+    # And I click on "Add submission" "button"
+    # And I set the field "Online text" to "First response"
+    # And I click on "Save changes" "button"
+    # And I log out
 
-    And I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
+    # And I log in as "teacher1"
+    # And I am on "Course 1" course homepage with editing mode on
 
-    # And I go to "Student 1" "Test assignment 1" activity advanced grading page
+    # # And I go to "Student 1" "Test assignment 1" activity advanced grading page
     # And I grade by filling the rubric with:
     #     | Criterion 1 | 10 | Nice       |
     #     | Criterion 2 | 20 | Good       |
@@ -66,10 +66,10 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
     # And I am on the "Test assignment 1" "assign activity" page
     # And I navigate to "Rubric breakdown report" in current page administration
 
-    And I go to "Student 1" "Test assignment 1" activity advanced grading page
-    And I set the following fields to these values:
-        | Allow another attempt | Yes |
-    And I save the advanced grading form
+    # And I go to "Student 1" "Test assignment 1" activity advanced grading page
+    # And I set the following fields to these values:
+    #     | Allow another attempt | Yes |
+    # And I save the advanced grading form
 
     # And I log out
     # And I log in as "student1"
