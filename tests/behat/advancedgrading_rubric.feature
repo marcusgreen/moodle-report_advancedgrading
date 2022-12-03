@@ -5,7 +5,7 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
         Background:
     Given the following config values are set as admin:
         | enable_javascriptlayout | 0 | report_advancedgrading |
-  Scenario: Convert rubric scores to grades.
+  Scenario: View scores scores in advancedgrading report
     Given the following "users" exist:
         | username | firstname | lastname | email                |
         | teacher1 | Teacher   | 1        | teacher1@example.com |
