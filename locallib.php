@@ -103,7 +103,7 @@ function header_fields(array $data, array $criteria, \stdClass $course, \cm_info
     $criterion = [];
     $data['studentheaders'] = "";
     foreach ($data['profilefields'] as $field) {
-        $data['studentheaders'] .= "<th " . $data['headerstyle'] . "><b>" . ucfirst($field) . "</b></th>";
+            $data['studentheaders'] .= "<th " . $data['headerstyle'] . "><b>" . get_string($field) . "</b></th>";
     }
     return $data;
 }
