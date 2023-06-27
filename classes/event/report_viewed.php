@@ -48,7 +48,7 @@ class report_viewed extends \core\event\base {
      *
      * @return string
      */
-    public static function get_name() {
+    public static function get_name() :string {
         return get_string('eventreportviewed', 'report_advancedgrading');
     }
 
@@ -57,7 +57,7 @@ class report_viewed extends \core\event\base {
      *
      * @return string
      */
-    public function get_description() {
+    public function get_description() : string {
         return "The user with id '$this->userid' exported the component grades for
          the assignment with id '$this->contextinstanceid' in the course with id '$this->courseid'.";
     }
@@ -70,15 +70,6 @@ class report_viewed extends \core\event\base {
     public function get_url() {
         return new \moodle_url('/report/advancedgrading/'.$this->other['gradingmethod'].'.php',
          array('id' => $this->courseid, 'modid' => $this->contextinstanceid));
-    }
-
-    /**
-     * Replace add_to_log() statement.
-     *
-     * @return array of parameters to be passed to legacy add_to_log() function.
-     */
-    protected function get_legacy_logdata() {
-        return array($this->courseid, "course", "report advancedgrading", $this->get_url(), $this->contextinstanceid);
     }
 
     /**

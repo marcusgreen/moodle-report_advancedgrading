@@ -119,6 +119,8 @@ class locallib_test extends \advanced_testcase {
      * check that values in settings configure
      * what userfields are displayed
      *
+     * @covers ::user_fields
+     *
      * @return void
      */
     public function test_userfields() {
@@ -150,12 +152,13 @@ class locallib_test extends \advanced_testcase {
     /**
      * Check output of report for rubric grading method
      *
+     * @covers ::rubric->get_data
+     *
      * @return void
      */
     public function test_rubric() {
         $this->resetAfterTest();
         global $DB;
-
         $cm = get_coursemodule_from_instance('assign', $this->rubricassignid, $this->courseid);
         $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
         $data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
@@ -193,6 +196,8 @@ class locallib_test extends \advanced_testcase {
     }
     /**
      * Check output of report for marking guide grading method
+     *
+     * @covers ::guide->get_data
      *
      * @return void
      */

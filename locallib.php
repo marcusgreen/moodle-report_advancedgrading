@@ -94,16 +94,16 @@ function header_fields(array $data, array $criteria, \stdClass $course, \cm_info
     }
 
     $data['header'] = [
-        'coursename' => $course->fullname,
-        'assignment' => $assign->name,
-        'gradingmethod' => $gdef->activemethod,
+        'coursename' => format_string($course->fullname),
+        'assignment' => format_string($assign->name),
+        'gradingmethod' => get_string('pluginname', 'gradingform_'.$gdef->activemethod),
         'definition' => $gdef->definition
     ];
 
     $criterion = [];
     $data['studentheaders'] = "";
     foreach ($data['profilefields'] as $field) {
-        $data['studentheaders'] .= "<th " . $data['headerstyle'] . "><b>" . ucfirst($field) . "</b></th>";
+            $data['studentheaders'] .= "<th " . $data['headerstyle'] . "><b>" . get_string($field) . "</b></th>";
     }
     return $data;
 }
@@ -207,8 +207,6 @@ function init(array $data): array {
     $PAGE->navbar->add($data['reportname']);
 
     $PAGE->set_context(context_course::instance($data['courseid']));
-    $PAGE->requires->jquery();
-    $PAGE->requires->js_call_amd('report_advancedgrading/table_sort', 'init');
     $PAGE->set_pagelayout('report');
     $PAGE->set_title($data['reportname']);
 

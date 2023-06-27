@@ -4,11 +4,11 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:12
         env:
           POSTGRES_USER: 'postgres'
           POSTGRES_HOST_AUTH_METHOD: 'trust'
@@ -27,8 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.3', '7.4']
-        moodle-branch: ['MOODLE_311_STABLE']
+        php: ['7.4', '8.0']
+        moodle-branch: ['MOODLE_401_STABLE']
         database: [pgsql, mariadb]
 
     steps:
@@ -90,13 +90,19 @@ jobs:
         if: ${{ always() }}
         run: moodle-plugin-ci savepoints
 
-      # - name: Mustache Lint
-      #   if: ${{ always() }}
-      #   run: moodle-plugin-ci mustache
+      - name: Mustache Lint
+        if: ${{ always() }}
+        run: moodle-plugin-ci mustache
 
+<<<<<<< HEAD
       # - name: Grunt
       #   if: ${{ always() }}
       #   run: moodle-plugin-ci grunt --max-lint-warnings 0
+=======
+      - name: Grunt
+        if: ${{ matrix.moodle-branch == 'master' }}
+        run: moodle-plugin-ci grunt
+>>>>>>> main
 
       - name: PHPUnit tests
         if: ${{ always() }}

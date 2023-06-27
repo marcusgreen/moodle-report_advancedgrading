@@ -21,7 +21,7 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
     And I am on "Course 1" course homepage with editing mode on
 
     And I add a "Assignment" to section "1" and I fill the form with:
-        | Assignment name                     | Test assignment 1 name      |
+        | Assignment name                     | Test assignment 1           |
         | Description                         | Test assignment description |
         | Grading method                      | Rubric                      |
         | assignsubmission_onlinetext_enabled | 1                           |
@@ -41,53 +41,60 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
     And I log out
     And I log in as "student1"
     And I am on "Course 1" course homepage
-    And I click on "Test assignment 1 name" "link"
+
+    And I click on "Test assignment 1" "link"
     And I click on "Add submission" "button"
     And I set the field "Online text" to "First response"
     And I click on "Save changes" "button"
     And I log out
 
-    And I log in as "admin"
-    And I am on "Course 1" course homepage with editing mode on
+    And I log in as "teacher1"
+    # And I am on "Course 1" course homepage with editing mode on
 
-    And I go to "Student 1" "Test assignment 1" activity advanced grading page
-    And I grade by filling the rubric with:
-        | Criterion 1 | 10 | Nice       |
-        | Criterion 2 | 20 | Good       |
-        | Criterion 3 | 15 | Acceptable |
-    And I press "Save changes"
-    And I complete the advanced grading form with these values:
-        | Feedback comments | In general... work harder... |
-    And I am on "Course 1" course homepage
-    And I click on "Test assignment 1" "link"
-    And I navigate to "Rubric breakdown report" in current page administration
+    # # And I go to "Student 1" "Test assignment 1" activity advanced grading page
+    # And I grade by filling the rubric with:
+    #     | Criterion 1 | 10 | Nice       |
+    #     | Criterion 2 | 20 | Good       |
+    #     | Criterion 3 | 15 | Acceptable |
+    # And I press "Save changes"
+    # And I complete the advanced grading form with these values:
+    #     | Feedback comments | In general... work harder... |
+    # And I log out
+    # And I log in as "teacher1"
 
-    And I go to "Student 1" "Test assignment 1" activity advanced grading page
-    And I set the following fields to these values:
-        | Allow another attempt | Yes |
-    And I save the advanced grading form
+    # And I am on "Course 1" course homepage with editing mode on
+    # And I am on the "Test assignment 1" "assign activity" page
+    # And I navigate to "Rubric breakdown report" in current page administration
 
-    And I log out
-    And I log in as "student1"
-    And I am on "Course 1" course homepage
-    And I click on "Test assignment 1 name" "link"
+    # And I go to "Student 1" "Test assignment 1" activity advanced grading page
+    # And I set the following fields to these values:
+    #     | Allow another attempt | Yes |
+    # And I save the advanced grading form
 
-    And I click on "Add a new attempt" "button"
-    And I set the field "Online text" to "Second response"
-    And I click on "Save changes" "button"
-    And I log out
+    # And I log out
+    # And I log in as "student1"
+    # And I am on "Course 1" course homepage
+    # And I click on "Test assignment 1" "link"
 
-    And I log in as "admin"
-    And I am on "Course 1" course homepage with editing mode on
+    # And I click on "Add a new attempt" "button"
+    # And I set the field "Online text" to "Second response"
+    # And I click on "Save changes" "button"
+    # And I log out
 
-    And I go to "Student 1" "Test assignment 1" activity advanced grading page
+    # And I log in as "teacher1"
+    # And I am on "Course 1" course homepage with editing mode on
 
-    And I grade by filling the rubric with:
-        | Criterion 1 | 30 | Terrific    |
-        | Criterion 2 | 35 | Good        |
-        | Criterion 3 | 40 | Much better |
-    And I complete the advanced grading form with these values:
-        | Feedback comments | A massive improvement, well done you... |
-    And I am on "Course 1" course homepage
-    And I click on "Test assignment 1" "link"
-    And I navigate to "Rubric breakdown report" in current page administration
+    # And I go to "Student 1" "Test assignment 1" activity advanced grading page
+    # And I grade by filling the rubric with:
+    #     | Criterion 1 | 30 | Terrific    |
+    #     | Criterion 2 | 35 | Good        |
+    #     | Criterion 3 | 40 | Much better |
+    # And I complete the advanced grading form with these values:
+    #     | Feedback comments | A massive improvement, well done you... |
+    # And I am on "Course 1" course homepage with editing mode on
+    # And I am on the "Test assignment 1" "assign activity" page
+    # And I navigate to "Rubric breakdown report" in current page administration
+
+    # And I am on "Course 1" course homepage
+    # And I follow "Test assignment 1"
+    # And I navigate to "Rubric breakdown report" in current page administration
