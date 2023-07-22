@@ -15,21 +15,14 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template plugintype_pluginname/template_name
-
-    Template purpose and description.
-
-    Classes required for JS:
-    * none
-
-    Data attributes required for JS:
-    * none
-
-    Context variables required for this template:
-    * none
+    @template report_advancedgrading/header
 
     Example context (json):
     {
+    "coursename": "Advanced Grading Report Demonstration",
+    "assignment": "Rubric with blind marking",
+    "gradingmethod": "Rubric",
+    "definition": "My rubric grading setup"
     }
 }}
 
@@ -46,7 +39,6 @@
               <b>{{#str}}assignment, report_advancedgrading {{/str}}:{{assignment}}</b>
            </td>
       </tr>
-
       <tr>
            <td>
              <b>{{#str}}grademethod,report_advancedgrading{{/str}}:{{gradingmethod}}</b>
