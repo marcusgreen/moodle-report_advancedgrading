@@ -53,7 +53,7 @@ if (isset($data['students'])) {
 
 
 // Each rubric criteria has a score,definition and feedback column.
-$data['criteriaspan'] = ' colspan="3" ';
+$data['criteriaspan'] = 3;
 $data['colcount'] += count($data['criteria']) * 3;
 $data['rows'] = $rubric->get_rows($data);
 
