@@ -1,11 +1,18 @@
 ### Version 0.9 Jul 2023
-Remove all reference to datatables as per
+Remove all reference to datatables javascript modules as per
 https://github.com/marcusgreen/moodle-report_advancedgrading/issues/9
-Datatables was being used for sorting and formatting but it broke javascript site wide
+Datatables was being used for sorting and formatting but it broke javascript site wide.
+Many thanks to Iñigo Zendegi Urzelai
 
 localisation of header fields as per
-https://github.com/marcusgreen/moodle-report_advancedgrading/issues/6
+https://github.com/marcusgreen/moodle-report_advancedgrading/issues/6.
 Solution from https://github.com/moodleulpgc
+Many thanks to Enrique Castro
+
+Put report page in module context not course context so the navigation
+makes sense. See issue
+https://github.com/marcusgreen/moodle-report_advancedgrading/issues/10.
+Again, many thanks to Enrique Castro
 
 
 ### Version 0.2 Oct 2022

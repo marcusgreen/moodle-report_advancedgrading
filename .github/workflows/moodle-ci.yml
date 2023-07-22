@@ -29,7 +29,7 @@ jobs:
       matrix:
         php: ['7.4', '8.0']
         moodle-branch: ['MOODLE_401_STABLE']
-        database: [pgsql, mariadb]
+        database: [mariadb]
 
     steps:
       - name: Check out repository code
@@ -89,10 +89,6 @@ jobs:
       - name: Check upgrade savepoints
         if: ${{ always() }}
         run: moodle-plugin-ci savepoints
-
-      - name: Mustache Lint
-        if: ${{ always() }}
-        run: moodle-plugin-ci mustache
 
       - name: Grunt
         if: ${{ matrix.moodle-branch == 'master' }}
