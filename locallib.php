@@ -177,8 +177,7 @@ function init(array $data): array {
     $data['course'] = $DB->get_record('course', array('id' => $data['courseid']), '*', MUST_EXIST);
     $data['gradingdefinition'] = get_grading_definition($data['cm']->instance);
 
-    $data['context'] = \core\context\module::instance($data['modid']);
-
+    $data['context'] = \context_module::instance($data['cm']->id);
     $data['assign'] = new assign($data['context'], $data['cm'], $data['cm']->get_course());
 
     $criteriatable = 'gradingform_'.$data['grademethod'].'_criteria';
@@ -210,7 +209,6 @@ function init(array $data): array {
     $PAGE->navbar->add($data['cm']->name, $returnurl);
     $PAGE->navbar->add($data['reportname']);
 
-    // $context = \core\context\module::instance($data['modid']);
     $PAGE->set_context($data['context']);
 
     $PAGE->set_pagelayout('report');

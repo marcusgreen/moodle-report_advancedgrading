@@ -37,7 +37,7 @@ global $PAGE;
  * @return void
  */
 function report_advancedgrading_extend_navigation_module(navigation_node $navigation, cm_info $cm) {
-    $context = \core\context\module::instance($cm->id);
+    $context = \context_module::instance($cm->id);
     $gradingmanager = get_grading_manager($context, 'mod_assign', 'submissions');
     switch ($gradingmanager->get_active_method()) {
         case 'rubric':
