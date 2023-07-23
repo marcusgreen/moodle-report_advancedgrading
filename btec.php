@@ -27,26 +27,23 @@ require_once(__DIR__ . '/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ . '/../../lib/excellib.class.php');
 require_once(__DIR__ . '../../../grade/lib.php');
 
+$data['courseid'] = required_param('id', PARAM_INT); // Course ID.
+require_login($data['courseid']);
 use report_advancedgrading\btec;
 
-$data['courseid'] = required_param('id', PARAM_INT); // Course ID.
 $dload = optional_param("dload", '', PARAM_BOOL);
-$data['modid'] = required_param('modid', PARAM_INT); // CM ID.
-
-$filename = pathinfo(__FILE__, PATHINFO_FILENAME);
-
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
-$data['reportname'] = get_string($filename.'reportname', 'report_advancedgrading');
-$data['grademethod'] = $filename;
+$data['reportname'] = get_string('btecreportname', 'report_advancedgrading');
+$data['grademethod'] = 'btec';
+
+$data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
 $data = init($data);
 
 require_capability('mod/assign:grade', $data['context']);
 
-$classname = 'report_advancedgrading\\'.$filename;
-$grademethod = new $classname;
-
-$data['dbrecords'] = $grademethod->get_data($data['cm']);
+$btec = new btec();
+$data['dbrecords'] = $btec->get_data($data['cm']);
 
 $data = user_fields($data, $data['dbrecords']);
 if (isset($data['students'])) {
@@ -55,9 +52,9 @@ if (isset($data['students'])) {
 }
 
 // Each btec criteria has a score,definition and feedback column.
-$data['criteriaspan'] = " colspan='3' ";
+$data['criteriaspan'] = 3;
 $data['colcount'] += count($data['criteria']) * 2;
-$data['rows'] = $grademethod->get_rows($data);
+$data['rows'] = $btec->get_rows($data);
 
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/header', $data);

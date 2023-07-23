@@ -58,7 +58,7 @@ $data['colcount'] += count($data['criteria']) * 3;
 $data['rows'] = $rubric->get_rows($data);
 
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
-$page = $OUTPUT->render_from_template('report_advancedgrading/header', $data);
-$page .= $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
+$table = $OUTPUT->render_from_template('report_advancedgrading/header', $data);
+$table .= $OUTPUT->render_from_template('report_advancedgrading/rubric', $data);
 
-send_output($form, $dload, $data, $page);
+send_output($form, $dload, $data, $table);

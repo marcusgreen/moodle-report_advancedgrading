@@ -30,20 +30,17 @@ along with Moodle. If not, see
         ]
     }
 }}
-
 <div>
-
-
 <table  id="rubric-header" class="table table-hover table-bordered table-striped" style="width:101%;" >
     <thead>
      <tr>
-            <th {{{studentspan}}}>
+            <th colspan={{{studentspan}}}>
                 {{#str}}student, report_advancedgrading{{/str}}
             </th>
             {{#criteria}}
-            <th {{{criteriaspan}}} class="align-top">{{description}}</th>
+              <th colspan={{{criteriaspan}}} class="align-top">{{description}}</th>
             {{/criteria}}
-            <th {{{summaryspan}}} >{{#str}}gradesummary, report_advancedgrading{{/str}}</th>
+            <th colspan={{{summaryspan}}} >{{#str}}gradesummary, report_advancedgrading{{/str}}</th>
      </tr>
         <tr>
             {{{studentheaders}}}
