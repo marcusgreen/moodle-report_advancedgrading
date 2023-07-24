@@ -24,6 +24,7 @@
  */
 
 $string['pluginname'] = 'Advanced Grading report';
+$string['btecgrades'] = 'BTEC breakdown report';
 $string['rubricgrades'] = 'Rubric breakdown report';
 $string['guidegrades'] = 'Marking guide breakdown report';
 $string['rubric'] = 'Rubric';
@@ -51,6 +52,7 @@ $string['definition'] = 'Definition';
 $string['participant'] = 'participant';
 $string['rubricreportname'] = 'Rubric report';
 $string['guidereportname'] = 'Marking guide report';
+$string['btecreportname'] = 'BTEC report';
 $string['nomarkedsubmissions'] = 'No marked submissions found';
 $string['privacy:metadata'] = 'The advanced grading report plugin does not store any personal data.';
 $string['viewsubmissions'] = 'View submissions';

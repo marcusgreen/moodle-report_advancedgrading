@@ -31,7 +31,6 @@ $data['courseid'] = required_param('id', PARAM_INT); // Course ID.
 require_login($data['courseid']);
 use report_advancedgrading\guide;
 
-
 $dload = optional_param("dload", '', PARAM_BOOL);
 $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
 $data['reportname'] = get_string('guidereportname', 'report_advancedgrading');
