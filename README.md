@@ -8,6 +8,10 @@ Install from the command line at the root of your moodle installation as follows
 
 git clone https://github.com/marcusgreen/moodle-report_advancedgrading report/advancedgrading
 
+Also available from the Moodle plugins database at
+
+https://moodle.org/plugins/report_advancedgrading
+
 More documentation can be found here
 
 https://github.com/marcusgreen/moodle-report_advancedgrading/wiki

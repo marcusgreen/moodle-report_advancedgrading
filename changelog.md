@@ -16,6 +16,10 @@ Again, many thanks to Enrique Castro
 
 Change layout to report to make better use of the screen
 
+Added BTEC marking as an advanced grading type that it can report on.
+https://docs.moodle.org/402/en/BTEC_marking
+
+
 ### Version 0.2 Oct 2022
 Removed spurious % in time graded output.
 Thanks to Vlad Kidanov for reporting the alphabet generation would stop at 26 and contributing
