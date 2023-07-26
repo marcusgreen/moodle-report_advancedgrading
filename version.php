@@ -28,7 +28,8 @@
 defined('MOODLE_INTERNAL') || die;
 
 $plugin->version   = 2023072200;  // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2015051109;  // Moodle 2.9.9.
+$plugin->requires  = 2021051715;  // Moodle 3.11
 $plugin->release   = '0.9';
+$plugin->supported = [311, 402];
 $plugin->maturity  = MATURITY_BETA;
 $plugin->component = 'report_advancedgrading';  // Full name of the plugin (used for diagnostics).
