@@ -91,7 +91,7 @@ class rubric {
                     JOIN {assign_grades} ag ON ag.id = gin.itemid
             LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
                     JOIN {user} stu ON stu.id = ag.userid
-                    JOIN {user} rubm ON rubm.id = gin.raterid
+                    JOIN {user} rubm ON rubm.id = ag.grader
                     JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
                     AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
                 WHERE cm.id = :assignid AND gin.status = 0
