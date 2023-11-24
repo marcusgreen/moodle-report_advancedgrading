@@ -78,7 +78,7 @@ class rubric {
                         stu.id AS userid, stu.idnumber AS idnumber,
                         stu.firstname, stu.lastname, stu.username,
                         stu.username, stu.email, rubm.username AS grader,
-                        gin.timemodified AS modified,
+                        ag.timemodified AS modified,
                         ctx.instanceid, ag.grade, asg.blindmarking, assign_comment.commenttext as overallfeedback
                     FROM {assign} asg
                     JOIN {course_modules} cm ON cm.instance = asg.id
