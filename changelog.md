@@ -1,3 +1,11 @@
+### Version 0.91 Dec 2023
+Added BTEC grading to the type of advanced grading supported.
+
+Changed source of grader (person doing marking) from grading_instances table to
+assignment grade. This fixes the issue that the grader was recorded as the last
+person who scrolled through the grading interface got marked as the grader. Made the
+change for Rubric, Marking Guid and BTEC,
+
 ### Version 0.9 Jul 2023
 Remove all reference to datatables javascript modules as per
 https://github.com/marcusgreen/moodle-report_advancedgrading/issues/9

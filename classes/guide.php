@@ -43,9 +43,14 @@ class guide {
             foreach ($data['students'] as $student) {
                 $rows .= '<tr>';
                 $rows .= get_student_cells($data, $student);
-                foreach (array_keys($data['criterion']) as $crikey) {
-                    $rows .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
-                    $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+                foreach (array_keys($data['criteriarecord']) as $crikey) {
+                    if (isset($student['grades'][$crikey]['score'])) {
+                        $rows .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
+                        $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+                    } else {
+                        $rows .= '<td></td>';
+                        $rows .= '<td></td>';
+                    }
                 }
                 $rows .= get_summary_cells($student);
                 $rows .= '</tr>';
