@@ -1,5 +1,4 @@
-### Version 0.91 Dec 2023
-Added BTEC grading to the type of advanced grading supported.
+### Version 0.91 Nov 2023
 
 Changed source of grader (person doing marking) from grading_instances table to
 assignment grade. This fixes the issue that the grader was recorded as the last
