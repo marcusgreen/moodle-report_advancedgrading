@@ -94,7 +94,7 @@ class guide {
             JOIN {assign_grades} ag ON ag.id = gin.itemid
       LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
             JOIN {user} stu ON stu.id = ag.userid
-            JOIN {user} rubm ON rubm.id = gin.raterid
+            JOIN {user} rubm ON rubm.id = ag.grader
             JOIN {gradingform_guide_fillings} fillings ON (fillings.instanceid = gin.id)
              AND (fillings.criterionid = criteria.id)
            WHERE cm.id = :assignid AND gin.status = 0

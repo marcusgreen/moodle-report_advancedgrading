@@ -87,7 +87,7 @@ class btec {
                                 JOIN {assign_grades} ag ON ag.id = gin.itemid
                                 JOIN {assignfeedback_comments} assign_comment on ag.id=assign_comment.grade
                                 JOIN {user} stu ON stu.id = ag.userid
-                                JOIN {user} marker ON marker.id = gin.raterid
+                                JOIN {user} marker ON marker.id = ag.rater
                                 JOIN {gradingform_btec_fillings} gbf ON (gbf.instanceid = gin.id)
                                  AND (gbf.criterionid = criteria.id)
                                WHERE cm.id = :cmid AND gin.status = 1

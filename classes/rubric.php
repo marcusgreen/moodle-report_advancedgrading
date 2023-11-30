@@ -78,7 +78,7 @@ class rubric {
                         stu.id AS userid, stu.idnumber AS idnumber,
                         stu.firstname, stu.lastname, stu.username,
                         stu.username, stu.email, rubm.username AS grader,
-                        gin.timemodified AS modified,
+                        ag.timemodified AS modified,
                         ctx.instanceid, ag.grade, asg.blindmarking, assign_comment.commenttext as overallfeedback
                     FROM {assign} asg
                     JOIN {course_modules} cm ON cm.instance = asg.id
@@ -91,7 +91,7 @@ class rubric {
                     JOIN {assign_grades} ag ON ag.id = gin.itemid
             LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
                     JOIN {user} stu ON stu.id = ag.userid
-                    JOIN {user} rubm ON rubm.id = gin.raterid
+                    JOIN {user} rubm ON rubm.id = ag.grader
                     JOIN {gradingform_rubric_fillings} grf ON (grf.instanceid = gin.id)
                     AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
                 WHERE cm.id = :assignid AND gin.status = 0
