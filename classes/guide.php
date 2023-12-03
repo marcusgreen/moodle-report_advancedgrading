@@ -82,7 +82,7 @@ class guide {
                     criteria.description,criteria.shortname,
                     fillings.score, fillings.remark, fillings.criterionid, rubm.username AS grader,
                     stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-                    stu.username, stu.email, gin.timemodified AS modified, ag.grade,
+                    stu.username, stu.email, ag.timemodified AS modified, ag.grade,
                     assign_comment.commenttext as overallfeedback
             FROM {assign} asg
             JOIN {course_modules} cm ON cm.instance = asg.id
