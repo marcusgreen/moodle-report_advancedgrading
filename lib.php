@@ -15,9 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings.
  *
- * Language strings to be used by report_advancedgrading
+ * Extend navigation so a link to report is displayed
  *
  * @package    report_advancedgrading
  * @copyright  2022 Marcus Green
@@ -38,21 +37,28 @@ global $PAGE;
  */
 function report_advancedgrading_extend_navigation_module(navigation_node $navigation, cm_info $cm) {
     $context = \context_module::instance($cm->id);
-    $gradingmanager = get_grading_manager($context, 'mod_assign', 'submissions');
-    switch ($gradingmanager->get_active_method()) {
-        case 'rubric':
-            $url = new moodle_url('/report/advancedgrading/rubric.php', array('id' => $cm->course, 'modid' => $cm->id));
-            $navigation->add(get_string('rubricgrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
-                    'rubricgrades');
-        break;
-        case 'guide':
-            $url = new moodle_url('/report/advancedgrading/guide.php', array('id' => $cm->course, 'modid' => $cm->id));
-            $navigation->add(get_string('guidegrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
-                    'guidegrades');
-                    break;
-        case 'btec':
-            $url = new moodle_url('/report/advancedgrading/btec.php', array('id' => $cm->course, 'modid' => $cm->id));
-            $navigation->add(get_string('btecgrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
-                    'btecgrades');
+    if ($cm->modname == 'assign' && has_capability('moodle/grade:edit', $context)) {
+        $gradingmanager = get_grading_manager($context, 'mod_assign', 'submissions');
+        switch ($gradingmanager->get_active_method()) {
+            case 'rubric':
+                $url = new moodle_url('/report/advancedgrading/rubric.php', array('id' => $cm->course, 'modid' => $cm->id));
+                $navigation->add(get_string('rubricgrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
+                        'rubricgrades');
+            break;
+            case 'rubref':
+                $url = new moodle_url('/report/advancedgrading/rubref.php', array('id' => $cm->course, 'modid' => $cm->id));
+                $navigation->add(get_string('rubricgrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
+                        'rubrefgrades');
+            break;
+            case 'guide':
+                $url = new moodle_url('/report/advancedgrading/guide.php', array('id' => $cm->course, 'modid' => $cm->id));
+                $navigation->add(get_string('guidegrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
+                        'guidegrades');
+                        break;
+            case 'btec':
+                $url = new moodle_url('/report/advancedgrading/btec.php', array('id' => $cm->course, 'modid' => $cm->id));
+                $navigation->add(get_string('btecgrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
+                        'btecgrades');
+        }
     }
 }
