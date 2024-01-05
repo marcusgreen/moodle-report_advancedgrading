@@ -1,0 +1,64 @@
+{{!
+This file is part of Moodle - https://moodle.org/
+
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Moodle. If not, see
+<http: //www.gnu.org/licenses />.
+}}
+{{!
+    @template report_advancedgrading/rubref
+    Template for rendering rubref report output
+    Example context (json):
+    {
+        "header": [
+            {
+                "coursename": "public-tab",
+                "assignment": "Public comments",
+                "gradingmethod": "Public comments' content",
+                "definition": "rubref Criteria"
+            }
+        ]
+    }
+}}
+<div>
+
+<table  id="rubref-header" class="table table-hover table-bordered table-striped" style="width:101%;" >
+    <thead>
+     <tr>
+            <th colspan={{{studentspan}}}>
+                {{#str}}student, report_advancedgrading{{/str}}
+            </th>
+            {{#criteria}}
+            <th colspan={{{criteriaspan}}} class="align-top">{{description}}</th>
+            {{/criteria}}
+            <th colspan={{{summaryspan}}} >{{#str}}gradesummary, report_advancedgrading{{/str}}</th>
+     </tr>
+        <tr>
+            {{{studentheaders}}}
+            {{#criteria}}
+            <th {{{headerstyle}}} ><b>{{#str}}score, report_advancedgrading {{/str}}</b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}definition, report_advancedgrading {{/str}}</b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}feedback, report_advancedgrading{{/str}}</b></th>
+            {{/criteria}}
+            <th {{{headerstyle}}} ><b>{{#str}}overall_feedback, report_advancedgrading{{/str}} </b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}grade, report_advancedgrading{{/str}} </b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}gradedby, report_advancedgrading{{/str}}</b></th>
+            <th {{{headerstyle}}} ><b>{{#str}}timegraded, report_advancedgrading {{/str}}</b></th>
+            {{{summaryheader}}}
+        </tr>
+    </thead>
+    <tbody>
+        {{{rows}}}
+    </tbody>
+ </table>
+</div>
