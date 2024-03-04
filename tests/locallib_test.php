@@ -34,6 +34,11 @@ require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 require_once($CFG->dirroot . '/report/advancedgrading/locallib.php');
 
+use context_module;
+use core_grades\component_gradeitem;
+use gradingform_rubric_ranges_controller;
+use gradingform_rubric_ranges_generator;
+use report_advancedgrading\rubric_ranges;
 use report_advancedgrading\rubric;
 use report_advancedgrading\guide;
 
@@ -61,6 +66,13 @@ class locallib_test extends \advanced_testcase {
      * @var int
      */
     public $guideassignid;
+
+    /**
+     * guide assignent id
+     *
+     * @var int
+     */
+    public $rubricrangesassignid;
 
     /**
      * assignment id
@@ -105,6 +117,7 @@ class locallib_test extends \advanced_testcase {
 
         $this->rubricassignid = $DB->get_field('assign', 'id', ['name' => 'Rubric with blind marking']);
         $this->guideassignid = $DB->get_field('assign', 'id', ['name' => 'Marking Guide with blind marking']);
+
 
         $generator = $this->getDataGenerator();
         $teacher1 = $generator->create_user(['username' => 't1']);
@@ -234,5 +247,65 @@ class locallib_test extends \advanced_testcase {
         $gradeduser = reset($data['dbrecords'])->username;
         $this->assertContains($gradeduser, $enrollednames);
 
+    }
+
+    /**
+     * Check output of report for rubric grading method
+     *
+     * @covers ::rubric_ranges->get_data
+     *
+     * @return void
+     */
+    public function test_rubric_ranges() {
+        $this->resetAfterTest();
+        // Fetch generators.
+        $generator = \testing_util::get_data_generator();
+        $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric_ranges');
+        // Create items required for testing.
+        $course = $this->getDataGenerator()->create_course();
+        $module = $generator->create_module('assign', ['course' => $course]);
+        $context = context_module::instance($module->cmid);
+        $user = $this->getDataGenerator()->create_user();
+        $cm = get_coursemodule_from_instance('assign', $module->id);
+        $this->setUser($user);
+        $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $controllerrange = $rubricgenerator->get_test_rubric_ranges($context, 'assign', 'submissions');
+        $instance = $controllerrange->create_instance($student->id, 1);
+        // Insert grade, contains itemid, spellingscore, spellingremark, picturescore, pictureremark.
+        // Itemid from rubric range generator.
+        $result = $rubricgenerator->get_submitted_form_data($controllerrange, 409016, [
+                'Spelling is important' => [
+                        'score' => 5,
+                        'remark' => 'Looks good to me',
+                ],
+                'Pictures' => [
+                        'score' => 2,
+                        'remark' => 'These picture are ok',
+                ]
+        ]);
+        $instance->update($result);
+        $this->assertInstanceOf(gradingform_rubric_ranges_controller::class, $controllerrange);
+
+        $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
+        $data['reportname'] = get_string('rubricrangesreportname', 'report_advancedgrading');
+        $data['grademethod'] = 'rubric_ranges';
+        $data['modid'] = $cm->id;
+        $data['courseid'] = $course->id;
+        $data = init($data);
+
+        $this->assertContains('username', $data['profilefields']);
+        // Assignment was set up with 2 criteria.
+        $this->assertCount(2, $data['criteriarecord']);
+        $rubricranges = new rubric_ranges();
+        $data['dbrecords'] = $rubricranges->get_data($data['assign'], $data['cm']);
+        foreach ($data['dbrecords'] as $assigndata) {
+            // Test if remark exist in extracted data.
+            $this->assertNotEmpty($assigndata->remark);
+            if (!empty($result['criteria'][$assigndata->criterionid])) {
+                $remark = $result['criteria'][$assigndata->criterionid]['remark'];
+                // Test if remark contains the correct comment in extracted data.
+                $this->assertEquals($remark, $assigndata->remark);
+            }
+        }
     }
 }
