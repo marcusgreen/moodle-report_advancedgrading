@@ -40,6 +40,12 @@ function report_advancedgrading_extend_navigation_module(navigation_node $naviga
     if ($cm->modname == 'assign' && has_capability('moodle/grade:edit', $context)) {
         $gradingmanager = get_grading_manager($context, 'mod_assign', 'submissions');
         switch ($gradingmanager->get_active_method()) {
+            case 'rubric_ranges':
+                $url = new moodle_url('/report/advancedgrading/rubric_ranges.php', array('id' => $cm->course, 'modid' => $cm->id));
+                $navigation->add(get_string('rubricrangesgrades', 'report_advancedgrading'), $url,
+                        navigation_node::TYPE_SETTING,
+                        null, 'rubricrangesgrades');
+                break;
             case 'rubric':
                 $url = new moodle_url('/report/advancedgrading/rubric.php', array('id' => $cm->course, 'modid' => $cm->id));
                 $navigation->add(get_string('rubricgrades', 'report_advancedgrading'), $url, navigation_node::TYPE_SETTING, null,
