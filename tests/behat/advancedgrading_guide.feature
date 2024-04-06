@@ -19,20 +19,26 @@ Feature: Confirm advancedgrading report works for multiple submission of guide
         | user     | course | role           |
         | teacher1 | C1     | editingteacher |
         | student1 | C1     | student        |
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
 
-    And I add a "Assignment" to section "1" and I fill the form with:
-        | Assignment name                     | Test assignment 1           |
-        | Description                         | Test assignment description |
-        | Grading method                      | Marking guide               |
-        | assignsubmission_onlinetext_enabled | 1                           |
-        | assignsubmission_file_enabled       | 0                           |
-        | id_attemptreopenmethod              | Manual                      |
-        | id_blindmarking                     | Yes                         |
-    And I am on "Course 1" course homepage with editing mode on
-    # Defining a marking guide
+    Given the following "activity" exists:
+        | activity                            | assign            |
+        | name                                | Test assignment 1 |
+        | course                              | C1                |
+        | section                             | 1                 |
+        | assignsubmission_file_enabled       | 0                 |
+        | assignsubmission_onlinetext_enabled | 1                 |
+        | attemptreopenmethod                 | manual            |
+        | blindmarking                        | 1                 |
+        | assignfeedback_comments_enabled     | 1                 |
+
+    And I am on the "Test assignment 1" "assign activity editing" page logged in as teacher1
+    And I set the following fields to these values:
+        | Grading method | Marking guide |
+    And I press "Save and return to course"
+        # Defining a marking guide
     When I go to "Test assignment 1" advanced grading definition page
+    And I change window size to "large"
+
     And I set the following fields to these values:
         | Name        | Assignment 1 marking guide     |
         | Description | Marking guide test description |
