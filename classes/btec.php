@@ -23,6 +23,8 @@
  */
 namespace report_advancedgrading;
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot . '/grade/grading/form/lib.php');
 
 /**

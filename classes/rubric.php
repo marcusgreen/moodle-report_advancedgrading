@@ -23,6 +23,8 @@
  */
 namespace report_advancedgrading;
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot . '/grade/grading/form/lib.php');
 
 /**
@@ -100,7 +102,8 @@ class rubric {
                     AND  stu.deleted = 0
                 ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
 
-        $data = $DB->get_records_sql($sql, ['assignid' => $cm->id, 'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE]);
+        $data = $DB->get_records_sql($sql, ['assignid' => $cm->id,
+            'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE]);
         $data = set_blindmarking($data, $assign, $cm);
         return $data;
     }

@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- defined('MOODLE_INTERNAL') || die();
-
 require(__DIR__ . '../../../config.php');
 require_once(__DIR__ . '/../../report/advancedgrading/locallib.php');
 require_once(__DIR__ . '/../../lib/excellib.class.php');
