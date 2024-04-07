@@ -23,6 +23,8 @@
  */
 namespace report_advancedgrading;
 
+require_once($CFG->dirroot . '/grade/grading/form/lib.php');
+
 /**
  * Logic to process data for assignments using the rubric grading ethod
  *
@@ -90,11 +92,11 @@ class btec {
                                 JOIN {user} marker ON marker.id = ag.grader
                                 JOIN {gradingform_btec_fillings} gbf ON (gbf.instanceid = gin.id)
                                  AND (gbf.criterionid = criteria.id)
-                               WHERE cm.id = :cmid AND gin.status = 1
+                               WHERE cm.id = :cmid AND gin.status = :instancestatus
                             ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC,
                                 criteria.shortname ASC";
 
-        $data = $DB->get_records_sql($sql, ['cmid' => $cm->id]);
+        $data = $DB->get_records_sql($sql, ['cmid' => $cm->id, 'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE]);
         return $data;
     }
 }

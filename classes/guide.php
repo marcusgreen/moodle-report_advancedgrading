@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace report_advancedgrading;
+
+require_once($CFG->dirroot . '/grade/grading/form/lib.php');
+
 /**
  * Logic to process data for assignments using the marking guide
  *
@@ -97,10 +100,10 @@ class guide {
             JOIN {user} rubm ON rubm.id = ag.grader
             JOIN {gradingform_guide_fillings} fillings ON (fillings.instanceid = gin.id)
              AND (fillings.criterionid = criteria.id)
-           WHERE cm.id = :assignid AND gin.status = 0
+           WHERE cm.id = :assignid AND gin.status = :instancestatus
              AND  stu.deleted = 0
         ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
-        $data = $DB->get_records_sql($sql, ['assignid' => $cm->id]);
+        $data = $DB->get_records_sql($sql, ['assignid' => $cm->id, 'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE]);
         $data = set_blindmarking($data, $assign, $cm);
         return $data;
     }
