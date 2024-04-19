@@ -64,7 +64,7 @@ jobs:
 
       - name: Install moodle-plugin-ci
         run: |
-          moodle-plugin-ci add-plugin --branch master iarenaza/moodle-filter_multilang2
+          moodle-plugin-ci add-plugin --branch MOODLE_402_STABLE catalyst/moodle-gradingform_rubric_ranges
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
