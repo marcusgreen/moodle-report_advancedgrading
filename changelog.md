@@ -1,3 +1,9 @@
+### Version 1.0 April 2024
+
+Added behat test compatibility to work with Moodle 4.4. Thanks to Monash university Australia and thanks to Dmitrii Metelkin of
+Catalyst AU for code to support https://github.com/catalyst/moodle-gradingform_rubric_ranges.
+Added support for rubric_flex/refined.
+
 ### Version 0.91 Nov 2023
 Added BTEC grading to the type of advanced grading supported.
 
