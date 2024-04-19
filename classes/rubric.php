@@ -73,6 +73,10 @@ class rubric {
      */
     public function get_data(\assign $assign, \cm_info $cm) : array {
         global $DB;
+        $coursecontext = \context_course::instance($cm->get_course()->id);
+        $users = get_enrolled_users($coursecontext, $withcapability = 'mod/assign:submit', $groupid = 0,
+        $userfields = 'u.*', $orderby = 'u.lastname');
+        $data = [];
         $sql = "SELECT grf.id as grfid,
                         cm.course, asg.name as assignment,asg.grade as gradeoutof,
                         criteria.description, level.score,
@@ -102,6 +106,12 @@ class rubric {
 
         $data = $DB->get_records_sql($sql, ['assignid' => $cm->id, 'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE]);
         $data = set_blindmarking($data, $assign, $cm);
+
+        foreach($users as $user){
+            $user->userid = $user->id;
+            $data[] = $user;
+        }
+
         return $data;
     }
 }
