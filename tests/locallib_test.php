@@ -118,7 +118,6 @@ class locallib_test extends \advanced_testcase {
         $this->rubricassignid = $DB->get_field('assign', 'id', ['name' => 'Rubric with blind marking']);
         $this->guideassignid = $DB->get_field('assign', 'id', ['name' => 'Marking Guide with blind marking']);
 
-
         $generator = $this->getDataGenerator();
         $teacher1 = $generator->create_user(['username' => 't1']);
 

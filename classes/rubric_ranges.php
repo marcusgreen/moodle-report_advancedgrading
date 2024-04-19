@@ -96,7 +96,7 @@ class rubric_ranges {
                     JOIN {user} rubm ON rubm.id = ag.grader
                     JOIN {gradingform_rubric_ranges_f} grf ON (grf.instanceid = gin.id)
                     AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
-                WHERE cm.id = :assignid 
+                WHERE cm.id = :assignid
                 ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
         $data = $DB->get_records_sql($sql, ['assignid' => $cm->id]);
         $data = set_blindmarking($data, $assign, $cm);
