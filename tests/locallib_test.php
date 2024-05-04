@@ -35,6 +35,7 @@ require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 require_once($CFG->dirroot . '/report/advancedgrading/locallib.php');
 
 use context_module;
+use core_component;
 use core_grades\component_gradeitem;
 use gradingform_rubric_ranges_controller;
 use gradingform_rubric_ranges_generator;
@@ -80,6 +81,11 @@ class locallib_test extends \advanced_testcase {
      * @var int
      */
     public $assign;
+
+    /**
+     * @var int the id of the generated course
+     */
+    private int $courseid;
 
     /**
      * Extract and install the mbz backup of a course
@@ -257,6 +263,11 @@ class locallib_test extends \advanced_testcase {
      */
     public function test_rubric_ranges() {
         $this->resetAfterTest();
+
+        if (core_component::get_plugin_directory('gradingform', 'rubric_ranges') === null) {
+            $this->markTestSkipped('Rubric ranges plugin not installed');
+        }
+
         // Fetch generators.
         $generator = \testing_util::get_data_generator();
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric_ranges');
