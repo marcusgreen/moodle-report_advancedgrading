@@ -36,12 +36,7 @@ require_once($CFG->dirroot . '/report/advancedgrading/locallib.php');
 
 use context_module;
 use core_component;
-use core_grades\component_gradeitem;
 use gradingform_rubric_ranges_controller;
-use gradingform_rubric_ranges_generator;
-use report_advancedgrading\rubric_ranges;
-use report_advancedgrading\rubric;
-use report_advancedgrading\guide;
 
 /**
  * Class report
@@ -262,6 +257,7 @@ class locallib_test extends \advanced_testcase {
      * @return void
      */
     public function test_rubric_ranges() {
+        global $DB, $USER;
         $this->resetAfterTest();
 
         if (core_component::get_plugin_directory('gradingform', 'rubric_ranges') === null) {
@@ -273,17 +269,27 @@ class locallib_test extends \advanced_testcase {
         $rubricgenerator = $generator->get_plugin_generator('gradingform_rubric_ranges');
         // Create items required for testing.
         $course = $this->getDataGenerator()->create_course();
-        $module = $generator->create_module('assign', ['course' => $course]);
+        $module = $generator->create_module('assign', ['course' => $course, 'name' => 'Rubric Range']);
         $context = context_module::instance($module->cmid);
         $user = $this->getDataGenerator()->create_user();
         $cm = get_coursemodule_from_instance('assign', $module->id);
         $this->setUser($user);
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $controllerrange = $rubricgenerator->get_test_rubric_ranges($context, 'assign', 'submissions');
-        $instance = $controllerrange->create_instance($student->id, 1);
-        // Insert grade, contains itemid, spellingscore, spellingremark, picturescore, pictureremark.
-        // Itemid from rubric range generator.
-        $result = $rubricgenerator->get_submitted_form_data($controllerrange, 409016, [
+        $itemid = $DB->get_field('assign', 'id', ['name' => 'Rubric Range']);
+        $instance = $controllerrange->create_instance($student->id, $itemid);
+        // Set assign grade data.
+        $assigngrade = new \stdClass();
+        $assigngrade->assignment = $module->id;
+        $assigngrade->userid = $student->id;
+        $assigngrade->timecreated = time();
+        $assigngrade->timemodified = $assigngrade->timecreated;
+        $assigngrade->grader = $USER->id;
+        $assigngrade->grade = 50;
+        $assigngrade->attemptnumber = 0;
+        // Get an assign grade ID for submitted data.
+        $gid = $DB->insert_record('assign_grades', $assigngrade);
+        $result = $rubricgenerator->get_submitted_form_data($controllerrange, $gid, [
                 'Spelling is important' => [
                         'score' => 5,
                         'remark' => 'Looks good to me',
@@ -291,7 +297,7 @@ class locallib_test extends \advanced_testcase {
                 'Pictures' => [
                         'score' => 2,
                         'remark' => 'These picture are ok',
-                ]
+                ],
         ]);
         $instance->update($result);
         $this->assertInstanceOf(gradingform_rubric_ranges_controller::class, $controllerrange);

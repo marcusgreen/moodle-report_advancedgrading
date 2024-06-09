@@ -76,7 +76,7 @@ class rubric_ranges {
         $sql = "SELECT grf.id as grfid,
                         cm.course, asg.name as assignment,asg.grade as gradeoutof,
                         criteria.description, level.score,
-                        level.definition, grf.remark, grf.criterionid,
+                        level.definition, grf.remark, grf.grade as grade_rub_range, grf.criterionid,
                         stu.id AS userid, stu.idnumber AS idnumber,
                         stu.firstname, stu.lastname, stu.username,
                         stu.username, stu.email, rubm.username AS grader,
@@ -96,7 +96,7 @@ class rubric_ranges {
                     JOIN {user} rubm ON rubm.id = ag.grader
                     JOIN {gradingform_rubric_ranges_f} grf ON (grf.instanceid = gin.id)
                     AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
-                WHERE cm.id = :assignid
+                WHERE cm.id = :assignid AND  stu.deleted = 0
                 ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
         $data = $DB->get_records_sql($sql, ['assignid' => $cm->id]);
         $data = set_blindmarking($data, $assign, $cm);
