@@ -186,7 +186,7 @@ function init(array $data): array {
         $criteriatable = 'gradingform_' . $data['grademethod'] . '_criteria';
     }
     $data['criteriarecord'] = $DB->get_records_menu($criteriatable,
-     ['definitionid' => (int) $data['gradingdefinition']->definitionid], null, 'id, description');
+     ['definitionid' => (int) $data['gradingdefinition']->definitionid], 'sortorder', 'id, description');
     $data = header_fields($data, $data['criteriarecord'], $data['course'], $data['cm'], $data['gradingdefinition']);
     $data['definition'] = get_grading_definition($data['cm']->instance);
     $data['formaction'] = 'action='.$data['grademethod'] .'.php?id='.$data['courseid'].'&modid='.$data['modid'];
