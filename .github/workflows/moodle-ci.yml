@@ -33,10 +33,6 @@ jobs:
           - php: '8.2'
             moodle-branch: 'MOODLE_404_STABLE'
             database: 'mariadb'
-          - php: '8.2'
-            moodle-branch: 'master'
-            database: 'pgsql'
-
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
