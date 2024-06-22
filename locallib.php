@@ -241,7 +241,7 @@ function get_grades(array $data, array $dbrecords): array {
         $data['criterion'][$grade->criterionid] = $grade->description;
         $g[$grade->userid][$grade->criterionid] = [
             'userid' => $grade->userid,
-            'score' => number_format($grade->score, 2),
+            'score' => number_format($grade->grade_rub_range ?? $grade->score, 2),
             'definition' => $grade->definition ?? "",
             'feedback' => $grade->remark
         ];
