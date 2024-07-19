@@ -82,7 +82,7 @@ class rubric_ranges {
                         level.definition, grf.remark, grf.grade as grade_rub_range, grf.criterionid,
                         stu.id AS userid, stu.idnumber AS idnumber,
                         stu.firstname, stu.lastname, stu.username,
-                        stu.username, stu.email, rubm.username AS grader,
+                        stu.username, stu.email, CONCAT(rubm.firstname, ' - ',rubm.lastname) AS grader,
                         ag.timemodified AS modified,
                         ctx.instanceid, ag.grade, asg.blindmarking, assign_comment.commenttext as overallfeedback
                     FROM {assign} asg
