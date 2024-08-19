@@ -76,7 +76,9 @@ class btec {
         global $DB;
         $sql = "SELECT gbf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, asg.grade as gradeoutof, gd.name AS btec,
                                         criteria.shortname, criteria.description as definition, criteria.description , gbf.score,
-                                        gbf.remark, gbf.criterionid, marker.username AS grader,
+                                        gbf.remark, gbf.criterionid, marker.username AS graderusername,
+                                        marker.firstname AS graderfirstname, marker.lastname AS graderlastname,
+                                        marker.email AS graderemail,
                                         stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
                                         stu.username AS username, gin.timemodified AS modified,ag.id, ag.grade,
                                         assign_comment.commenttext as overallfeedback

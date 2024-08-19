@@ -85,7 +85,9 @@ class guide {
             $sql = "SELECT fillings.id AS ggfid, cm.course AS course, asg.name AS assignment,
                     asg.grade as gradeoutof,gd.name AS guide,
                     criteria.description,criteria.shortname,
-                    fillings.score, fillings.remark, fillings.criterionid, rubm.username AS grader,
+                    fillings.score, fillings.remark, fillings.criterionid, rubm.username AS graderusername,
+                        rubm.firstname AS graderfirstname, rubm.lastname AS graderlastname,
+                        rubm.email AS graderemail,
                     stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
                     stu.username, stu.email, ag.timemodified AS modified, ag.grade,
                     assign_comment.commenttext as overallfeedback

@@ -253,7 +253,7 @@ function get_grades(array $data, array $dbrecords): array {
 
         $gi = [
             'overallfeedback' => $grade->overallfeedback,
-            'grader' => $grade->grader,
+            'grader' => gradedbydata($grade),
             'timegraded' => $grade->modified,
             'grade' => $formattedgrade
         ];
@@ -417,4 +417,20 @@ function output_header(string $filename, string$filetype) : bool {
     $filename = $filename . "." . $filetype;
     header('Content-Disposition: attachment;filename="' . $filename);
     return true;
+}
+
+/**
+ * Return the data for the graded by column following the config.
+ *
+ * @param array $gradedata
+ * @return string The corresponding data from the settings.
+ */
+function gradedbydata($gradedata): string {
+    $graderprofileconfig = trim(get_config('report_advancedgrading', 'profilefieldsgradeby'));
+    $gradedbyfields = empty($graderprofileconfig) ? [] : explode(',', $graderprofileconfig);
+    $fielddata = [];
+    foreach ($gradedbyfields as $field) {
+        $fielddata[] = $gradedata->$field;
+    }
+    return implode(' - ', $fielddata);
 }
