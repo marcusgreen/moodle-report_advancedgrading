@@ -43,4 +43,23 @@ if ($ADMIN->fulltree) {
         ['username' => 1],
         $choices
     ));
+
+    $rawchoicesgradeby = [
+            'graderusername',
+            'graderfirstname',
+            'graderlastname',
+            'graderemail',
+    ];
+    $choices = [];
+    foreach ($rawchoicesgradeby as $choice) {
+        $choices[$choice] = new lang_string($choice, 'report_advancedgrading');
+    }
+
+    $settings->add(new admin_setting_configmulticheckbox(
+            'report_advancedgrading/profilefieldsgradeby',
+            new lang_string('profilefieldsgradeby', 'report_advancedgrading'),
+            new lang_string('profilefieldsgradeby_desc', 'report_advancedgrading'),
+            ['graderusername' => 1],
+            $choices
+    ));
 }
