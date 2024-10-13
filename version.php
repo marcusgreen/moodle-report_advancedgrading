@@ -24,12 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2024081900;  // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2021051715;  // Moodle 3.11.
-$plugin->release   = '1.0';
-$plugin->supported = [311, 404];
-$plugin->maturity  = MATURITY_BETA;
+$plugin->version   = 2024101300;  // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2022040100;  // Moodle 4.0.
+$plugin->release   = '1.01';
+$plugin->supported = [400, 405];
+$plugin->maturity  = MATURITY_STABLE;
 $plugin->component = 'report_advancedgrading';  // Full name of the plugin (used for diagnostics).
