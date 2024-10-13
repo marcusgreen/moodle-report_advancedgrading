@@ -1,3 +1,8 @@
+### Version 1.01 Oct 2024
+Confirmed compatibility with Moodle 4.5 and PHP 8.3
+Thanks to Kevin Hipwell  and Enovation for contribution to rubref (rubric refined also known as rubric flex)
+https://github.com/marcusgreen/moodle-report_advancedgrading/issues/30
+
 ### Version 1.0 May 2024
 
 Added behat test compatibility to work with Moodle 4.4. Thanks to Monash university Australia and thanks to Dmitrii Metelkin of

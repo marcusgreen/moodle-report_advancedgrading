@@ -18,11 +18,9 @@
  * Exports an Excel spreadsheet of the  grades in a rubref-graded assignment.
  *
  * @package    report_advancedgrading
- * @copyright  2022 Marcus Green
+ * @copyright  2024 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
- defined('MOODLE_INTERNAL') || die();
 
 require(__DIR__ . '../../../config.php');
 require_once(__DIR__ . '/../../report/advancedgrading/locallib.php');

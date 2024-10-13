@@ -73,7 +73,7 @@ class rubref {
      * @param \cm_info $cm
      * @return array
      */
-    public function get_data(\assign $assign, \cm_info $cm) : array {
+    public function get_data(\assign $assign, \cm_info $cm): array {
         global $DB;
         $sql = "SELECT grf.id as grfid,
                         cm.course, asg.name as assignment,asg.grade as gradeoutof,

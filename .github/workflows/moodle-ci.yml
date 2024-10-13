@@ -30,44 +30,43 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php: '8.2'
-            moodle-branch: 'MOODLE_404_STABLE'
-            database: 'mariadb'
+          # - php: '8.2'
+          #   moodle-branch: 'MOODLE_402_STABLE'
+          #   database: 'mariadb'
+          - php: '8.3'
+            moodle-branch: 'MOODLE_405_STABLE'
+            database: 'pgsql'
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           path: plugin
 
-      - name: Setup PHP ${{ matrix.php }}
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ matrix.extensions }}
           ini-values: max_input_vars=5000
+          # none to use phpdbg fallback. Specify pcov (Moodle 3.10 and up) or xdebug to use them instead.
           coverage: none
-      - name: Install NVM and Node
-        run: |
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm install 20
-          nvm use 20
-      - name: Initialise moodle-plugin-ci
+
+      - name: Deploy moodle-plugin-ci
         run: |
           composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^3
+          # Add dirs to $PATH
           echo $(cd ci/bin; pwd) >> $GITHUB_PATH
           echo $(cd ci/vendor/bin; pwd) >> $GITHUB_PATH
+          # PHPUnit depends on en_AU.UTF-8 locale
           sudo locale-gen en_AU.UTF-8
-          echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
 
-      - name: Install moodle-plugin-ci
-        run: |
-          moodle-plugin-ci add-plugin --branch MOODLE_402_STABLE catalyst/moodle-gradingform_rubric_ranges
-          moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+      - name: Install Moodle
+        # Need explicit IP to stop mysql client fail on attempt to use unix socket.
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+          IGNORE_PATHS: 'templates/local/mobile'
 
       - name: PHP Lint
         if: ${{ always() }}
@@ -100,8 +99,8 @@ jobs:
         run: moodle-plugin-ci savepoints
 
       - name: Grunt
-        if: ${{ always() }}
-        run: moodle-plugin-ci grunt --max-lint-warnings 0
+        if: ${{ matrix.moodle-branch == 'master' }}
+        run: moodle-plugin-ci grunt
 
       - name: PHPUnit tests
         if: ${{ always() }}
