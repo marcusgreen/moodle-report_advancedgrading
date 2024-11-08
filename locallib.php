@@ -36,9 +36,9 @@ defined('MOODLE_INTERNAL') || die;
  * Get the structure of this grading definition
  *
  * @param int $assignid
- * @return \stdClass
+ * @return false|\stdClass
  */
-function get_grading_definition(int $assignid): \stdClass {
+function get_grading_definition(int $assignid) {
     global $DB;
     $sql = "SELECT gdef.id AS definitionid, ga.activemethod, gdef.name AS definition
               FROM {assign} assign
