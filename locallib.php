@@ -46,7 +46,7 @@ function get_grading_definition(int $assignid) {
               JOIN {context} ctx ON ctx.instanceid = cm.id
               JOIN {grading_areas} ga ON ctx.id=ga.contextid
               JOIN {grading_definitions} gdef ON (ga.id = gdef.areaid AND ga.activemethod = gdef.method)
-             WHERE assign.id = :assignid";
+             WHERE assign.id = :assignid AND gdef.method = ga.activemethod";
     $definition = $DB->get_record_sql($sql, ['assignid' => $assignid]);
     return $definition;
 }
