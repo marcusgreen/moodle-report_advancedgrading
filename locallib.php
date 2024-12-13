@@ -119,11 +119,19 @@ function header_fields(array $data, array $criteria, \stdClass $course, \cm_info
 function user_fields(array $data, array $dbrecords): array {
     foreach ($dbrecords as $grade) {
         $student['userid'] = $grade->userid;
+        $user = \core_user::get_user($grade->userid);
         foreach ($data['profilefields'] as $field) {
             if ($field == 'groups') {
                 continue;
             }
-            $student[$field] = $grade->$field;
+            if (isset($grade->$field)) {
+                $student[$field] = $grade->$field;
+            } else if ($field == "fullname") {
+                $student[$field] = fullname($user);
+            } else{    // Try on the user object
+                $student[$field] = $user->$field;
+            }
+
         }
         $data['students'][$grade->userid] = $student;
     }
@@ -166,7 +174,14 @@ function init(array $data): array {
     $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
 
     $data['courseidvalue'] = 'value='.$data['courseid'];
-    $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
+//    $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
+    $context = context_course::instance($data['courseid']);
+    $userfieldapi = \core_user\fields::for_identity($context, true)
+        ->with_userpic()
+    ;
+    $profilefields = array_values($userfieldapi->get_required_fields([\core_user\fields::PURPOSE_IDENTITY]));
+    $data['profilefields'] = array_merge(['fullname'], $profilefields);
+
     $data['studentspan'] = count($data['profilefields']);
 
     $data['colcount'] = count($data['profilefields']);
@@ -295,6 +310,7 @@ function add_groups(array $data, int $courseid): array {
  */
 function get_student_cells(array $data, array $student) :string {
     $cell = '';
+//    var_dump($student);
     foreach ($data['profilefields'] as $field) {
         $cell .= '<td>' . $student[$field] . '</td>';
     }
