@@ -40,7 +40,7 @@ $data['grademethod'] = 'rubref';
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
 $data = init($data);
-require_capability('mod/assign:grade', $data['context']);
+require_capability('report/advancedgrading:view', $data['context']);
 
 $rubref = new rubref();
 $data['dbrecords'] = $rubref->get_data($data['assign'], $data['cm']);
