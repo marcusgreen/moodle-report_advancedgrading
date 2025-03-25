@@ -125,6 +125,19 @@ class locallib_test extends \advanced_testcase {
         $generator->enrol_user($teacher1->id, $this->courseid, 'editingteacher');
     }
 
+    /**
+     * Test get_grading_definition function with a rubric grading method
+     * Created as a very basic test for the patch contributed to this
+     * https://github.com/marcusgreen/moodle-report_advancedgrading/issues/15
+     *
+     * @covers ::get_grading_definition
+     *
+     */
+    public function test_get_grading_definition() {
+        $this->resetAfterTest();
+        $definition = get_grading_definition($this->rubricassignid);
+        $this->assertEquals($definition->activemethod, 'rubric');
+    }
 
     // Use the generator helper.
     use \mod_assign_test_generator;
@@ -207,6 +220,7 @@ class locallib_test extends \advanced_testcase {
         $data = user_fields($data, $data['dbrecords']);
 
     }
+
     /**
      * Check output of report for marking guide grading method
      *

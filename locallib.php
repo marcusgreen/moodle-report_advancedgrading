@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die;
 
 /**
  * Get the structure of this grading definition
+ * This function  should be renamed or moved into a class something like
+ * report_advancedgrading\lib to avoid name clashes in the future.
  *
  * @param int $assignid
  * @return false|\stdClass
@@ -44,7 +46,7 @@ function get_grading_definition(int $assignid) {
               FROM {assign} assign
               JOIN {course_modules} cm ON cm.instance = assign.id
               JOIN {context} ctx ON ctx.instanceid = cm.id
-              JOIN {grading_areas} ga ON ctx.id=ga.contextid
+              JOIN {grading_areas} ga ON ctx.id = ga.contextid
               JOIN {grading_definitions} gdef ON (ga.id = gdef.areaid AND ga.activemethod = gdef.method)
              WHERE assign.id = :assignid";
     $definition = $DB->get_record_sql($sql, ['assignid' => $assignid]);
