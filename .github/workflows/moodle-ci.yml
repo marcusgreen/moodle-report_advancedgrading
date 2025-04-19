@@ -33,8 +33,8 @@ jobs:
           # - php: '8.2'
           #   moodle-branch: 'MOODLE_402_STABLE'
           #   database: 'mariadb'
-          - php: '8.3'
-            moodle-branch: 'MOODLE_500_STABLE'
+          - php: '8.2'
+            moodle-branch: 'MOODLE_405_STABLE'
             database: 'pgsql'
     steps:
       - name: Checkout
@@ -63,6 +63,7 @@ jobs:
       - name: Install Moodle
         # Need explicit IP to stop mysql client fail on attempt to use unix socket.
         run: |
+          moodle-plugin-ci add-plugin --branch main mebis-lp/moodle-local_ai_manager
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
