@@ -90,6 +90,7 @@ final class locallib_test extends \advanced_testcase {
      * @return void
      */
     public function setUp(): void {
+        parent::setUp();
         global $USER, $CFG, $DB;
         $this->setAdminUser();
 
