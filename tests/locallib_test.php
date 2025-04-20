@@ -47,7 +47,7 @@ use gradingform_rubric_ranges_controller;
  * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
-class locallib_test extends \advanced_testcase {
+final class locallib_test extends \advanced_testcase {
 
     /**
      * Unique id of course from db
@@ -133,7 +133,7 @@ class locallib_test extends \advanced_testcase {
      * @covers ::get_grading_definition
      *
      */
-    public function test_get_grading_definition() {
+    public function test_get_grading_definition(): void {
         $this->resetAfterTest();
         $definition = get_grading_definition($this->rubricassignid);
         $this->assertEquals($definition->activemethod, 'rubric');
@@ -149,7 +149,7 @@ class locallib_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_userfields() {
+    public function test_userfields(): void {
         $this->resetAfterTest();
         $cm = get_coursemodule_from_instance('assign', $this->rubricassignid, $this->courseid);
         $data['headerstyle'] = 'style="background-color:#D2D2D2;"';
@@ -182,7 +182,7 @@ class locallib_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_rubric() {
+    public function test_rubric(): void {
         $this->resetAfterTest();
         global $DB;
         $cm = get_coursemodule_from_instance('assign', $this->rubricassignid, $this->courseid);
@@ -228,7 +228,7 @@ class locallib_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_guide() {
+    public function test_guide(): void {
         $this->resetAfterTest();
         global $DB;
         $cm = get_coursemodule_from_instance('assign', $this->guideassignid, $this->courseid);
@@ -270,7 +270,7 @@ class locallib_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_rubric_ranges() {
+    public function test_rubric_ranges(): void {
         global $DB, $USER;
         $this->resetAfterTest();
 

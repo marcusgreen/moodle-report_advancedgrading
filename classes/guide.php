@@ -80,7 +80,7 @@ class guide {
      * @param \cm_info $cm
      * @return array
      */
-    public function get_data(\assign $assign, \cm_info $cm) :array {
+    public function get_data(\assign $assign, \cm_info $cm): array {
         global $DB;
             $sql = "SELECT fillings.id AS ggfid, cm.course AS course, asg.name AS assignment,
                     asg.grade as gradeoutof,gd.name AS guide,

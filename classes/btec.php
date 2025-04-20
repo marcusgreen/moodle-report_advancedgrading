@@ -72,7 +72,7 @@ class btec {
      * @param \cm_info $cm
      * @return array
      */
-    public function get_data(\cm_info $cm) : array {
+    public function get_data(\cm_info $cm): array {
         global $DB;
         $sql = "SELECT gbf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, asg.grade as gradeoutof, gd.name AS btec,
                                         criteria.shortname, criteria.description as definition, criteria.description , gbf.score,

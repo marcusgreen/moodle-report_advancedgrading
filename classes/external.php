@@ -67,11 +67,11 @@ class external extends external_api {
             'The module id',
             VALUE_REQUIRED
         );
-        $params = array(
+        $params = [
             'courseid' => $courseid,
             'userid' => $userid,
             'moduleid' => $moduleid,
-        );
+        ];
         return new external_function_parameters($params);
     }
 
@@ -88,11 +88,11 @@ class external extends external_api {
 
         $params = self::validate_parameters(
             self::data_for_report_parameters(),
-            array(
+            [
                 'courseid' => $courseid,
                 'userid' => $userid,
-                'moduleid' => $moduleid
-            )
+                'moduleid' => $moduleid,
+            ]
         );
         $context = context_course::instance($params['courseid']);
         self::validate_context($context);
@@ -114,18 +114,18 @@ class external extends external_api {
      * @return \external_description
      */
     public static function data_for_report_returns() {
-        return new external_single_structure(array (
+        return new external_single_structure( [
             'courseid' => new external_value(PARAM_INT, 'Course id'),
             'user' => user_summary_exporter::get_read_structure(),
             'course' => course_summary_exporter::get_read_structure(),
             'usercompetencies' => new external_multiple_structure(
-                new external_single_structure(array(
+                new external_single_structure([
                     'usercompetencycourse' => user_competency_course_exporter::get_read_structure(),
-                    'competency' => competency_summary_exporter::get_read_structure()
-                ))
+                    'competency' => competency_summary_exporter::get_read_structure(),
+                ])
             ),
-            'pushratingstouserplans' => new external_value(PARAM_BOOL, 'True if rating is push to user plans')
-        ));
+            'pushratingstouserplans' => new external_value(PARAM_BOOL, 'True if rating is push to user plans'),
+        ]);
     }
 
 }
