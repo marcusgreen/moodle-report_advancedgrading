@@ -20,15 +20,15 @@
  * Language strings to be used by report/rubrics
  *
  * @package    report_advancedgrading
- * @copyright  2022 Marcus Green
+ * @copyright  2025 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2024101300;  // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2025042000;  // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2022040100;  // Moodle 4.0.
-$plugin->release   = '1.01';
-$plugin->supported = [400, 405];
+$plugin->release   = '1.02';
+$plugin->supported = [400, 500];
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->component = 'report_advancedgrading';  // Full name of the plugin (used for diagnostics).
