@@ -349,6 +349,7 @@ function get_summary_cells($student): string {
  * @return void
  */
 function download(string $spreadsheet, array $data) {
+    $spreadsheet = preg_replace('/<(\s*)img[^<>]*>/i', '', $spreadsheet);
     $filename = $data['grademethod'];
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
     $spreadsheet = $reader->loadFromString($spreadsheet);

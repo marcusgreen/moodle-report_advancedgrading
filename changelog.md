@@ -1,8 +1,19 @@
 
 ### Version 1.02 April 2025
-Thanks to Juan Segarra Montesinos for code to fix   
+Confirmed compatibility with Moodle 5.0
+
+Blind marking was not being applied when processing for a BTEC grading
+This was noticed during a scan using OpenAI 04-mini.
+
+Thanks to Juan Segarra Montesinos for code to fix
 https://github.com/marcusgreen/moodle-report_advancedgrading/issues/19
-To ensure only active grading instances should be shown 
+To ensure only active grading instances should be shown
+
+Thanks to Dan Marsden of Catalyst NZ for reporting
+https://github.com/marcusgreen/moodle-report_advancedgrading/issues/24
+Where an image in feedback caused downloads to fail. Also thanks to
+Dragos Suciu for reminding me. It is now addressed through a preg_replace
+in the download function.
 
 ### Version 1.01 Oct 2024
 Confirmed compatibility with Moodle 4.5 and PHP 8.3
