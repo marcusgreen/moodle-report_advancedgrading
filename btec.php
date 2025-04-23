@@ -40,7 +40,7 @@ $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
 $data = init($data);
 
-require_capability('mod/assign:grade', $data['context']);
+require_capability('report/advancedgrading:view', $data['context']);
 
 $btec = new btec();
 $data['dbrecords'] = $btec->get_data($data['cm']);

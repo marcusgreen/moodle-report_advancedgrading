@@ -15,20 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings.
+ * List of capabilities.
  *
- * Language strings to be used by report/rubrics
- *
- * @package    report_advancedgrading
- * @copyright  2022 Marcus Green
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package report_advancedgrading
+ * @author Cristian Martinez
+ * @copyright 2025 Universitat Rovira i Virgili (https://www.urv.cat)
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2025012100;  // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2022040100;  // Moodle 4.0.
-$plugin->release   = '1.01';
-$plugin->supported = [400, 405];
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->component = 'report_advancedgrading';  // Full name of the plugin (used for diagnostics).
+$capabilities = [
+    'report/advancedgrading:view' => [
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => [
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ],
+    ],
+];
