@@ -27,8 +27,6 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot.'/grade/grading/lib.php');
-require_once($CFG->dirroot . '/report/advancedgrading/locallib.php');
-
 global $PAGE;
 /**
  * Add an item to the dropdown when viewing the assignment
@@ -38,12 +36,8 @@ global $PAGE;
  * @return void
  */
 function report_advancedgrading_extend_navigation_module(navigation_node $navigation, cm_info $cm) {
-    $context = $cm->context;
-    $assignid = $cm->instance;
-
-    if ($cm->modname == 'assign' &&
-            has_capability('report/advancedgrading:view', $context) &&
-            !empty(get_grading_definition($assignid))) {
+    $context = \context_module::instance($cm->id);
+    if ($cm->modname == 'assign' && has_capability('moodle/grade:edit', $context)) {
         $gradingmanager = get_grading_manager($context, 'mod_assign', 'submissions');
         switch ($gradingmanager->get_active_method()) {
             case 'rubric_ranges':

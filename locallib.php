@@ -36,16 +36,16 @@ defined('MOODLE_INTERNAL') || die;
  * Get the structure of this grading definition
  *
  * @param int $assignid
- * @return false|\stdClass
+ * @return \stdClass
  */
-function get_grading_definition(int $assignid) {
+function get_grading_definition(int $assignid): \stdClass {
     global $DB;
     $sql = "SELECT gdef.id AS definitionid, ga.activemethod, gdef.name AS definition
               FROM {assign} assign
               JOIN {course_modules} cm ON cm.instance = assign.id
               JOIN {context} ctx ON ctx.instanceid = cm.id
               JOIN {grading_areas} ga ON ctx.id=ga.contextid
-              JOIN {grading_definitions} gdef ON (ga.id = gdef.areaid AND ga.activemethod = gdef.method)
+              JOIN {grading_definitions} gdef ON ga.id = gdef.areaid
              WHERE assign.id = :assignid";
     $definition = $DB->get_record_sql($sql, ['assignid' => $assignid]);
     return $definition;
