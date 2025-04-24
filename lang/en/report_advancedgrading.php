@@ -24,6 +24,7 @@
  */
 
 $string['assignment'] = 'Assignment';
+$string['advancedgrading:view'] = 'Allow the user to see the rubric detail';
 $string['btecgrades'] = 'BTEC breakdown report';
 $string['btecreportname'] = 'BTEC report';
 $string['csvdownload'] = 'CSV download';

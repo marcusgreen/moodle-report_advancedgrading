@@ -40,7 +40,7 @@ $data['grademethod'] = 'rubric_ranges';
 $data['modid'] = required_param('modid', PARAM_INT); // CM ID.
 
 $data = init($data);
-require_capability('mod/assign:grade', $data['context']);
+require_capability('report/advancedgrading:view', $data['context']);
 
 $rubricranges = new rubric_ranges();
 $data['dbrecords'] = $rubricranges->get_data($data['assign'], $data['cm']);
