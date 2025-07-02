@@ -1,4 +1,9 @@
 
+### Version 1.03 JUly 2025
+Add a separate advancedgrading/view capability, so people can be granted the ability to view without being able to edit.
+Useful for external examiners/moderators. With thanks to Jordi Pujol-Ahulló for the idea, the code, testing and all round positive attitude.
+
+
 ### Version 1.02 April 2025
 Confirmed compatibility with Moodle 5.0
 
