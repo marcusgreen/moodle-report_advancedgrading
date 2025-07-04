@@ -351,8 +351,6 @@ function get_summary_cells($student): string {
  */
 function download(string $spreadsheet, array $data) {
     $spreadsheet = preg_replace('/<(\s*)img[^<>]*>/i', '', $spreadsheet);
-    $reportname = str_replace(' ', '', $data['reportname']);
-    $filename = $data['course']->shortname . '-' . $reportname . '.xls';
 
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
     $spreadsheet = $reader->loadFromString($spreadsheet);
@@ -366,10 +364,15 @@ function download(string $spreadsheet, array $data) {
         ];
         redirect(new moodle_url("/mod/assign/view.php?", $params));
     }
+
+    $reportname = str_replace(' ', '_', $data['cm']->name);
+    $filename = substr($reportname, 0, 30);
+
     if ($csvdownload > "") {
         $filetype = 'Csv';
     } else {
         $filetype = 'Xlsx';
+
     }
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, $filetype);
     if ($filetype == 'Xlsx') {
