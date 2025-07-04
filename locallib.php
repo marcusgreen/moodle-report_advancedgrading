@@ -342,7 +342,8 @@ function get_summary_cells($student): string {
 /**
  * Download the formatted spreadsheet or
  * CSV (comma separated values) file.
- * with the name of the grading method
+ * The file name is the Course shortame with a dash
+ * Then the activity name with any spaces removed.
  *
  * @param string $spreadsheet
  * @param array $data
@@ -350,7 +351,9 @@ function get_summary_cells($student): string {
  */
 function download(string $spreadsheet, array $data) {
     $spreadsheet = preg_replace('/<(\s*)img[^<>]*>/i', '', $spreadsheet);
-    $filename = $data['grademethod'];
+    $reportname = str_replace(' ', '', $data['reportname']);
+    $filename = $data['course']->shortname . '-' . $reportname . '.xls';
+
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
     $spreadsheet = $reader->loadFromString($spreadsheet);
     $csvdownload = optional_param('csvdownload', '', PARAM_TEXT);
