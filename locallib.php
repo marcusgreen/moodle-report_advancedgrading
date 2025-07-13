@@ -364,10 +364,9 @@ function download(string $spreadsheet, array $data) {
         ];
         redirect(new moodle_url("/mod/assign/view.php?", $params));
     }
-
-    // Replace spaces with underscores in reportname.
-    $reportname = str_replace(' ', '_', $data['reportname']);
-    $filename = $data['course']->shortname . '-' . $reportname;
+    $coursename = str_replace(' ','_',$data['course']->fullname);
+    $assignmentname = str_replace(' ', '_', $data['cm']->name);
+    $filename = $coursename . '-' . $assignmentname;
 
     if ($csvdownload > "") {
         $filetype = 'Csv';
@@ -404,7 +403,7 @@ function download(string $spreadsheet, array $data) {
         $sheet->getColumnDimension($lastcol)->setAutoSize(true);
 
         // Spreadsheet titles are limited to 31 characters.
-        $title = substr($data['cm']->name, 0, 30);
+        $title = substr($assignmentname, 0, 30);
         $sheet->setTitle($title);
     }
     output_header($filename, $filetype);
