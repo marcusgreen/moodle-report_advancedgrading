@@ -66,5 +66,6 @@ $string['showstudentid'] = 'Show student id';
 $string['showstudentid_text'] = 'Show student id in the report';
 $string['student'] = 'Student';
 $string['timegraded'] = 'Time graded';
+$string['totalsubmissions'] = 'Total submissions';
 $string['viewsubmissions'] = 'View submissions';
 $string['viewsubmissions_help'] = 'View submissions';

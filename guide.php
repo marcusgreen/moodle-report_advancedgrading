@@ -53,6 +53,7 @@ if (isset($data['students'])) {
 $data['criteriaspan'] = 2;
 $data['colcount'] += count($data['criteria']) * 2;
 $data['rows'] = $guide->get_rows($data);
+$data['total_submissions'] = count($data['dbrecords']);
 
 $form = $OUTPUT->render_from_template('report_advancedgrading/form', $data);
 $table = $OUTPUT->render_from_template('report_advancedgrading/header', $data);
