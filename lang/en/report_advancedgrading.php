@@ -32,6 +32,7 @@ $string['csvdownload_help'] = 'Download a comma Separated values version of the 
 $string['definition'] = 'Definition';
 $string['enable_javascriptlayout'] = 'Enable javascript layout';
 $string['enable_javascriptlayout_desc'] = 'Adds paging and sorting to the table layout, may add a performance overhead';
+$string['eventreportviewed'] = 'Advanced Grading report viewed';
 $string['exceldownload'] = 'Excel download';
 $string['exceldownload_help'] = 'Download an Excel spreadsheet format (xlsx) version of the table';
 $string['feedback'] = 'Feedback';
