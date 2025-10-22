@@ -1,3 +1,10 @@
+### Version 1.04 Oct 2025
+Confirmed compatibility with Moodle 5.1.
+
+Exported files (Excel or CSV) now have a name that combines the course name and the assignment name. So an assignment called Quadratic1 on a course Maths101 would be exported as Maths101-Quadratic1.xlsx
+
+Thanks to  Dragos Suciu for suggesting this feature
+https://github.com/marcusgreen/moodle-report_advancedgrading/issues/45
 
 ### Version 1.03 JUly 2025
 Add a separate advancedgrading/view capability, so people can be granted the ability to view without being able to edit.
