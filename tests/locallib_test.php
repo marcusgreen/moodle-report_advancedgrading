@@ -48,6 +48,8 @@ use gradingform_rubric_ranges_controller;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 final class locallib_test extends \advanced_testcase {
+    // Use the generator helper.
+    use \mod_assign_test_generator;
 
     /**
      * Unique id of course from db
@@ -140,8 +142,6 @@ final class locallib_test extends \advanced_testcase {
         $this->assertEquals($definition->activemethod, 'rubric');
     }
 
-    // Use the generator helper.
-    use \mod_assign_test_generator;
     /**
      * check that values in settings configure
      * what userfields are displayed
@@ -219,7 +219,6 @@ final class locallib_test extends \advanced_testcase {
         set_config('groups', true, 'report_advancedgrading');
         $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
         $data = user_fields($data, $data['dbrecords']);
-
     }
 
     /**
@@ -261,7 +260,6 @@ final class locallib_test extends \advanced_testcase {
         $data['dbrecords'] = $guide->get_data($data['assign'], $data['cm']);
         $gradeduser = reset($data['dbrecords'])->username;
         $this->assertContains($gradeduser, $enrollednames);
-
     }
 
     /**

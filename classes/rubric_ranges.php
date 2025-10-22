@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/grade/grading/form/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rubric_ranges {
-
     /**
      * Assemble the table rows for grading information in an array from the database records returned.
      * for each student

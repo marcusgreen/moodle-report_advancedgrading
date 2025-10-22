@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/grade/grading/form/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class guide {
-
     /**
      * Assemble the table rows for grading informationin an array from the database records returned.
      * for each student
@@ -60,7 +59,6 @@ class guide {
                 $rows .= get_summary_cells($student);
                 $rows .= '</tr>';
             }
-
         }
         if ($rows == "") {
             $rows .= '<tr> <td>' . get_string('nomarkedsubmissions', 'report_advancedgrading') . '</td>';

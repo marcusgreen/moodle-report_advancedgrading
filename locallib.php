@@ -98,7 +98,7 @@ function header_fields(array $data, array $criteria, \stdClass $course, \cm_info
     $data['header'] = [
         'coursename' => format_string($course->fullname),
         'assignment' => format_string($assign->name),
-        'gradingmethod' => get_string('pluginname', 'gradingform_'.$gdef->activemethod),
+        'gradingmethod' => get_string('pluginname', 'gradingform_' . $gdef->activemethod),
         'definition' => $gdef->definition,
     ];
 
@@ -167,7 +167,7 @@ function init(array $data): array {
 
     $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
 
-    $data['courseidvalue'] = 'value='.$data['courseid'];
+    $data['courseidvalue'] = 'value=' . $data['courseid'];
     $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
     $data['studentspan'] = count($data['profilefields']);
 
@@ -187,11 +187,15 @@ function init(array $data): array {
     } else {
         $criteriatable = 'gradingform_' . $data['grademethod'] . '_criteria';
     }
-    $data['criteriarecord'] = $DB->get_records_menu($criteriatable,
-     ['definitionid' => (int) $data['gradingdefinition']->definitionid], 'sortorder', 'id, description');
+    $data['criteriarecord'] = $DB->get_records_menu(
+        $criteriatable,
+        ['definitionid' => (int) $data['gradingdefinition']->definitionid],
+        'sortorder',
+        'id, description'
+    );
     $data = header_fields($data, $data['criteriarecord'], $data['course'], $data['cm'], $data['gradingdefinition']);
     $data['definition'] = get_grading_definition($data['cm']->instance);
-    $data['formaction'] = 'action='.$data['grademethod'] .'.php?id='.$data['courseid'].'&modid='.$data['modid'];
+    $data['formaction'] = 'action=' . $data['grademethod'] . '.php?id=' . $data['courseid'] . '&modid=' . $data['modid'];
     // Summary always has 4 columns.
     $data['summaryspan'] = 4;
     // TODO check if headerspanis actually used.
@@ -364,7 +368,7 @@ function download(string $spreadsheet, array $data) {
         ];
         redirect(new moodle_url("/mod/assign/view.php?", $params));
     }
-    $coursename = str_replace(' ','_',$data['course']->fullname);
+    $coursename = str_replace(' ', '_', $data['course']->fullname);
     $assignmentname = str_replace(' ', '_', $data['cm']->name);
     $filename = $coursename . '-' . $assignmentname;
 
@@ -372,7 +376,6 @@ function download(string $spreadsheet, array $data) {
         $filetype = 'Csv';
     } else {
         $filetype = 'Xlsx';
-
     }
     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, $filetype);
     if ($filetype == 'Xlsx') {
@@ -388,18 +391,18 @@ function download(string $spreadsheet, array $data) {
 
         $lastcol = $alphabet[$colcount + 1];
         // Merge the header cells containing metadata like course name etc.
-        $sheet->mergeCells('A1:'.$lastcol.'1');
-        $sheet->mergeCells('A2:'.$lastcol.'2');
-        $sheet->mergeCells('A3:'.$lastcol.'3');
-        $sheet->mergeCells('A4:'.$lastcol.'4');
+        $sheet->mergeCells('A1:' . $lastcol . '1');
+        $sheet->mergeCells('A2:' . $lastcol . '2');
+        $sheet->mergeCells('A3:' . $lastcol . '3');
+        $sheet->mergeCells('A4:' . $lastcol . '4');
 
         $color = new Color();
         $color->setRGB('CDCDCD');
         $color2 = new Color();
         $color2->setRGB('D3D3D3');
-        $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setFillType(Fill::FILL_GRADIENT_LINEAR);
-        $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setStartColor($color);
-        $sheet->getStyle('A6:'.$lastcol.'7')->getFill()->setEndColor($color2);
+        $sheet->getStyle('A6:' . $lastcol . '7')->getFill()->setFillType(Fill::FILL_GRADIENT_LINEAR);
+        $sheet->getStyle('A6:' . $lastcol . '7')->getFill()->setStartColor($color);
+        $sheet->getStyle('A6:' . $lastcol . '7')->getFill()->setEndColor($color2);
         $sheet->getColumnDimension($lastcol)->setAutoSize(true);
 
         // Spreadsheet titles are limited to 31 characters.
@@ -418,7 +421,7 @@ function download(string $spreadsheet, array $data) {
  * @param string $filetype
  * @return boolean
  */
-function output_header(string $filename, string$filetype): bool {
+function output_header(string $filename, string $filetype): bool {
     if ($filetype == 'Xlsx') {
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     } else {

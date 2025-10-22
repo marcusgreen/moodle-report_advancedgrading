@@ -58,10 +58,10 @@ if ($ADMIN->fulltree) {
     }
 
     $settings->add(new admin_setting_configmulticheckbox(
-            'report_advancedgrading/profilefieldsgradeby',
-            new lang_string('profilefieldsgradeby', 'report_advancedgrading'),
-            new lang_string('profilefieldsgradeby_desc', 'report_advancedgrading'),
-            ['graderusername' => 1],
-            $choices
+        'report_advancedgrading/profilefieldsgradeby',
+        new lang_string('profilefieldsgradeby', 'report_advancedgrading'),
+        new lang_string('profilefieldsgradeby_desc', 'report_advancedgrading'),
+        ['graderusername' => 1],
+        $choices
     ));
 }

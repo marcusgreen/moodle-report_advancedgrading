@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/grade/grading/form/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rubric {
-
     /**
      * Assemble the table rows for grading informationin an array from the database records returned.
      * for each student
@@ -50,7 +49,7 @@ class rubric {
                 $rows .= get_student_cells($data, $student);
                 foreach (array_keys($data['criterion']) as $crikey) {
                     $rows .= '<td>' . $student['grades'][$crikey]['score'] . '</td>';
-                    $rows .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
+                    $rows .= '<td>' . $student['grades'][$crikey]['definition'] . '</td>';
                     $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
                 }
                 $rows .= get_summary_cells($student);

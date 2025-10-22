@@ -45,7 +45,6 @@ use core_course\external\course_summary_exporter;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class external extends external_api {
-
     /**
      * Returns description of data_for_competency_frameworks_manage_page() parameters.
      *
@@ -114,7 +113,7 @@ class external extends external_api {
      * @return \external_description
      */
     public static function data_for_report_returns() {
-        return new external_single_structure( [
+        return new external_single_structure([
             'courseid' => new external_value(PARAM_INT, 'Course id'),
             'user' => user_summary_exporter::get_read_structure(),
             'course' => course_summary_exporter::get_read_structure(),
@@ -127,5 +126,4 @@ class external extends external_api {
             'pushratingstouserplans' => new external_value(PARAM_BOOL, 'True if rating is push to user plans'),
         ]);
     }
-
 }

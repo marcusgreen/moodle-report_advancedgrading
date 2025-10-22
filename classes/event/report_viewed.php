@@ -32,7 +32,6 @@ namespace report_advancedgrading\event;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_viewed extends \core\event\base {
-
     /**
      * Init method.
      *
@@ -68,8 +67,10 @@ class report_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/report/advancedgrading/'.$this->other['gradingmethod'].'.php',
-         ['id' => $this->courseid, 'modid' => $this->contextinstanceid]);
+        return new \moodle_url(
+            '/report/advancedgrading/' . $this->other['gradingmethod'] . '.php',
+            ['id' => $this->courseid, 'modid' => $this->contextinstanceid]
+        );
     }
 
     /**
