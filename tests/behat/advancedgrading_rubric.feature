@@ -4,45 +4,45 @@ Feature: Confirm advancedgrading report works for multiple submission of rubric
     As a teacher view the advanced grading report
   Background:
     Given the following config values are set as admin:
-        | enable_javascriptlayout | 0 | report_advancedgrading |
+          | enable_javascriptlayout | 0 | report_advancedgrading |
   Scenario: Convert rubric scores to grades.
     Given the following "users" exist:
-        | username | firstname | lastname | email                |
-        | teacher1 | Teacher   | 1        | teacher1@example.com |
-        | student1 | Student   | 1        | student1@example.com |
+          | username | firstname | lastname | email                |
+          | teacher1 | Teacher   | 1        | teacher1@example.com |
+          | student1 | Student   | 1        | student1@example.com |
     And the following "courses" exist:
-        | fullname | shortname | format |
-        | Course 1 | C1        | topics |
+          | fullname | shortname | format |
+          | Course 1 | C1        | topics |
     And the following "course enrolments" exist:
-        | user     | course | role           |
-        | teacher1 | C1     | editingteacher |
-        | student1 | C1     | student        |
+          | user     | course | role           |
+          | teacher1 | C1     | editingteacher |
+          | student1 | C1     | student        |
     Given the following "activity" exists:
-        | activity                            | assign            |
-        | name                                | Test assignment 1 |
-        | course                              | C1                |
-        | section                             | 1                 |
-        | assignsubmission_file_enabled       | 0                 |
-        | assignsubmission_onlinetext_enabled | 1                 |
-        | attemptreopenmethod                 | manual            |
-        | blindmarking                        | 1                 |
-        | assignfeedback_comments_enabled     | 1                 |
+          | activity                            | assign            |
+          | name                                | Test assignment 1 |
+          | course                              | C1                |
+          | section                             | 1                 |
+          | assignsubmission_file_enabled       | 0                 |
+          | assignsubmission_onlinetext_enabled | 1                 |
+          | attemptreopenmethod                 | manual            |
+          | blindmarking                        | 1                 |
+          | assignfeedback_comments_enabled     | 1                 |
 
     And I am on the "Test assignment 1" "assign activity editing" page logged in as teacher1
     And I set the following fields to these values:
-        | Grading method | Rubric |
+          | Grading method | Rubric |
     And I press "Save and return to course"
         # Defining a marking guide
     When I go to "Test assignment 1" advanced grading definition page
     And I change window size to "large"
 
     And I set the following fields to these values:
-        | Name        | Assignment 1 rubric     |
-        | Description | Rubric test description |
+          | Name        | Assignment 1 rubric     |
+          | Description | Rubric test description |
     And I define the following rubric:
-        | Criterion 1 | Good writing      | 10 | Excellent writing   | 30 |
-        | Criterion 2 | OK Punctuation    | 20 | Perfect Punctuation | 35 |
-        | Criterion 3 | Slightly original | 15 | Truly original      | 40 |
+          | Criterion 1 | Good writing      | 10 | Excellent writing   | 30 |
+          | Criterion 2 | OK Punctuation    | 20 | Perfect Punctuation | 35 |
+          | Criterion 3 | Slightly original | 15 | Truly original      | 40 |
     And I press "Save rubric and make it ready"
 
     And I log out
