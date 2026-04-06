@@ -1,3 +1,6 @@
+### Version 1.05 Apr 2026
+Confirmed compatibility with Moodle 5.2.
+
 ### Version 1.04 Oct 2025
 Confirmed compatibility with Moodle 5.1.
 
