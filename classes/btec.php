@@ -53,7 +53,7 @@ class btec {
                     $rows .= '<td>' . $student['grades'][$crikey]['definition'] .'</td>';
                     $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
                 }
-                $rows .= get_summary_cells($student);
+                $rows .= get_summary_cells($data, $student);
                 $rows .= '</tr>';
             }
         }
@@ -81,7 +81,9 @@ class btec {
                                         marker.email AS graderemail,
                                         stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
                                         stu.username AS username, gin.timemodified AS modified,ag.id, ag.grade,
-                                        assign_comment.commenttext as overallfeedback
+                                        assign_comment.commenttext as overallfeedback,
+                                        auf.workflowstate AS workflowstate, auf.allocatedmarker AS allocatedmarker,
+                                        amu.firstname AS markerfirstname, amu.lastname AS markerlastname
                                 FROM {course} crs
                                 JOIN {course_modules} cm ON crs.id = cm.course
                                 JOIN {assign} asg ON asg.id = cm.instance
@@ -94,6 +96,8 @@ class btec {
                                 JOIN {assignfeedback_comments} assign_comment on ag.id=assign_comment.grade
                                 JOIN {user} stu ON stu.id = ag.userid
                                 JOIN {user} marker ON marker.id = ag.grader
+                           LEFT JOIN {assign_user_flags} auf ON auf.assignment = asg.id AND auf.userid = stu.id
+                           LEFT JOIN {user} amu ON amu.id = auf.allocatedmarker
                                 JOIN {gradingform_btec_fillings} gbf ON (gbf.instanceid = gin.id)
                                  AND (gbf.criterionid = criteria.id)
                                WHERE cm.id = :cmid AND gin.status = :instancestatus
