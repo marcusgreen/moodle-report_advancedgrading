@@ -182,6 +182,10 @@ function init(array $data): array {
     $data['context'] = \context_module::instance($data['cm']->id);
     $data['assign'] = new assign($data['context'], $data['cm'], $data['cm']->get_course());
 
+    $instance = $data['assign']->get_instance();
+    $data['showmarker'] = !empty($instance->markingworkflow) && !empty($instance->markingallocation);
+    $data['showworkflowstate'] = !empty($instance->markingworkflow);
+
     if ($data['grademethod'] == 'rubric_ranges') {
         $criteriatable = 'gradingform_' . $data['grademethod'] . '_c';
     } else {
@@ -192,8 +196,18 @@ function init(array $data): array {
     $data = header_fields($data, $data['criteriarecord'], $data['course'], $data['cm'], $data['gradingdefinition']);
     $data['definition'] = get_grading_definition($data['cm']->instance);
     $data['formaction'] = 'action='.$data['grademethod'] .'.php?id='.$data['courseid'].'&modid='.$data['modid'];
-    // Summary always has 4 columns.
-    $data['summaryspan'] = 4;
+    $extrasummary = ($data['showmarker'] ? 1 : 0) + ($data['showworkflowstate'] ? 1 : 0);
+    $data['summaryspan'] = 4 + $extrasummary;
+    $data['colcount'] += $extrasummary;
+    $data['summaryheader'] = '';
+    if ($data['showmarker']) {
+        $data['summaryheader'] .= '<th ' . $data['headerstyle'] . '><b>'
+            . get_string('marker', 'assign') . '</b></th>';
+    }
+    if ($data['showworkflowstate']) {
+        $data['summaryheader'] .= '<th ' . $data['headerstyle'] . '><b>'
+            . get_string('markingworkflowstate', 'assign') . '</b></th>';
+    }
     // TODO check if headerspanis actually used.
     $data['headerspan'] = $data['colcount'];
 
@@ -258,6 +272,8 @@ function get_grades(array $data, array $dbrecords): array {
             'grader' => gradedbydata($grade),
             'timegraded' => $grade->modified,
             'grade' => $formattedgrade,
+            'marker' => trim(($grade->markerfirstname ?? '') . ' ' . ($grade->markerlastname ?? '')),
+            'workflowstate' => $grade->workflowstate ?? '',
         ];
 
         foreach ($data['students'] as $student) {
@@ -332,11 +348,19 @@ function set_blindmarking(array $data, $assign, $cm): array {
  * @param mixed $student
  * @return string
  */
-function get_summary_cells($student): string {
+function get_summary_cells(array $data, $student): string {
     $cell = '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
     $cell .= '<td>' . $student['gradeinfo']['grade'] . '</td>';
     $cell .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
     $cell .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "%d %b %Y %I:%M %p") . '</td>';
+    if (!empty($data['showmarker'])) {
+        $cell .= '<td>' . s($student['gradeinfo']['marker']) . '</td>';
+    }
+    if (!empty($data['showworkflowstate'])) {
+        $ws = $student['gradeinfo']['workflowstate'];
+        $label = $ws ? get_string('markingworkflowstate' . $ws, 'assign') : '';
+        $cell .= '<td>' . $label . '</td>';
+    }
     return $cell;
 }
 /**
