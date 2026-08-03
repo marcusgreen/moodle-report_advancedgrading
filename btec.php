@@ -43,7 +43,7 @@ $data = init($data);
 require_capability('mod/assign:grade', $data['context']);
 
 $btec = new btec();
-$data['dbrecords'] = $btec->get_data($data['cm']);
+$data['dbrecords'] = $btec->get_data($data['assign'], $data['cm']);
 
 $data = user_fields($data, $data['dbrecords']);
 if (isset($data['students'])) {
