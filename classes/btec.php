@@ -68,10 +68,11 @@ class btec {
     /**
      * Query the database for the student grades.
      *
+     * @param \assign $assign
      * @param \cm_info $cm
      * @return array
      */
-    public function get_data(\cm_info $cm): array {
+    public function get_data(\assign $assign, \cm_info $cm): array {
         global $DB;
         $sql = "SELECT gbf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, asg.grade as gradeoutof, gd.name AS btec,
                                         criteria.shortname, criteria.description as definition, criteria.description , gbf.score,
@@ -100,6 +101,7 @@ class btec {
                                 criteria.shortname ASC";
 
         $data = $DB->get_records_sql($sql, ['cmid' => $cm->id, 'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE]);
+        $data = set_blindmarking($data, $assign, $cm);
         return $data;
     }
 }
