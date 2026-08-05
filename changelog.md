@@ -1,6 +1,19 @@
 ### Version 1.05 Apr 2026
 Confirmed compatibility with Moodle 5.2.
 
+Blind marking is now actually applied to the BTEC report. btec::get_data()
+never called set_blindmarking(), so student identities (name, email,
+idnumber) were exposed on screen and in the Excel/CSV export even when the
+assignment used blind marking. The assign object is now passed in and the
+identities obscured, matching the rubric, guide, rubref and rubric_ranges
+methods. Added a PHPUnit test covering the blind/reveal paths (skipped when
+the third-party gradingform_btec plugin is not installed).
+
+NOTE: the Version 1.02 entry below stated this was fixed, but no such code
+ever reached btec.php - that credit (Juan Segarra / issue #19) was for the
+active grading instances change, not blind marking. BTEC blind marking had
+been broken since the method was first added.
+
 ### Version 1.04 Oct 2025
 Confirmed compatibility with Moodle 5.1.
 
@@ -19,6 +32,8 @@ Confirmed compatibility with Moodle 5.0
 
 Blind marking was not being applied when processing for a BTEC grading
 This was noticed during a scan using OpenAI 04-mini.
+(Correction: see Version 1.05 - this BTEC blind marking fix did not actually
+reach the code at the time and was only resolved in 1.05.)
 
 Thanks to Juan Segarra Montesinos for code to fix
 https://github.com/marcusgreen/moodle-report_advancedgrading/issues/19
