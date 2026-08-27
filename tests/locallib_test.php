@@ -264,6 +264,7 @@ final class locallib_test extends \advanced_testcase {
 
     }
 
+    /**
      * Check the BTEC report respects anonymous (blind) marking.
      *
      * The BTEC grading method had no fixture in the shared backup, and its
