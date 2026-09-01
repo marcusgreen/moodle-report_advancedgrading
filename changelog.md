@@ -1,3 +1,9 @@
+### Version 1.06 Sep 2026
+Removed dead DataTables CSS from styles.css. These unscoped rules (e.g. `table.dataTable thead th { background-image: none; }`) were leftover from an old version that used the DataTables JavaScript library, which the plugin no longer uses. Because they were global, they leaked onto other plugins that do use DataTables (such as mod_coursework), breaking their sort icons.
+
+Thanks to Ray (RayCoSector) for reporting and testing.
+https://github.com/marcusgreen/moodle-report_advancedgrading/issues/60
+
 ### Version 1.05 Apr 2026
 Confirmed compatibility with Moodle 5.2.
 
