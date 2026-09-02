@@ -57,7 +57,7 @@ class guide {
                         $rows .= '<td></td>';
                     }
                 }
-                $rows .= get_summary_cells($student);
+                $rows .= get_summary_cells($data, $student);
                 $rows .= '</tr>';
             }
 
@@ -90,7 +90,9 @@ class guide {
                         rubm.email AS graderemail,
                     stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
                     stu.username, stu.email, ag.timemodified AS modified, ag.grade,
-                    assign_comment.commenttext as overallfeedback
+                    assign_comment.commenttext as overallfeedback,
+                    auf.workflowstate AS workflowstate, auf.allocatedmarker AS allocatedmarker,
+                    amu.firstname AS markerfirstname, amu.lastname AS markerlastname
             FROM {assign} asg
             JOIN {course_modules} cm ON cm.instance = asg.id
             JOIN {context} ctx ON ctx.instanceid = cm.id
@@ -102,6 +104,8 @@ class guide {
       LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
             JOIN {user} stu ON stu.id = ag.userid
             JOIN {user} rubm ON rubm.id = ag.grader
+       LEFT JOIN {assign_user_flags} auf ON auf.assignment = asg.id AND auf.userid = stu.id
+       LEFT JOIN {user} amu ON amu.id = auf.allocatedmarker
             JOIN {gradingform_guide_fillings} fillings ON (fillings.instanceid = gin.id)
              AND (fillings.criterionid = criteria.id)
            WHERE cm.id = :assignid AND gin.status = :instancestatus

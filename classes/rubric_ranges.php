@@ -53,7 +53,7 @@ class rubric_ranges {
                     $rows .= '<td>' . $student['grades'][$crikey]['definition'] . '</td>';
                     $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
                 }
-                $rows .= get_summary_cells($student);
+                $rows .= get_summary_cells($data, $student);
                 $rows .= '</tr>';
             }
         }
@@ -86,7 +86,9 @@ class rubric_ranges {
                         rubm.firstname AS graderfirstname, rubm.lastname AS graderlastname,
                         rubm.email AS graderemail,
                         ag.timemodified AS modified,
-                        ctx.instanceid, ag.grade, asg.blindmarking, assign_comment.commenttext as overallfeedback
+                        ctx.instanceid, ag.grade, asg.blindmarking, assign_comment.commenttext as overallfeedback,
+                        auf.workflowstate AS workflowstate, auf.allocatedmarker AS allocatedmarker,
+                        amu.firstname AS markerfirstname, amu.lastname AS markerlastname
                     FROM {assign} asg
                     JOIN {course_modules} cm ON cm.instance = asg.id
                     JOIN {context} ctx ON ctx.instanceid = cm.id
@@ -99,6 +101,8 @@ class rubric_ranges {
             LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
                     JOIN {user} stu ON stu.id = ag.userid
                     JOIN {user} rubm ON rubm.id = ag.grader
+               LEFT JOIN {assign_user_flags} auf ON auf.assignment = asg.id AND auf.userid = stu.id
+               LEFT JOIN {user} amu ON amu.id = auf.allocatedmarker
                     JOIN {gradingform_rubric_ranges_f} grf ON (grf.instanceid = gin.id)
                     AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
                 WHERE cm.id = :assignid AND gin.status = :instancestatus AND stu.deleted = 0
