@@ -47,6 +47,12 @@ use gradingform_rubric_ranges_controller;
  * @copyright  2022 Marcus Green
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
+#[\PHPUnit\Framework\Attributes\CoversFunction('get_grading_definition')]
+#[\PHPUnit\Framework\Attributes\CoversFunction('user_fields')]
+#[\PHPUnit\Framework\Attributes\CoversClass(rubric::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(guide::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(btec::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(rubric_ranges::class)]
 final class locallib_test extends \advanced_testcase {
     // Use the generator helper.
     use \mod_assign_test_generator;
@@ -132,9 +138,6 @@ final class locallib_test extends \advanced_testcase {
      * Test get_grading_definition function with a rubric grading method
      * Created as a very basic test for the patch contributed to this
      * https://github.com/marcusgreen/moodle-report_advancedgrading/issues/15
-     *
-     * @covers ::get_grading_definition
-     *
      */
     public function test_get_grading_definition(): void {
         $this->resetAfterTest();
@@ -145,8 +148,6 @@ final class locallib_test extends \advanced_testcase {
     /**
      * check that values in settings configure
      * what userfields are displayed
-     *
-     * @covers ::user_fields
      *
      * @return void
      */
@@ -178,8 +179,6 @@ final class locallib_test extends \advanced_testcase {
     }
     /**
      * Check output of report for rubric grading method
-     *
-     * @covers ::rubric->get_data
      *
      * @return void
      */
@@ -224,8 +223,6 @@ final class locallib_test extends \advanced_testcase {
     /**
      * Check output of report for marking guide grading method
      *
-     * @covers ::guide->get_data
-     *
      * @return void
      */
     public function test_guide(): void {
@@ -269,8 +266,6 @@ final class locallib_test extends \advanced_testcase {
      * get_data() previously did not call set_blindmarking(), so it leaked
      * student identities. This restores a BTEC-graded assignment, enables
      * blind marking, and confirms names are obscured then revealed.
-     *
-     * @covers ::btec->get_data
      *
      * @return void
      */
@@ -342,8 +337,6 @@ final class locallib_test extends \advanced_testcase {
 
     /**
      * Check output of report for rubric grading method
-     *
-     * @covers ::rubric_ranges->get_data
      *
      * @return void
      */

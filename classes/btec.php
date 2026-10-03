@@ -80,7 +80,7 @@ class btec {
                                         marker.firstname AS graderfirstname, marker.lastname AS graderlastname,
                                         marker.email AS graderemail,
                                         stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-                                        stu.username AS username, gin.timemodified AS modified,ag.id, ag.grade,
+                                        stu.username AS username, stu.email, gin.timemodified AS modified,ag.id, ag.grade,
                                         assign_comment.commenttext as overallfeedback
                                 FROM {course} crs
                                 JOIN {course_modules} cm ON crs.id = cm.course
