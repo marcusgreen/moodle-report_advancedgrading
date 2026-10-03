@@ -1,3 +1,11 @@
+### Version 1.07 Oct 2026
+The BTEC query now selects the student email, which it previously
+omitted, so an email profile field column is populated like the other
+grading methods instead of being blank.
+
+Test @covers doc-comments replaced with PHPUnit CoversClass/CoversFunction
+attributes, removing PHPUnit 11 deprecation warnings.
+
 ### Version 1.06 Sep 2026
 Removed dead DataTables CSS from styles.css. These unscoped rules (e.g. `table.dataTable thead th { background-image: none; }`) were leftover from an old version that used the DataTables JavaScript library, which the plugin no longer uses. Because they were global, they leaked onto other plugins that do use DataTables (such as mod_coursework), breaking their sort icons.
 
@@ -11,13 +19,6 @@ even when the assignment used blind marking. The assign object is now passed
 in and the identities obscured, matching the rubric, guide, rubref and
 rubric_ranges methods. Added a PHPUnit test covering the blind/reveal paths
 (skipped when the third-party gradingform_btec plugin is not installed).
-
-The BTEC query also now selects the student email, which it previously
-omitted, so an email profile field column is populated like the other
-grading methods instead of being blank.
-
-Test @covers doc-comments replaced with PHPUnit CoversClass/CoversFunction
-attributes, removing PHPUnit 11 deprecation warnings.
 
 NOTE: the Version 1.02 entry stated this was fixed, but no such code
 ever reached btec.php - that credit (Juan Segarra / issue #19) was for the
