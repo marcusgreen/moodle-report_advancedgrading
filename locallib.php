@@ -369,7 +369,8 @@ function download(string $spreadsheet, array $data) {
         redirect(new moodle_url("/mod/assign/view.php?", $params));
     }
     $coursename = str_replace(' ', '_', $data['course']->fullname);
-    $assignmentname = str_replace(' ', '_', $data['cm']->name);
+    // Also replace characters considered invalid in PhpOffice\PhpSpreadsheet\Worksheet\Worksheet::INVALID_CHARACTERS.
+    $assignmentname = str_replace([' ', '*', ':', '/', '\\', '?', '[', ']'], '_', $data['cm']->name);
     $filename = $coursename . '-' . $assignmentname;
 
     if ($csvdownload > "") {
