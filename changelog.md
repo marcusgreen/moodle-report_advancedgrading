@@ -1,8 +1,29 @@
+### Version 1.07 Oct 2026
+The BTEC query now selects the student email, which it previously
+omitted, so an email profile field column is populated like the other
+grading methods instead of being blank.
+
+Test @covers doc-comments replaced with PHPUnit CoversClass/CoversFunction
+attributes, removing PHPUnit 11 deprecation warnings.
+
 ### Version 1.06 Sep 2026
 Removed dead DataTables CSS from styles.css. These unscoped rules (e.g. `table.dataTable thead th { background-image: none; }`) were leftover from an old version that used the DataTables JavaScript library, which the plugin no longer uses. Because they were global, they leaked onto other plugins that do use DataTables (such as mod_coursework), breaking their sort icons.
 
 Thanks to Ray (RayCoSector) for reporting and testing.
 https://github.com/marcusgreen/moodle-report_advancedgrading/issues/60
+
+Blind marking is now actually applied to the BTEC report. btec::get_data()
+never called set_blindmarking(), so student identities (first name, last
+name, username, idnumber) were exposed on screen and in the Excel/CSV export
+even when the assignment used blind marking. The assign object is now passed
+in and the identities obscured, matching the rubric, guide, rubref and
+rubric_ranges methods. Added a PHPUnit test covering the blind/reveal paths
+(skipped when the third-party gradingform_btec plugin is not installed).
+
+NOTE: the Version 1.02 entry stated this was fixed, but no such code
+ever reached btec.php - that credit (Juan Segarra / issue #19) was for the
+active grading instances change, not blind marking. BTEC blind marking had
+been broken since the method was first added.
 
 ### Version 1.05 Apr 2026
 Confirmed compatibility with Moodle 5.2.
@@ -25,6 +46,8 @@ Confirmed compatibility with Moodle 5.0
 
 Blind marking was not being applied when processing for a BTEC grading
 This was noticed during a scan using OpenAI 04-mini.
+(Correction: see Version 1.06 - this BTEC blind marking fix did not actually
+reach the code at the time and was only resolved in 1.06.)
 
 Thanks to Juan Segarra Montesinos for code to fix
 https://github.com/marcusgreen/moodle-report_advancedgrading/issues/19
