@@ -1,3 +1,8 @@
+### Version 1.08 Oct 2026
+Declared support for Moodle 5.3 and added MOODLE_503_STABLE to the CI
+matrix. The CI Grunt step now runs on the main branch job (it previously
+checked for 'master', so never ran).
+
 ### Version 1.07 Oct 2026
 The BTEC query now selects the student email, which it previously
 omitted, so an email profile field column is populated like the other
