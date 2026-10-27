@@ -305,7 +305,7 @@ function add_groups(array $data, int $courseid): array {
 function get_student_cells(array $data, array $student): string {
     $cell = '';
     foreach ($data['profilefields'] as $field) {
-        $cell .= '<td>' . $student[$field] . '</td>';
+        $cell .= '<td>' . s($student[$field]) . '</td>';
     }
     return $cell;
 }
