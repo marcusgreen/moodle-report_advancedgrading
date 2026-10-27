@@ -176,6 +176,9 @@ function init(array $data): array {
 
     $modinfo = get_fast_modinfo($data['courseid']);
     $data['cm'] = $modinfo->get_cm($data['modid']);
+    if ($data['cm']->modname !== 'assign') {
+        throw new \moodle_exception('invalidcoursemodule', 'error');
+    }
     $data['course'] = $DB->get_record('course', ['id' => $data['courseid']], '*', MUST_EXIST);
     $data['gradingdefinition'] = get_grading_definition($data['cm']->instance);
 
