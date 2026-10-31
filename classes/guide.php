@@ -50,7 +50,7 @@ class guide {
                 foreach (array_keys($data['criteriarecord']) as $crikey) {
                     if (isset($student['grades'][$crikey]['score'])) {
                         $rows .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
-                        $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+                        $rows .= '<td>' . s($student['grades'][$crikey]['feedback']) . '</td>';
                     } else {
                         $rows .= '<td></td>';
                         $rows .= '<td></td>';

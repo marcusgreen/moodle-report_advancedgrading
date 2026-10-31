@@ -49,8 +49,8 @@ class rubric {
                 $rows .= get_student_cells($data, $student);
                 foreach (array_keys($data['criterion']) as $crikey) {
                     $rows .= '<td>' . $student['grades'][$crikey]['score'] . '</td>';
-                    $rows .= '<td>' . $student['grades'][$crikey]['definition'] . '</td>';
-                    $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+                    $rows .= '<td>' . s($student['grades'][$crikey]['definition']) . '</td>';
+                    $rows .= '<td>' . s($student['grades'][$crikey]['feedback']) . '</td>';
                 }
                 $rows .= get_summary_cells($student);
                 $rows .= '</tr>';
