@@ -259,6 +259,7 @@ function get_grades(array $data, array $dbrecords): array {
 
         $gi = [
             'overallfeedback' => $grade->overallfeedback,
+            'overallfeedbackformat' => $grade->overallfeedbackformat ?? FORMAT_HTML,
             'grader' => gradedbydata($grade),
             'timegraded' => $grade->modified,
             'grade' => $formattedgrade,
@@ -331,16 +332,21 @@ function set_blindmarking(array $data, $assign, $cm): array {
     return $data;
 }
 /**
- * Columns shown at the end of the tabale summarisng
- * The marking and who did it.
- * @param mixed $student
+ * Columns shown at the end of the table summarising
+ * the marking and who did it.
+ *
+ * @param array $data
+ * @param array $student
  * @return string
  */
-function get_summary_cells($student): string {
-    $cell = '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
-    $cell .= '<td>' . $student['gradeinfo']['grade'] . '</td>';
-    $cell .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
-    $cell .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "%d %b %Y %I:%M %p") . '</td>';
+function get_summary_cells(array $data, array $student): string {
+    $gi = $student['gradeinfo'];
+    $format = $gi['overallfeedbackformat'] ?? FORMAT_HTML;
+    $feedback = format_text($gi['overallfeedback'] ?? '', $format, ['context' => $data['context']]);
+    $cell = '<td>' . $feedback . '</td>';
+    $cell .= '<td>' . s($gi['grade']) . '</td>';
+    $cell .= '<td>' . s($gi['grader']) . '</td>';
+    $cell .= '<td>' . \userdate($gi['timegraded'], "%d %b %Y %I:%M %p") . '</td>';
     return $cell;
 }
 /**

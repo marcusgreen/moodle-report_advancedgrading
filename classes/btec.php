@@ -52,7 +52,7 @@ class btec {
                     $rows .= '<td>' . s($student['grades'][$crikey]['definition']) . '</td>';
                     $rows .= '<td>' . s($student['grades'][$crikey]['feedback']) . '</td>';
                 }
-                $rows .= get_summary_cells($student);
+                $rows .= get_summary_cells($data, $student);
                 $rows .= '</tr>';
             }
         }
@@ -81,7 +81,8 @@ class btec {
                                         marker.email AS graderemail,
                                         stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
                                         stu.username AS username, stu.email, gin.timemodified AS modified,ag.id, ag.grade,
-                                        assign_comment.commenttext as overallfeedback
+                                        assign_comment.commenttext as overallfeedback,
+                                        assign_comment.commentformat AS overallfeedbackformat
                                 FROM {course} crs
                                 JOIN {course_modules} cm ON crs.id = cm.course
                                 JOIN {assign} asg ON asg.id = cm.instance
