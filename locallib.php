@@ -54,19 +54,58 @@ function get_grading_definition(int $assignid) {
 }
 
 /**
+ * Remove grading records for students the current user may not see
+ * because of the activity group mode. Mirrors the behaviour of the
+ * assignment grading table: with separate groups and without
+ * moodle/site:accessallgroups only members of the active group are shown.
+ *
+ * @param array $dbrecords records returned by a grading method get_data()
+ * @param cm_info $cm the assignment course module
+ * @return array the records the current user is allowed to see
+ */
+function report_advancedgrading_filter_by_group(array $dbrecords, cm_info $cm): array {
+    $groupmode = groups_get_activity_groupmode($cm);
+    if ($groupmode == NOGROUPS) {
+        return $dbrecords;
+    }
+    $currentgroup = groups_get_activity_group($cm, true);
+    if (!$currentgroup) {
+        // Zero means "All participants", which is only offered with visible groups
+        // or accessallgroups. Otherwise the user belongs to no group and sees nobody.
+        $context = context_module::instance($cm->id);
+        if ($groupmode == VISIBLEGROUPS || has_capability('moodle/site:accessallgroups', $context)) {
+            return $dbrecords;
+        }
+        return [];
+    }
+    $members = groups_get_members($currentgroup, 'u.id');
+    return array_filter($dbrecords, function ($record) use ($members) {
+        return isset($members[$record->userid]);
+    });
+}
+
+/**
  * Get object with list of groups each user is in.
  * Credit to Dan Marsden for this idea/function
  * @param int $courseid
+ * @param int $groupingid limit to groups in this grouping, 0 for all course groups
  */
-function report_advancedgrading_get_user_groups($courseid): array {
+function report_advancedgrading_get_user_groups($courseid, int $groupingid = 0): array {
     global $DB;
 
+    $params = ['courseid' => $courseid];
+    $groupingjoin = '';
+    if ($groupingid) {
+        $groupingjoin = 'JOIN {groupings_groups} gg ON gg.groupid = g.id AND gg.groupingid = :groupingid';
+        $params['groupingid'] = $groupingid;
+    }
     $sql = "SELECT gm.userid,g.id, g.name
               FROM {groups} g
               JOIN {groups_members} gm ON gm.groupid = g.id
+              $groupingjoin
              WHERE g.courseid = :courseid
           ORDER BY gm.userid";
-    $rs = $DB->get_recordset_sql($sql, ['courseid' => $courseid]);
+    $rs = $DB->get_recordset_sql($sql, $params);
     foreach ($rs as $row) {
         if (!isset($groupsbyuser[$row->userid])) {
             $groupsbyuser[$row->userid] = [];
@@ -149,7 +188,8 @@ function send_output(string $form, string $dload, array $data, string $page): vo
         download($page, $data);
         echo $OUTPUT->header();
     } else {
-        $html = $form . $page;
+        $groupmenu = groups_print_activity_menu($data['cm'], $PAGE->url, true);
+        $html = $groupmenu . $form . $page;
         $PAGE->set_pagelayout('report');
         echo $OUTPUT->header();
         echo $OUTPUT->container($html, 'advancedgrading-main');
@@ -281,7 +321,8 @@ function get_grades(array $data, array $dbrecords): array {
  * @return array
  */
 function add_groups(array $data, int $courseid): array {
-    $groups = report_advancedgrading_get_user_groups($courseid);
+    $groupingid = isset($data['cm']) ? (int) $data['cm']->groupingid : 0;
+    $groups = report_advancedgrading_get_user_groups($courseid, $groupingid);
     foreach (array_keys($data['students']) as $userid) {
         if (isset($groups[$userid])) {
             $data['students'][$userid]['groups'] = implode(" ", $groups[$userid]);

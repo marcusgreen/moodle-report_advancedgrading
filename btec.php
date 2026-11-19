@@ -44,6 +44,7 @@ require_capability('report/advancedgrading:view', $data['context']);
 
 $btec = new btec();
 $data['dbrecords'] = $btec->get_data($data['assign'], $data['cm']);
+$data['dbrecords'] = report_advancedgrading_filter_by_group($data['dbrecords'], $data['cm']);
 
 $data = user_fields($data, $data['dbrecords']);
 if (isset($data['students'])) {
