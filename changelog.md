@@ -1,3 +1,13 @@
+### Unreleased
+The report now respects the assignment group mode (issue #31). In
+separate groups mode a user without moodle/site:accessallgroups only
+sees students in their active group, in the page and in downloads.
+A group selector is shown above the report, and the Groups column is
+limited to groups in the assignment grouping.
+
+Thanks to Tim Ellis (TimEllis) for reporting.
+https://github.com/marcusgreen/moodle-report_advancedgrading/issues/31
+
 ### Version 1.08 Oct 2026
 Declared support for Moodle 5.3 and added MOODLE_503_STABLE to the CI
 matrix. The CI Grunt step now runs on the main branch job (it previously
