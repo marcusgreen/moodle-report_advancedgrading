@@ -49,6 +49,8 @@ use gradingform_rubric_ranges_controller;
  */
 #[\PHPUnit\Framework\Attributes\CoversFunction('get_grading_definition')]
 #[\PHPUnit\Framework\Attributes\CoversFunction('user_fields')]
+#[\PHPUnit\Framework\Attributes\CoversFunction('report_advancedgrading_get_columns')]
+#[\PHPUnit\Framework\Attributes\CoversFunction('report_advancedgrading_get_identity_sql')]
 #[\PHPUnit\Framework\Attributes\CoversClass(rubric::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(guide::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(btec::class)]
@@ -177,6 +179,146 @@ final class locallib_test extends \advanced_testcase {
         $rows = $rubric->get_rows($data);
         $this->assertStringContainsString('Group1', $rows);
     }
+
+    /**
+     * Initialise the rubric report data for the rubric assignment.
+     *
+     * @return array
+     */
+    private function init_rubric_data(): array {
+        $cm = get_coursemodule_from_instance('assign', $this->rubricassignid, $this->courseid);
+        $data['headerstyle'] = '';
+        $data['reportname'] = get_string('rubricreportname', 'report_advancedgrading');
+        $data['grademethod'] = 'rubric';
+        $data['modid'] = $cm->id;
+        $data['courseid'] = $this->courseid;
+        return init($data);
+    }
+
+    /**
+     * With usesiteidentity off, showuseridentity is ignored and the
+     * profilefields setting is used unchanged.
+     *
+     * https://github.com/marcusgreen/moodle-report_advancedgrading/issues/50
+     */
+    public function test_site_identity_off(): void {
+        $this->resetAfterTest();
+        set_config('showuseridentity', 'email,phone2');
+        set_config('profilefields', 'username,email,groups', 'report_advancedgrading');
+
+        $data = $this->init_rubric_data();
+        $this->assertSame(['username', 'email', 'groups'], $data['profilefields']);
+
+        $records = (new rubric())->get_data($data['assign'], $data['cm']);
+        $this->assertObjectNotHasProperty('phone2', reset($records));
+    }
+
+    /**
+     * With usesiteidentity on, the identity columns follow showuseridentity,
+     * are masked by blind marking, and are escaped in the output.
+     *
+     * https://github.com/marcusgreen/moodle-report_advancedgrading/issues/50
+     */
+    public function test_site_identity_on(): void {
+        global $DB;
+        $this->resetAfterTest();
+        set_config('usesiteidentity', 1, 'report_advancedgrading');
+        set_config('showuseridentity', 'email,phone2,department');
+        // Email and idnumber are ignored from the plugin setting when using site identity.
+        set_config('profilefields', 'username,idnumber,email,groups', 'report_advancedgrading');
+
+        $data = $this->init_rubric_data();
+        $this->assertSame(['username', 'email', 'phone2', 'department', 'groups'], $data['profilefields']);
+        $this->assertSame(get_string('phone2'), $data['columns']['phone2']);
+
+        $rubric = new rubric();
+        $records = $rubric->get_data($data['assign'], $data['cm']);
+        foreach ($records as $record) {
+            $DB->set_field('user', 'phone2', '0123 456', ['id' => $record->userid]);
+            $DB->set_field('user', 'department', '<b>Dept</b>', ['id' => $record->userid]);
+        }
+
+        // Blind marking masks the identity fields.
+        $records = $rubric->get_data($data['assign'], $data['cm']);
+        $record = reset($records);
+        $participant = get_string('participant', 'report_advancedgrading');
+        $this->assertStringStartsWith($participant, $record->phone2);
+        $this->assertStringStartsWith($participant, $record->department);
+
+        // Once identities are revealed the real values are shown, escaped.
+        $this->setUser($DB->get_record('user', ['username' => 't1']));
+        $data['assign']->reveal_identities();
+        $data['dbrecords'] = $rubric->get_data($data['assign'], $data['cm']);
+        $this->assertEquals('0123 456', reset($data['dbrecords'])->phone2);
+
+        $data = user_fields($data, $data['dbrecords']);
+        $data = add_groups($data, $data['courseid']);
+        $data = get_grades($data, $data['dbrecords']);
+        $rows = $rubric->get_rows($data);
+        $this->assertStringContainsString('<td>0123 456</td>', $rows);
+        $this->assertStringContainsString('&lt;b&gt;Dept&lt;/b&gt;', $rows);
+        $this->assertStringNotContainsString('<b>Dept</b>', $rows);
+    }
+
+    /**
+     * With usesiteidentity on, users without moodle/site:viewuseridentity
+     * see no identity columns, including email from the plugin setting.
+     *
+     * https://github.com/marcusgreen/moodle-report_advancedgrading/issues/50
+     */
+    public function test_site_identity_no_capability(): void {
+        global $DB;
+        $this->resetAfterTest();
+        set_config('usesiteidentity', 1, 'report_advancedgrading');
+        set_config('showuseridentity', 'email,phone2');
+        set_config('profilefields', 'username,email', 'report_advancedgrading');
+
+        $teacher = $DB->get_record('user', ['username' => 't1']);
+        $context = \context_course::instance($this->courseid);
+        foreach (get_user_roles($context, $teacher->id) as $role) {
+            assign_capability('moodle/site:viewuseridentity', CAP_PROHIBIT, $role->roleid, $context->id, true);
+        }
+        $this->setUser($teacher);
+
+        $data = $this->init_rubric_data();
+        $this->assertSame(['username'], $data['profilefields']);
+        $records = (new rubric())->get_data($data['assign'], $data['cm']);
+        $this->assertObjectNotHasProperty('phone2', reset($records));
+    }
+
+    /**
+     * Custom profile fields in showuseridentity are added as columns.
+     *
+     * https://github.com/marcusgreen/moodle-report_advancedgrading/issues/50
+     */
+    public function test_site_identity_custom_field(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $field = $this->getDataGenerator()->create_custom_profile_field([
+            'shortname' => 'studentref', 'name' => 'Student reference', 'datatype' => 'text',
+        ]);
+        set_config('usesiteidentity', 1, 'report_advancedgrading');
+        set_config('showuseridentity', 'profile_field_studentref');
+        set_config('profilefields', 'username', 'report_advancedgrading');
+
+        $data = $this->init_rubric_data();
+        $this->assertSame(['username', 'profile_field_studentref'], $data['profilefields']);
+        $this->assertSame('Student reference', $data['columns']['profile_field_studentref']);
+
+        $rubric = new rubric();
+        $records = $rubric->get_data($data['assign'], $data['cm']);
+        $record = reset($records);
+        $DB->insert_record('user_info_data', (object) [
+            'userid' => $record->userid, 'fieldid' => $field->id, 'data' => 'REF42', 'dataformat' => 0,
+        ]);
+
+        $this->setUser($DB->get_record('user', ['username' => 't1']));
+        $data['assign']->reveal_identities();
+        $records = $rubric->get_data($data['assign'], $data['cm']);
+        $values = array_column($records, 'profile_field_studentref');
+        $this->assertContains('REF42', $values);
+    }
+
     /**
      * Check output of report for rubric grading method
      *

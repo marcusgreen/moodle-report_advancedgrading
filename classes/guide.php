@@ -80,6 +80,7 @@ class guide {
      */
     public function get_data(\assign $assign, \cm_info $cm): array {
         global $DB;
+        $identity = report_advancedgrading_get_identity_sql($assign->get_context());
             $sql = "SELECT fillings.id AS ggfid, cm.course AS course, asg.name AS assignment,
                     asg.grade as gradeoutof,gd.name AS guide,
                     criteria.description,criteria.shortname,
@@ -87,7 +88,7 @@ class guide {
                         rubm.firstname AS graderfirstname, rubm.lastname AS graderlastname,
                         rubm.email AS graderemail,
                     stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-                    stu.username, stu.email, ag.timemodified AS modified, ag.grade,
+                    stu.username, stu.email{$identity->selects}, ag.timemodified AS modified, ag.grade,
                     assign_comment.commenttext as overallfeedback
             FROM {assign} asg
             JOIN {course_modules} cm ON cm.instance = asg.id
@@ -99,6 +100,7 @@ class guide {
             JOIN {assign_grades} ag ON ag.id = gin.itemid
       LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
             JOIN {user} stu ON stu.id = ag.userid
+            {$identity->joins}
             JOIN {user} rubm ON rubm.id = ag.grader
             JOIN {gradingform_guide_fillings} fillings ON (fillings.instanceid = gin.id)
              AND (fillings.criterionid = criteria.id)
@@ -106,7 +108,7 @@ class guide {
              AND  stu.deleted = 0
         ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
         $data = $DB->get_records_sql($sql, ['assignid' => $cm->id,
-            'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE]);
+            'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE] + $identity->params);
         $data = set_blindmarking($data, $assign, $cm);
         return $data;
     }

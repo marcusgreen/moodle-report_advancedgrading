@@ -67,5 +67,7 @@ $string['showstudentid'] = 'Show student id';
 $string['showstudentid_text'] = 'Show student id in the report';
 $string['student'] = 'Student';
 $string['timegraded'] = 'Time graded';
+$string['usesiteidentity'] = 'Use site identity fields';
+$string['usesiteidentity_desc'] = 'If enabled, the student identity columns follow the site "Show user identity" setting (showuseridentity) and are only shown to users with the moodle/site:viewuseridentity capability. Email address and ID number in the profile fields setting above are then ignored.';
 $string['viewsubmissions'] = 'View submissions';
 $string['viewsubmissions_help'] = 'View submissions';

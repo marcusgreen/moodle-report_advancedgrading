@@ -74,13 +74,15 @@ class btec {
      */
     public function get_data(\assign $assign, \cm_info $cm): array {
         global $DB;
+        $identity = report_advancedgrading_get_identity_sql($assign->get_context());
         $sql = "SELECT gbf.id AS ggfid, crs.shortname AS course, asg.name AS assignment, asg.grade as gradeoutof, gd.name AS btec,
                                         criteria.shortname, criteria.description as definition, criteria.description , gbf.score,
                                         gbf.remark, gbf.criterionid, marker.username AS graderusername,
                                         marker.firstname AS graderfirstname, marker.lastname AS graderlastname,
                                         marker.email AS graderemail,
                                         stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
-                                        stu.username AS username, stu.email, gin.timemodified AS modified,ag.id, ag.grade,
+                                        stu.username AS username, stu.email{$identity->selects},
+                                        gin.timemodified AS modified,ag.id, ag.grade,
                                         assign_comment.commenttext as overallfeedback
                                 FROM {course} crs
                                 JOIN {course_modules} cm ON crs.id = cm.course
@@ -93,6 +95,7 @@ class btec {
                                 JOIN {assign_grades} ag ON ag.id = gin.itemid
                                 JOIN {assignfeedback_comments} assign_comment on ag.id=assign_comment.grade
                                 JOIN {user} stu ON stu.id = ag.userid
+                                {$identity->joins}
                                 JOIN {user} marker ON marker.id = ag.grader
                                 JOIN {gradingform_btec_fillings} gbf ON (gbf.instanceid = gin.id)
                                  AND (gbf.criterionid = criteria.id)
@@ -100,7 +103,8 @@ class btec {
                             ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC,
                                 criteria.shortname ASC";
 
-        $data = $DB->get_records_sql($sql, ['cmid' => $cm->id, 'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE]);
+        $data = $DB->get_records_sql($sql, ['cmid' => $cm->id,
+            'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE] + $identity->params);
         $data = set_blindmarking($data, $assign, $cm);
         return $data;
     }

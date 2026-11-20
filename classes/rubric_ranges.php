@@ -75,13 +75,14 @@ class rubric_ranges {
      */
     public function get_data(\assign $assign, \cm_info $cm): array {
         global $DB;
+        $identity = report_advancedgrading_get_identity_sql($assign->get_context());
         $sql = "SELECT grf.id as grfid,
                         cm.course, asg.name as assignment,asg.grade as gradeoutof,
                         criteria.description, level.score,
                         level.definition, grf.remark, grf.grade as grade_rub_range, grf.criterionid,
                         stu.id AS userid, stu.idnumber AS idnumber,
                         stu.firstname, stu.lastname, stu.username,
-                        stu.username, stu.email, rubm.username AS graderusername,
+                        stu.username, stu.email{$identity->selects}, rubm.username AS graderusername,
                         rubm.firstname AS graderfirstname, rubm.lastname AS graderlastname,
                         rubm.email AS graderemail,
                         ag.timemodified AS modified,
@@ -97,13 +98,14 @@ class rubric_ranges {
                     JOIN {assign_grades} ag ON ag.id = gin.itemid
             LEFT  JOIN {assignfeedback_comments} assign_comment on assign_comment.grade = ag.id
                     JOIN {user} stu ON stu.id = ag.userid
+                    {$identity->joins}
                     JOIN {user} rubm ON rubm.id = ag.grader
                     JOIN {gradingform_rubric_ranges_f} grf ON (grf.instanceid = gin.id)
                     AND (grf.criterionid = criteria.id) AND (grf.levelid = level.id)
                 WHERE cm.id = :assignid AND gin.status = :instancestatus AND stu.deleted = 0
                 ORDER BY lastname ASC, firstname ASC, userid ASC, criteria.sortorder ASC";
         $data = $DB->get_records_sql($sql, ['assignid' => $cm->id,
-                'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE]);
+                'instancestatus' => \gradingform_instance::INSTANCE_STATUS_ACTIVE] + $identity->params);
         $data = set_blindmarking($data, $assign, $cm);
         return $data;
     }

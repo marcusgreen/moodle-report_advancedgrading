@@ -78,6 +78,85 @@ function report_advancedgrading_get_user_groups($courseid): array {
 }
 
 /**
+ * Is the site-wide "Show user identity" (showuseridentity) configuration
+ * used to decide the identity columns, rather than the plugin settings.
+ *
+ * @return bool
+ */
+function report_advancedgrading_use_site_identity(): bool {
+    return (bool) get_config('report_advancedgrading', 'usesiteidentity');
+}
+
+/**
+ * Get the site identity fields the current user may see in this context.
+ * Returns an empty array when the usesiteidentity setting is off.
+ *
+ * @param \context $context
+ * @return string[]
+ */
+function report_advancedgrading_get_identity_fields(\context $context): array {
+    if (!report_advancedgrading_use_site_identity()) {
+        return [];
+    }
+    return \core_user\fields::get_identity_fields($context);
+}
+
+/**
+ * Get the ordered student columns for the report, keyed by field name with
+ * the column label as the value.
+ *
+ * When usesiteidentity is off the profilefields setting is used unchanged.
+ * When it is on, email and idnumber from profilefields are ignored and the
+ * site identity fields the user may see are added instead.
+ *
+ * @param \context $context
+ * @return array
+ */
+function report_advancedgrading_get_columns(\context $context): array {
+    $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
+    $profilefields = empty($profileconfig) ? [] : explode(',', $profileconfig);
+    $usesiteidentity = report_advancedgrading_use_site_identity();
+
+    $columns = [];
+    foreach ($profilefields as $field) {
+        if ($usesiteidentity && in_array($field, ['email', 'idnumber'])) {
+            continue;
+        }
+        $columns[$field] = get_string($field);
+    }
+    if (!$usesiteidentity) {
+        return $columns;
+    }
+    // Groups goes after the identity fields.
+    $groups = isset($columns['groups']) ? ['groups' => $columns['groups']] : [];
+    unset($columns['groups']);
+
+    foreach (report_advancedgrading_get_identity_fields($context) as $field) {
+        if (!isset($columns[$field])) {
+            $columns[$field] = \core_user\fields::get_display_name($field);
+        }
+    }
+    return $columns + $groups;
+}
+
+/**
+ * Get the SQL fragments to add the site identity fields to a query where the
+ * student user table has the alias stu. Fields that every query already selects
+ * are excluded. Selects have a leading comma.
+ *
+ * @param \context $context
+ * @return \stdClass with selects, joins and params
+ */
+function report_advancedgrading_get_identity_sql(\context $context): \stdClass {
+    if (!report_advancedgrading_use_site_identity()) {
+        return (object) ['selects' => '', 'joins' => '', 'params' => []];
+    }
+    return \core_user\fields::for_identity($context)
+        ->excluding('username', 'email', 'idnumber')
+        ->get_sql('stu', true);
+}
+
+/**
  * Get the descriptive header fields that detail
  * the details of the grading setup
  *
@@ -104,8 +183,8 @@ function header_fields(array $data, array $criteria, \stdClass $course, \cm_info
 
     $criterion = [];
     $data['studentheaders'] = "";
-    foreach ($data['profilefields'] as $field) {
-            $data['studentheaders'] .= "<th " . $data['headerstyle'] . "><b>" . get_string($field) . "</b></th>";
+    foreach ($data['columns'] as $label) {
+            $data['studentheaders'] .= "<th " . $data['headerstyle'] . "><b>" . s($label) . "</b></th>";
     }
     return $data;
 }
@@ -125,7 +204,7 @@ function user_fields(array $data, array $dbrecords): array {
             if ($field == 'groups') {
                 continue;
             }
-            $student[$field] = $grade->$field;
+            $student[$field] = $grade->$field ?? '';
         }
         $data['students'][$grade->userid] = $student;
     }
@@ -165,14 +244,7 @@ function send_output(string $form, string $dload, array $data, string $page): vo
 function init(array $data): array {
     global $PAGE, $DB;
 
-    $profileconfig = trim(get_config('report_advancedgrading', 'profilefields'));
-
     $data['courseidvalue'] = 'value=' . $data['courseid'];
-    $data['profilefields'] = empty($profileconfig) ? [] : explode(',', $profileconfig);
-    $data['studentspan'] = count($data['profilefields']);
-
-    $data['colcount'] = count($data['profilefields']);
-    $data['colcount'] += 4; // Always 4 cols in the summary.
 
     $modinfo = get_fast_modinfo($data['courseid']);
     $data['cm'] = $modinfo->get_cm($data['modid']);
@@ -180,6 +252,13 @@ function init(array $data): array {
     $data['gradingdefinition'] = get_grading_definition($data['cm']->instance);
 
     $data['context'] = \context_module::instance($data['cm']->id);
+
+    $data['columns'] = report_advancedgrading_get_columns($data['context']);
+    $data['profilefields'] = array_keys($data['columns']);
+    $data['studentspan'] = count($data['profilefields']);
+
+    $data['colcount'] = count($data['profilefields']);
+    $data['colcount'] += 4; // Always 4 cols in the summary.
     $data['assign'] = new assign($data['context'], $data['cm'], $data['cm']->get_course());
 
     if ($data['grademethod'] == 'rubric_ranges') {
@@ -302,7 +381,7 @@ function add_groups(array $data, int $courseid): array {
 function get_student_cells(array $data, array $student): string {
     $cell = '';
     foreach ($data['profilefields'] as $field) {
-        $cell .= '<td>' . $student[$field] . '</td>';
+        $cell .= '<td>' . s($student[$field] ?? '') . '</td>';
     }
     return $cell;
 }
@@ -318,6 +397,7 @@ function get_student_cells(array $data, array $student): string {
  */
 function set_blindmarking(array $data, $assign, $cm): array {
     if ($assign->is_blind_marking()) {
+        $identityfields = report_advancedgrading_get_identity_fields($assign->get_context());
         foreach ($data as &$user) {
             $anonymousid = get_string('participant', 'report_advancedgrading') .
                 ' ' . \assign::get_uniqueid_for_user_static($cm->instance, $user->userid);
@@ -326,6 +406,9 @@ function set_blindmarking(array $data, $assign, $cm): array {
             $user->lastname = $anonymousid;
             $user->email = $anonymousid;
             $user->idnumber = $anonymousid;
+            foreach ($identityfields as $field) {
+                $user->$field = $anonymousid;
+            }
         }
     }
     return $data;

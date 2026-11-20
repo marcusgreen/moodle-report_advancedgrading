@@ -46,6 +46,13 @@ if ($ADMIN->fulltree) {
         $choices
     ));
 
+    $settings->add(new admin_setting_configcheckbox(
+        'report_advancedgrading/usesiteidentity',
+        new lang_string('usesiteidentity', 'report_advancedgrading'),
+        new lang_string('usesiteidentity_desc', 'report_advancedgrading'),
+        0
+    ));
+
     $rawchoicesgradeby = [
             'graderusername',
             'graderfirstname',
