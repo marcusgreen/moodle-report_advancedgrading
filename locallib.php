@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
@@ -402,6 +404,7 @@ function download(string $spreadsheet, array $data) {
 
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
     $spreadsheet = $reader->loadFromString($spreadsheet);
+    report_advancedgrading_neutralise_formulas($spreadsheet);
     $csvdownload = optional_param('csvdownload', '', PARAM_TEXT);
     $viewsubmissions = optional_param('viewsubmissions', '', PARAM_TEXT);
 
@@ -457,6 +460,29 @@ function download(string $spreadsheet, array $data) {
     output_header($filename, $filetype);
     $writer->save('php://output');
     exit();
+}
+
+/**
+ * Convert any formula cells in the spreadsheet to plain text.
+ *
+ * The report never generates formulas, so a formula cell can only come from
+ * user content such as feedback starting with "=". Left as a formula it would
+ * either fail to calculate on export or be executed when the file is opened.
+ *
+ * @param Spreadsheet $spreadsheet
+ * @return void
+ */
+function report_advancedgrading_neutralise_formulas(Spreadsheet $spreadsheet): void {
+    foreach ($spreadsheet->getWorksheetIterator() as $sheet) {
+        foreach ($sheet->getRowIterator() as $row) {
+            foreach ($row->getCellIterator() as $cell) {
+                if ($cell->getDataType() === DataType::TYPE_FORMULA) {
+                    $cell->setValueExplicit($cell->getValue(), DataType::TYPE_STRING);
+                    $cell->getStyle()->setQuotePrefix(true);
+                }
+            }
+        }
+    }
 }
 
 /**
