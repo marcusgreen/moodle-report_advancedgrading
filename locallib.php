@@ -223,6 +223,19 @@ function init(array $data): array {
     $data['gradingdefinition'] = get_grading_definition($data['cm']->instance);
 
     $data['context'] = \context_module::instance($data['cm']->id);
+    if (empty($data['gradingdefinition']) || $data['gradingdefinition']->activemethod !== $data['grademethod']) {
+        $manageurl = new moodle_url('/grade/grading/manage.php', [
+            'contextid' => $data['context']->id,
+            'component' => 'mod_assign',
+            'area' => 'submissions',
+        ]);
+        throw new \moodle_exception(
+            'nogradingform',
+            'report_advancedgrading',
+            $manageurl,
+            get_string('pluginname', 'gradingform_' . $data['grademethod'])
+        );
+    }
     $data['assign'] = new assign($data['context'], $data['cm'], $data['cm']->get_course());
 
     if ($data['grademethod'] == 'rubric_ranges') {
