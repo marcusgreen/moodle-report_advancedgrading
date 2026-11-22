@@ -230,11 +230,13 @@ function init(array $data): array {
     } else {
         $criteriatable = 'gradingform_' . $data['grademethod'] . '_criteria';
     }
+    // Marking guide criteria are named by shortname, description is optional.
+    $criterionname = ($data['grademethod'] == 'guide') ? 'shortname' : 'description';
     $data['criteriarecord'] = $DB->get_records_menu(
         $criteriatable,
         ['definitionid' => (int) $data['gradingdefinition']->definitionid],
         'sortorder',
-        'id, description'
+        'id, ' . $criterionname
     );
     $data = header_fields($data, $data['criteriarecord'], $data['course'], $data['cm'], $data['gradingdefinition']);
     $data['definition'] = get_grading_definition($data['cm']->instance);

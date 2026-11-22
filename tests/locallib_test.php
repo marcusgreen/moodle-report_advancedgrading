@@ -239,6 +239,15 @@ final class locallib_test extends \advanced_testcase {
         $this->assertContains('username', $data['profilefields']);
         $this->assertCount(2, $data['criteriarecord']);
 
+        // Guide criteria headers use shortname as description is optional (#52).
+        $shortnames = $DB->get_fieldset_select(
+            'gradingform_guide_criteria',
+            'shortname',
+            'definitionid = ? ORDER BY sortorder',
+            [$data['gradingdefinition']->definitionid]
+        );
+        $this->assertEquals($shortnames, array_column($data['criteria'], 'description'));
+
         $guide = new guide();
         $data['dbrecords'] = $guide->get_data($data['assign'], $data['cm']);
         $gradeduser = reset($data['dbrecords'])->username;
