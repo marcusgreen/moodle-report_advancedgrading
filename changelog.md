@@ -1,4 +1,12 @@
 ### Unreleased
+Grading data in the report table is now escaped
+(REPORT_ADVANCEDGRADING-SEC-001). Criterion feedback, level
+definitions, scores, grade and grader are output as plain text, and
+overall feedback is passed through format_text() with its stored
+format. Previously HTML or script entered by a grader was rendered
+as live markup for other users viewing the report. Covered by
+tests/escape_test.php.
+
 The report now respects the assignment group mode (issue #31). In
 separate groups mode a user without moodle/site:accessallgroups only
 sees students in their active group, in the page and in downloads.

@@ -302,6 +302,7 @@ function get_grades(array $data, array $dbrecords): array {
 
         $gi = [
             'overallfeedback' => $grade->overallfeedback,
+            'overallfeedbackformat' => $grade->overallfeedbackformat ?? FORMAT_HTML,
             'grader' => gradedbydata($grade),
             'timegraded' => $grade->modified,
             'grade' => $formattedgrade,
@@ -377,14 +378,24 @@ function set_blindmarking(array $data, $assign, $cm): array {
 /**
  * Columns shown at the end of the tabale summarisng
  * The marking and who did it.
- * @param mixed $student
+ * Overall feedback is editor HTML so is cleaned with format_text,
+ * everything else is plain text and escaped.
+ *
+ * @param array $data
+ * @param array $student
  * @return string
  */
-function get_summary_cells($student): string {
-    $cell = '<td>' . $student['gradeinfo']['overallfeedback'] . '</td>';
-    $cell .= '<td>' . $student['gradeinfo']['grade'] . '</td>';
-    $cell .= '<td>' . $student['gradeinfo']['grader'] . '</td>';
-    $cell .= '<td>' . \userdate($student['gradeinfo']['timegraded'], "%d %b %Y %I:%M %p") . '</td>';
+function get_summary_cells(array $data, array $student): string {
+    $gradeinfo = $student['gradeinfo'];
+    $feedback = format_text(
+        $gradeinfo['overallfeedback'] ?? '',
+        $gradeinfo['overallfeedbackformat'] ?? FORMAT_HTML,
+        ['context' => $data['context']]
+    );
+    $cell = '<td>' . $feedback . '</td>';
+    $cell .= '<td>' . s($gradeinfo['grade']) . '</td>';
+    $cell .= '<td>' . s($gradeinfo['grader']) . '</td>';
+    $cell .= '<td>' . \userdate($gradeinfo['timegraded'], "%d %b %Y %I:%M %p") . '</td>';
     return $cell;
 }
 /**

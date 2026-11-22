@@ -48,11 +48,11 @@ class rubric {
                 $rows .= '<tr>';
                 $rows .= get_student_cells($data, $student);
                 foreach (array_keys($data['criterion']) as $crikey) {
-                    $rows .= '<td>' . $student['grades'][$crikey]['score'] . '</td>';
-                    $rows .= '<td>' . $student['grades'][$crikey]['definition'] . '</td>';
-                    $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+                    $rows .= '<td>' . s($student['grades'][$crikey]['score']) . '</td>';
+                    $rows .= '<td>' . s($student['grades'][$crikey]['definition']) . '</td>';
+                    $rows .= '<td>' . s($student['grades'][$crikey]['feedback']) . '</td>';
                 }
-                $rows .= get_summary_cells($student);
+                $rows .= get_summary_cells($data, $student);
                 $rows .= '</tr>';
             }
         }
@@ -84,7 +84,8 @@ class rubric {
                         rubm.firstname AS graderfirstname, rubm.lastname AS graderlastname,
                         rubm.email AS graderemail,
                         ag.timemodified AS modified,
-                        ctx.instanceid, ag.grade, asg.blindmarking, assign_comment.commenttext as overallfeedback
+                        ctx.instanceid, ag.grade, asg.blindmarking, assign_comment.commenttext AS overallfeedback,
+                        assign_comment.commentformat AS overallfeedbackformat
                     FROM {assign} asg
                     JOIN {course_modules} cm ON cm.instance = asg.id
                     JOIN {context} ctx ON ctx.instanceid = cm.id

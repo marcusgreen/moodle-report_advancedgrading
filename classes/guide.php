@@ -50,13 +50,13 @@ class guide {
                 foreach (array_keys($data['criteriarecord']) as $crikey) {
                     if (isset($student['grades'][$crikey]['score'])) {
                         $rows .= '<td>' . number_format($student['grades'][$crikey]['score'], 2) . '</td>';
-                        $rows .= '<td>' . $student['grades'][$crikey]['feedback'] . '</td>';
+                        $rows .= '<td>' . s($student['grades'][$crikey]['feedback']) . '</td>';
                     } else {
                         $rows .= '<td></td>';
                         $rows .= '<td></td>';
                     }
                 }
-                $rows .= get_summary_cells($student);
+                $rows .= get_summary_cells($data, $student);
                 $rows .= '</tr>';
             }
         }
@@ -88,7 +88,8 @@ class guide {
                         rubm.email AS graderemail,
                     stu.id AS userid, stu.idnumber AS idnumber, stu.firstname, stu.lastname,
                     stu.username, stu.email, ag.timemodified AS modified, ag.grade,
-                    assign_comment.commenttext as overallfeedback
+                    assign_comment.commenttext AS overallfeedback,
+                    assign_comment.commentformat AS overallfeedbackformat
             FROM {assign} asg
             JOIN {course_modules} cm ON cm.instance = asg.id
             JOIN {context} ctx ON ctx.instanceid = cm.id
