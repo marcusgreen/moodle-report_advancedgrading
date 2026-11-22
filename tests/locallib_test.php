@@ -146,6 +146,41 @@ final class locallib_test extends \advanced_testcase {
     }
 
     /**
+     * Report for an assignment with no grading form defined explains
+     * what is wrong instead of erroring.
+     * https://github.com/marcusgreen/moodle-report_advancedgrading/issues/13
+     */
+    public function test_init_no_grading_form(): void {
+        $this->resetAfterTest();
+        $assign = $this->getDataGenerator()->create_module('assign', ['course' => $this->courseid]);
+        $context = \context_module::instance($assign->cmid);
+        get_grading_manager($context, 'mod_assign', 'submissions')->set_active_method('rubric');
+
+        $data['grademethod'] = 'rubric';
+        $data['modid'] = $assign->cmid;
+        $data['courseid'] = $this->courseid;
+        $this->expectException(\moodle_exception::class);
+        $method = get_string('pluginname', 'gradingform_rubric');
+        $this->expectExceptionMessage(get_string('nogradingform', 'report_advancedgrading', $method));
+        init($data);
+    }
+
+    /**
+     * Report page for a different method than the active one is rejected.
+     */
+    public function test_init_wrong_grading_method(): void {
+        $this->resetAfterTest();
+        $cm = get_coursemodule_from_instance('assign', $this->rubricassignid, $this->courseid);
+        $data['grademethod'] = 'guide';
+        $data['modid'] = $cm->id;
+        $data['courseid'] = $this->courseid;
+        $this->expectException(\moodle_exception::class);
+        $method = get_string('pluginname', 'gradingform_guide');
+        $this->expectExceptionMessage(get_string('nogradingform', 'report_advancedgrading', $method));
+        init($data);
+    }
+
+    /**
      * check that values in settings configure
      * what userfields are displayed
      *

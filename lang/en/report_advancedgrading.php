@@ -46,6 +46,7 @@ $string['graderusername'] = 'Username';
 $string['gradesummary'] = 'Grade summary';
 $string['guidegrades'] = 'Marking guide breakdown report';
 $string['guidereportname'] = 'Marking guide report';
+$string['nogradingform'] = 'This assignment does not have a {$a} grading form defined. Define one before viewing this report.';
 $string['nomarkedsubmissions'] = 'No marked submissions found';
 $string['overall_feedback'] = 'Overall feedback';
 $string['participant'] = 'participant';
